@@ -1,0 +1,70 @@
+package elude.games.graphchanger.game;
+
+import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
+import elude.games.graphchanger.BaseScreen;
+
+/**
+ * Created by Peti on 2015.03.19..
+ */
+public class GameScreen extends BaseScreen {
+
+    private final SpriteBatch batch;
+    private final Camera cam;
+    private  final GameController gameController = new GameController();
+
+    private InputProcessor input = new InputAdapter() {
+        private Vector3 touch3 = new Vector3();
+        private Vector2 touch2 = new Vector2();
+        @Override
+        public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+            gameController.getTouchListener().onDown(unproject(screenX, screenY));
+            return false;
+        }
+
+        @Override
+        public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+            gameController.getTouchListener().onUp(unproject(screenX, screenY));
+            return false;
+        }
+
+        @Override
+        public boolean touchDragged(int screenX, int screenY, int pointer) {
+            gameController.getTouchListener().onDrag(unproject(screenX, screenY));
+            return false;
+        }
+
+        private Vector2 unproject(int x, int y) {
+            touch3.set(x, y, 0);
+            cam.unproject(touch3);
+            touch2.set(touch3.x, touch3.y);
+            return touch2;
+        }
+    };
+
+    public GameScreen(Game game) {
+        super(game);
+        cam = new OrthographicCamera(480, 800);
+        cam.position.set(cam.viewportWidth / 2, cam.viewportHeight / 2, 0);
+        cam.update();
+        batch = new SpriteBatch();
+        batch.setProjectionMatrix(cam.combined);
+        Gdx.input.setInputProcessor(input);
+    }
+
+    @Override
+    public void render(float delta) {
+        Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        batch.begin();
+        gameController.render(delta, batch);
+        batch.end();
+    }
+}
