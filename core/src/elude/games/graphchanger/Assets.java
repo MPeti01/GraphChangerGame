@@ -9,7 +9,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  */
 public class Assets {
     public static enum Tex {
-        NODE0, NODE1, NODE2, EDGE, UNIT1;
+        NODE0, NODE1, NODE2, NODE_SELECTED, LINE, UNIT1;
 
         private String filename;
         public TextureRegion t = null;

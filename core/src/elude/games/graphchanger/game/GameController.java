@@ -7,17 +7,24 @@ import elude.games.graphchanger.BasicTouchListener;
  * Created by Peti on 2015.03.19..
  */
 public class GameController {
-    private Graph graph = new Graph("test.txt");
+    private Graph graph;
+    private final Army[] armies = new Army[Player.values().length];
 
+    public GameController() {
+        for (int i = 0; i < armies.length; i++) {
+            armies[i] = new Army(Player.values()[i]);
+        }
+        graph = new Graph("test.txt", armies);
+    }
     public void render(float delta, SpriteBatch batch) {
         graph.updateNodes(delta);
-        for (Player p : Player.values()) {
-            p.updateUnits(delta);
+        for (Army a : armies) {
+            a.updateUnits(delta);
         }
 
         graph.render(batch);
-        for (Player p : Player.values()) {
-            p.renderUnits(batch);
+        for (Army a : armies) {
+            a.renderUnits(batch);
         }
     }
 

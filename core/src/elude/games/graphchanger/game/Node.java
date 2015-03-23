@@ -15,7 +15,8 @@ public class Node {
     private static float SPAWN_RELOAD = 2f;
 
     private List<Node> neighbors = new LinkedList<Node>();
-    Player player = null;
+
+    Army owner = null;
 
     private float timeToSpawn = SPAWN_RELOAD;
 
@@ -34,32 +35,38 @@ public class Node {
     }
 
     void update(float delta) {
-        if (player != null) {
+        if (owner != null) {
             timeToSpawn -= delta;
             if (timeToSpawn < 0) {
                 timeToSpawn += SPAWN_RELOAD;
-                player.addUnit(this, destinationFromHere());
+                owner.addUnit(this, destinationFromHere());
             }
         }
     }
 
     private int quickBadSolution = 0;
     public Node destinationFromHere() {
+        if (neighbors.size() == 0)
+            return this;
         quickBadSolution++;
-        if (quickBadSolution == neighbors.size())
+        if (quickBadSolution >= neighbors.size())
             quickBadSolution = 0;
         return neighbors.get(quickBadSolution);
     }
 
     public Player player() {
-        return player;
+        return owner == null ? null : owner.player();
     }
 
     public Vector2 pos() {
         return pos;
     }
 
-    public void hitBy(Player owner) {
-        player = owner;
+    public void hitBy(Army army) {
+        this.owner = army;
+    }
+
+    public boolean hasNeighbor(Node other) {
+        return neighbors.contains(other);
     }
 }

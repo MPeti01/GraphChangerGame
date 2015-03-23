@@ -13,12 +13,12 @@ public class Unit {
     private static final float TIME_PER_EDGE = 1.3f;
     private static final float SIZE = 8f;
 
-    private final Player owner;
+    private final Army owner;
     private Node destination;
     private Vector2 pos;
     private float speed;
 
-    public Unit(Player owner, Vector2 pos, Node destination) {
+    public Unit(Army owner, Vector2 pos, Node destination) {
         this.owner = owner;
         this.destination = destination;
         this.pos = pos;
@@ -35,7 +35,7 @@ public class Unit {
     public void update(float delta) {
         if (pos.dst2(destination.pos()) < speed*speed * delta*delta) {
             pos.set(destination.pos());
-            if (destination.player() == owner) {
+            if (destination.player() == owner.player()) {
                 destination = destination.destinationFromHere();
                 calcSpeed();
             } else {
