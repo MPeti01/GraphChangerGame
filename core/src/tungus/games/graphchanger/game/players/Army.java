@@ -68,4 +68,8 @@ public class Army {
             addUnit(u.pos, nodes.get(u.destination.id));
         }
     }
+
+    public int id() {
+        return player.ordinal();
+    }
 }

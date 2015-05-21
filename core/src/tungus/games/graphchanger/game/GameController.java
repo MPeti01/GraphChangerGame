@@ -2,36 +2,32 @@ package tungus.games.graphchanger.game;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import tungus.games.graphchanger.BasicTouchListener;
-import tungus.games.graphchanger.game.graph.Graph;
-import tungus.games.graphchanger.game.players.Army;
+import tungus.games.graphchanger.game.gamestate.GameSimulator;
+import tungus.games.graphchanger.game.gamestate.GameState;
+import tungus.games.graphchanger.game.graph.GraphEditor;
 import tungus.games.graphchanger.game.players.Player;
 
 /**
  * Created by Peti on 2015.03.19..
  */
 class GameController {
-    private final Graph graph;
-    private final Army[] armies = new Army[Player.values().length];
+    private final GraphEditor editor;
+    private final GameSimulator simulator;
 
-    public GameController() {
-        for (int i = 0; i < armies.length; i++) {
-            armies[i] = new Army(Player.values()[i]);
-        }
-        graph = new Graph("test.txt", armies);
+    public GameController(Player player) {
+        editor = new GraphEditor(player);
+        simulator = new GameSimulator(editor, "levels/whatever..");
+        editor.setMoveListener(simulator);
+        editor.bindGraphInstance(simulator.latestState().graph);
     }
     public void render(float delta, SpriteBatch batch) {
-        graph.updateNodes(delta);
-        for (Army a : armies) {
-            a.updateUnits(delta);
-        }
-
-        graph.render(batch);
-        for (Army a : armies) {
-            a.renderUnits(batch);
-        }
+        simulator.update(delta);
+        GameState current = simulator.latestState();
+        editor.bindGraphInstance(current.graph);
+        current.render(batch, simulator.timeSinceTick());
     }
 
     public BasicTouchListener getTouchListener() {
-        return graph.getEditorInput();
+        return editor.input;
     }
 }

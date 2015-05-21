@@ -11,11 +11,11 @@ import java.util.List;
  */
 class EdgeIntersector {
     private static final Vector2 intersection = new Vector2();
-    private final List<Edge> edges;
+    private List<Edge> edges = null;
     private final List<Edge> intersecting = new LinkedList<Edge>();
 
-    EdgeIntersector(List<Edge> edges) {
-        this.edges = edges;
+    void setEdgeList(List<Edge> list) {
+        this.edges = list;
     }
 
     void updateFor(Vector2 start, Vector2 end) {

@@ -15,7 +15,7 @@ public class Node {
 
     public static final float RADIUS = 15f;
 
-    final List<Node> neighbors = new LinkedList<Node>();
+    private final List<Node> neighbors = new LinkedList<Node>();
 
     private final NodeList allNodes;
 
@@ -53,6 +53,12 @@ public class Node {
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     boolean hasNeighbor(Node other) {
         return neighbors.contains(other);
+    }
+
+    boolean hasNeighbor(int otherID) {
+        for (Node o : neighbors)
+            if (o.id == otherID) return true;
+        return false;
     }
 
     void update(float delta) {
@@ -96,8 +102,12 @@ public class Node {
         return (o instanceof Node && ((Node)o).id == id);
     }
 
-    public void set(Node other) {
+    public void set(Node other, Army... armies) {
         //TODO Investigate setting of spawnChecker..
+        if (other.owner == null)
+            owner = null;
+        else
+            owner = armies[other.owner.id()];
         Iterator<Node> it = neighbors.iterator();
         while (it.hasNext()) {
             Node neighbor = it.next();

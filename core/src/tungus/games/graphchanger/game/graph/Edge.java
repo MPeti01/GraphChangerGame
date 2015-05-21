@@ -31,6 +31,6 @@ class Edge {
         if (!(o instanceof Edge))
             return false;
         Edge other = (Edge)o;
-        return (other.node1 == node1) && (other.node2 == node2);
+        return (other.node1.equals(node1)) && (other.node2.equals(node2));
     }
 }

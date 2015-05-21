@@ -4,29 +4,34 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import tungus.games.graphchanger.BasicTouchListener;
 import tungus.games.graphchanger.DrawUtils;
+import tungus.games.graphchanger.game.gamestate.Move;
+import tungus.games.graphchanger.game.gamestate.MoveListener;
+import tungus.games.graphchanger.game.players.Player;
 
 import java.util.List;
 
 /**
- * The interface for adding edges to the graph or removing them.
- * Checks legality using
+ * Handles the UI for adding edges to the graph or removing them.
+ * Checks legality using MoveValidator and EdgeIntersector.
  */
-class GraphEditor {
+public class GraphEditor {
 
     private static enum EditingState {IDLE, ADD, REMOVE}
     private EditingState state = EditingState.IDLE;
 
-    private final List<Node> nodes;
-    private final List<Edge> edges;
+    private List<Node> nodes = null;
+    private List<Edge> edges = null;
     private final EdgeIntersector cutChecker;
 
-    private Node startNode = null;
-    private Node endNode = null;
+    private int startNodeID = -1;
+    private int endNodeID = -1;
     private final Vector2 touchStart = new Vector2();
     private final Vector2 touchEnd = new Vector2();
     private final MoveValidator moveValidator;
 
-    final BasicTouchListener input = new BasicTouchListener() {
+    private MoveListener moveListener = null;
+
+    public final BasicTouchListener input = new BasicTouchListener() {
 
         @Override
         public void onDown(Vector2 touch) {
@@ -34,9 +39,9 @@ class GraphEditor {
             state = EditingState.REMOVE;
             for (Node n : nodes) {
                 if (touch.dst2(n.pos()) < Node.RADIUS * Node.RADIUS) {
-                    startNode = n;
+                    startNodeID = n.id;
                     state = EditingState.ADD;
-                    touchStart.set(startNode.pos());
+                    touchStart.set(n.pos());
                     break;
                 }
             }
@@ -47,15 +52,15 @@ class GraphEditor {
         public void onDrag(Vector2 touch) {
             touchEnd.set(touch);
             if (state == EditingState.ADD) { // Snap to end node
-                for (Node end : nodes) {
-                    if (touch.dst2(end.pos()) < Node.RADIUS * Node.RADIUS) {
-                        touchEnd.set(end.pos());
-                        endNode = end;
+                for (Node potentialEndNode : nodes) {
+                    if (touch.dst2(potentialEndNode.pos()) < Node.RADIUS * Node.RADIUS) {
+                        touchEnd.set(potentialEndNode.pos());
+                        endNodeID = potentialEndNode.id;
                         cutChecker.updateFor(touchStart, touchEnd);
                         return;
                     }
                 }
-                endNode = null;
+                endNodeID = -1;
             }
             cutChecker.updateFor(touchStart, touchEnd);
         }
@@ -67,35 +72,43 @@ class GraphEditor {
                 cutChecker.updateFor(touchStart, touchEnd);
                 if (cutChecker.cutCount() == 1 && moveValidator.canCut(cutChecker.cutEdge())) {
                     Edge edge = cutChecker.cutEdge();
-                    edge.node1.removeNeighbor(edge.node2);
-                    edge.node2.removeNeighbor(edge.node1);
-                    edges.remove(edge);
+                    moveListener.addMove(new Move(edge.node1.id, edge.node2.id, false));
                 }
             } else if (state == EditingState.ADD) {
-                if (endNode != null && cutChecker.cutCount() == 0
-                        && !startNode.hasNeighbor(endNode) && startNode != endNode
-                        && moveValidator.canConnect(startNode, endNode)) {
-                    startNode.addNeighbor(endNode);
-                    endNode.addNeighbor(startNode);
-                    edges.add(new Edge(startNode, endNode));
+                if (endNodeID != -1) {
+                    Node startNode = nodes.get(startNodeID);
+                    Node endNode = nodes.get(endNodeID);
+                    if (cutChecker.cutCount() == 0
+                            && !startNode.hasNeighbor(endNode) && startNode != endNode
+                            && moveValidator.canConnect(startNode, endNode)) {
+                        moveListener.addMove(new Move(startNodeID, endNodeID, true));
+                    }
                 }
-                startNode = null;
-                endNode = null;
+                startNodeID = -1;
+                endNodeID = -1;
             }
             state = EditingState.IDLE;
         }
     };
 
-    public GraphEditor(List<Edge> edges, List<Node> nodes, MoveValidator validator) {
-        this.nodes = nodes;
-        this.edges = edges;
-        this.moveValidator = validator;
-        cutChecker = new EdgeIntersector(edges);
+    public GraphEditor(Player p) {
+        this.moveValidator = new MoveValidator(p);
+        cutChecker = new EdgeIntersector();
+    }
+
+    public void setMoveListener(MoveListener listener) {
+        moveListener = listener;
+    }
+
+    public void bindGraphInstance(Graph graph) {
+        nodes = graph.nodes;
+        edges = graph.edges;
+        cutChecker.setEdgeList(edges);
         cutChecker.updateFor(touchStart, touchEnd);
     }
 
     boolean isSelected(Node node) {
-        return node == startNode || node == endNode;
+        return node.id == startNodeID || node.id == endNodeID;
     }
 
     boolean isBeingCut(Edge edge) {

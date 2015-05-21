@@ -32,7 +32,6 @@ class Unit {
             if (destination.player() == owner.player()) {
                 destination.unitPassedBy();
                 destination = destination.destinationFromHere();
-                //calcSpeed();
             } else {
                 destination.hitBy(owner);
                 kill();

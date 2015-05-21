@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import tungus.games.graphchanger.BaseScreen;
+import tungus.games.graphchanger.game.players.Player;
 
 /**
  * Created by Peti on 2015.03.19..
@@ -19,7 +20,7 @@ public class GameScreen extends BaseScreen {
 
     private final SpriteBatch batch;
     private final Camera cam;
-    private  final GameController gameController = new GameController();
+    private  final GameController gameController = new GameController(Player.P1);
 
     @SuppressWarnings("FieldCanBeLocal")
     private final InputProcessor input = new InputAdapter() {

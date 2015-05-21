@@ -3,8 +3,8 @@ package tungus.games.graphchanger.game.graph;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import tungus.games.graphchanger.BasicTouchListener;
+import tungus.games.graphchanger.game.gamestate.Move;
 import tungus.games.graphchanger.game.players.Army;
-import tungus.games.graphchanger.game.players.Player;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -16,18 +16,19 @@ import java.util.List;
  */
 public class Graph implements NodeList {
 
-    private final List<Node> nodes = new ArrayList<Node>();
-    private final List<Edge> edges = new LinkedList<Edge>();
-    private final GraphEditor editor = new GraphEditor(edges, nodes, new MoveValidator(Player.P1));
+    final List<Node> nodes = new ArrayList<Node>();
+    final List<Edge> edges = new LinkedList<Edge>();
+    private final GraphEditor editor;
     private final GraphRenderer renderer = new GraphRenderer();
 
-    public Graph(@SuppressWarnings({"SameParameterValue", "UnusedParameters"}) String s, Army[] armies) {
+    public Graph(@SuppressWarnings({"SameParameterValue", "UnusedParameters"}) GraphEditor editor, String s, Army... armies) {
+        this.editor = editor;
         for (int i = 0; i < 6; i++) {
             for (int j = 0; j < 7; j++) {
-                nodes.add(new Node(new Vector2(30 + i * 80, 30 + j * 120), j * 6 + i, this));
+                nodes.add(new Node(new Vector2(30 + i * 80, 30 + j * 120), i * 7 + j, this));
             }
         }
-        nodes.add(new Node(armies[0], new Vector2(230, 450), 43, this));
+        nodes.add(new Node(armies[0], new Vector2(230, 450), 42, this));
 
         edges.add(new Edge(nodes.get(0), nodes.get(10)));
         nodes.get(0).addNeighbor(nodes.get(10));
@@ -50,9 +51,9 @@ public class Graph implements NodeList {
         renderer.drawNodes(nodes, editor, batch);
     }
 
-    public void set(Graph other) {
+    public void set(Graph other, Army p1, Army p2) {
         for (int i = 0; i < nodes.size(); i++) {
-            nodes.get(i).set(other.nodes.get(i));
+            nodes.get(i).set(other.nodes.get(i), p1, p2);
         }
         setEdges(other.edges);
     }
@@ -75,5 +76,19 @@ public class Graph implements NodeList {
     @Override
     public Node get(int id) {
         return nodes.get(id);
+    }
+
+    public void applyMove(Move m) {
+        Node n1 = nodes.get(m.node1ID);
+        Node n2 = nodes.get(m.node2ID);
+        if (m.add) {
+            n1.addNeighbor(n2);
+            n2.addNeighbor(n1);
+            edges.add(new Edge(n1, n2));
+        } else {
+            n1.removeNeighbor(n2);
+            n2.removeNeighbor(n1);
+            edges.remove(new Edge(n1, n2));
+        }
     }
 }
