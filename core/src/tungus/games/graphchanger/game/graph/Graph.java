@@ -45,7 +45,7 @@ public class Graph implements NodeList {
         }
     }
 
-    public void render(SpriteBatch batch) {
+    public void render(SpriteBatch batch, float sinceTick) {
         renderer.drawEdges(edges, editor, batch);
         editor.render(batch);
         renderer.drawNodes(nodes, editor, batch);

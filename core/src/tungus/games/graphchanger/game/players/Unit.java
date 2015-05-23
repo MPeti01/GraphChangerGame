@@ -15,15 +15,26 @@ class Unit {
     private static final float SIZE = 8f;
     private static final float SPEED = 100f;
 
-    final Army owner;
-    Node destination;
+    private final Army owner;
+    private Node destination;
     final Vector2 pos;
+    private final Vector2 vel;
 
 
     public Unit(Army owner) {
         this.owner = owner;
         this.destination = null;
         this.pos = new Vector2();
+        this.vel = new Vector2();
+    }
+
+    public void setDestination(Node dest) {
+        this.destination = dest;
+        vel.set(dest.pos()).sub(pos).nor().scl(SPEED);
+    }
+
+    public Node getDestination() {
+        return destination;
     }
 
     public void update(float delta) {
@@ -31,19 +42,20 @@ class Unit {
             pos.set(destination.pos());
             if (destination.player() == owner.player()) {
                 destination.unitPassedBy();
-                destination = destination.destinationFromHere();
+                setDestination(destination.destinationFromHere());
             } else {
                 destination.hitBy(owner);
                 kill();
             }
         } else {
-            temp.set(destination.pos()).sub(pos).nor().scl(SPEED *delta);
-            pos.add(temp);
+            pos.add(vel.x * delta, vel.y * delta);
         }
     }
 
-    public void render(SpriteBatch batch) {
+    public void render(SpriteBatch batch, float sinceTick) {
+        pos.add(vel.x * sinceTick, vel.y * sinceTick);
         batch.draw(Assets.Tex.UNIT1.t, pos.x, pos.y, SIZE, SIZE);
+        pos.sub(vel.x * sinceTick, vel.y * sinceTick);
     }
 
     private void kill() {

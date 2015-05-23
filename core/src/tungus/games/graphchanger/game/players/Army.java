@@ -32,8 +32,8 @@ public class Army {
 
     private void addUnit(Vector2 pos, Node destination) {
         Unit u = unitPool.obtain();
-        u.destination = destination;
         u.pos.set(pos);
+        u.setDestination(destination);
         units.add(u);
     }
 
@@ -48,9 +48,9 @@ public class Army {
         }
     }
 
-    public void renderUnits(SpriteBatch batch) {
+    public void renderUnits(SpriteBatch batch, float sinceTick) {
         for (Unit u : units) {
-            u.render(batch);
+            u.render(batch, sinceTick);
         }
     }
 
@@ -65,7 +65,7 @@ public class Army {
         units.clear();
         for (Unit u : other.units) {
             // Make sure to get the Node instance from the Graph handled with this Army
-            addUnit(u.pos, nodes.get(u.destination.id));
+            addUnit(u.pos, nodes.get(u.getDestination().id));
         }
     }
 

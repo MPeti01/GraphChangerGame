@@ -42,8 +42,8 @@ public class GameState {
 
     public void render(SpriteBatch batch, float sinceTick) {
         //TODO Take interpolation into account!
-        graph.render(batch);
-        p1.renderUnits(batch);
-        p2.renderUnits(batch);
+        graph.render(batch, sinceTick);
+        p1.renderUnits(batch, sinceTick);
+        p2.renderUnits(batch, sinceTick);
     }
 }
