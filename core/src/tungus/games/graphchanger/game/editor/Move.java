@@ -1,4 +1,4 @@
-package tungus.games.graphchanger.game.gamestate;
+package tungus.games.graphchanger.game.editor;
 
 /**
  * Represents an action a player can take: Adding or removing an edge between two nodes.

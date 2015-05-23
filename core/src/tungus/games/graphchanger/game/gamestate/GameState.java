@@ -1,6 +1,7 @@
 package tungus.games.graphchanger.game.gamestate;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import tungus.games.graphchanger.game.editor.Move;
 import tungus.games.graphchanger.game.graph.Graph;
 import tungus.games.graphchanger.game.players.Army;
 

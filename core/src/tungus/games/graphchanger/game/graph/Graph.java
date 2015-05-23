@@ -2,7 +2,8 @@ package tungus.games.graphchanger.game.graph;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
-import tungus.games.graphchanger.game.gamestate.Move;
+import tungus.games.graphchanger.game.editor.GraphEditor;
+import tungus.games.graphchanger.game.editor.Move;
 import tungus.games.graphchanger.game.players.Army;
 
 import java.util.ArrayList;
@@ -89,5 +90,13 @@ public class Graph implements NodeList {
             n2.removeNeighbor(n1);
             edges.remove(new Edge(n1, n2));
         }
+    }
+
+    public List<Node> getNodes() {
+        return nodes;
+    }
+
+    public List<Edge> getEdges() {
+        return edges;
     }
 }

@@ -1,7 +1,8 @@
-package tungus.games.graphchanger.game.graph;
+package tungus.games.graphchanger.game.editor;
 
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector2;
+import tungus.games.graphchanger.game.graph.Edge;
 
 import java.util.LinkedList;
 import java.util.List;

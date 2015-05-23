@@ -1,5 +1,7 @@
-package tungus.games.graphchanger.game.graph;
+package tungus.games.graphchanger.game.editor;
 
+import tungus.games.graphchanger.game.graph.Edge;
+import tungus.games.graphchanger.game.graph.Node;
 import tungus.games.graphchanger.game.players.Player;
 
 /**

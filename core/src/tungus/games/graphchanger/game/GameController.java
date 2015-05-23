@@ -2,9 +2,9 @@ package tungus.games.graphchanger.game;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import tungus.games.graphchanger.BasicTouchListener;
+import tungus.games.graphchanger.game.editor.GraphEditor;
 import tungus.games.graphchanger.game.gamestate.GameSimulator;
 import tungus.games.graphchanger.game.gamestate.GameState;
-import tungus.games.graphchanger.game.graph.GraphEditor;
 import tungus.games.graphchanger.game.players.Player;
 
 class GameController {

@@ -1,11 +1,12 @@
-package tungus.games.graphchanger.game.graph;
+package tungus.games.graphchanger.game.editor;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import tungus.games.graphchanger.BasicTouchListener;
 import tungus.games.graphchanger.DrawUtils;
-import tungus.games.graphchanger.game.gamestate.Move;
-import tungus.games.graphchanger.game.gamestate.MoveListener;
+import tungus.games.graphchanger.game.graph.Edge;
+import tungus.games.graphchanger.game.graph.Graph;
+import tungus.games.graphchanger.game.graph.Node;
 import tungus.games.graphchanger.game.players.Player;
 
 import java.util.List;
@@ -100,17 +101,17 @@ public class GraphEditor {
     }
 
     public void bindGraphInstance(Graph graph) {
-        nodes = graph.nodes;
-        List<Edge> edges = graph.edges;
+        nodes = graph.getNodes();
+        List<Edge> edges = graph.getEdges();
         cutChecker.setEdgeList(edges);
         cutChecker.updateFor(touchStart, touchEnd);
     }
 
-    boolean isSelected(Node node) {
+    public boolean isSelected(Node node) {
         return node.id == startNodeID || node.id == endNodeID;
     }
 
-    boolean isBeingCut(Edge edge) {
+    public boolean isBeingCut(Edge edge) {
         return state == EditingState.REMOVE
                 && cutChecker.cutCount() == 1
                 && cutChecker.cutEdge() == edge;

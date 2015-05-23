@@ -1,8 +1,10 @@
 package tungus.games.graphchanger.game.gamestate;
 
 import com.badlogic.gdx.utils.IntMap;
+import tungus.games.graphchanger.game.editor.GraphEditor;
+import tungus.games.graphchanger.game.editor.Move;
+import tungus.games.graphchanger.game.editor.MoveListener;
 import tungus.games.graphchanger.game.graph.Graph;
-import tungus.games.graphchanger.game.graph.GraphEditor;
 import tungus.games.graphchanger.game.players.Army;
 import tungus.games.graphchanger.game.players.Player;
 

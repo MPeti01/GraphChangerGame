@@ -52,11 +52,11 @@ public class Node {
     }
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-    boolean hasNeighbor(Node other) {
+    public boolean hasNeighbor(Node other) {
         return neighbors.contains(other);
     }
 
-    boolean hasNeighbor(int otherID) {
+    public boolean hasNeighbor(int otherID) {
         for (Node o : neighbors)
             if (o.id == otherID) return true;
         return false;

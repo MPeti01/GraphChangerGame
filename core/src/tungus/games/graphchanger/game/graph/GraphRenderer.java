@@ -3,6 +3,7 @@ package tungus.games.graphchanger.game.graph;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import tungus.games.graphchanger.Assets;
 import tungus.games.graphchanger.DrawUtils;
+import tungus.games.graphchanger.game.editor.GraphEditor;
 
 import java.util.List;
 

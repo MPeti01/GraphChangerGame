@@ -1,4 +1,4 @@
-package tungus.games.graphchanger.game.gamestate;
+package tungus.games.graphchanger.game.editor;
 
 /**
  * Accepts a Move, possibly happened at a given earlier time.
