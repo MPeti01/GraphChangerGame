@@ -7,7 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Created by Peti on 2015.03.22..
+ * Checks for edges intersecting a given line segment.
  */
 class EdgeIntersector {
     private static final Vector2 intersection = new Vector2();

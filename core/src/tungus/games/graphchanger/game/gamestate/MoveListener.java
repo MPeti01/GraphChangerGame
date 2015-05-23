@@ -1,7 +1,7 @@
 package tungus.games.graphchanger.game.gamestate;
 
 /**
- * Created by Peti on 2015.05.21..
+ * Accepts a Move, possibly happened at a given earlier time.
  */
 public interface MoveListener {
     public void addMove(Move m);

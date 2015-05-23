@@ -7,9 +7,6 @@ import tungus.games.graphchanger.game.gamestate.GameState;
 import tungus.games.graphchanger.game.graph.GraphEditor;
 import tungus.games.graphchanger.game.players.Player;
 
-/**
- * Created by Peti on 2015.03.19..
- */
 class GameController {
     private final GraphEditor editor;
     private final GameSimulator simulator;

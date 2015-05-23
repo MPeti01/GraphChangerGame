@@ -7,7 +7,7 @@ import tungus.games.graphchanger.DrawUtils;
 import java.util.List;
 
 /**
- * Created by Peti on 2015.03.19..
+ * Renders the Nodes and Edges in a Graph.
  */
 class GraphRenderer {
 
@@ -23,7 +23,7 @@ class GraphRenderer {
 
     public void drawNodes(List<Node> nodes, GraphEditor editor, SpriteBatch batch) {
         for (Node node : nodes) {
-            Assets.Tex tex = (node.player() == null ? Assets.Tex.NODE0 : Assets.Tex.NODE1);
+            Assets.Tex tex = (node.player() == null ? Assets.Tex.NODE0 : Assets.Tex.NODES[node.player().ordinal()]);
             if (editor.isSelected(node)) {
                 tex = Assets.Tex.NODE_SELECTED;
             }

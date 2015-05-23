@@ -3,7 +3,7 @@ package tungus.games.graphchanger;
 import com.badlogic.gdx.math.Vector2;
 
 /**
- * Created by Peti on 2015.03.19..
+ * Simplified interface for handling the gist of touch events.
  */
 public interface BasicTouchListener {
     public void onDown(Vector2 touch);

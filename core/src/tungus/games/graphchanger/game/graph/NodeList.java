@@ -1,7 +1,7 @@
 package tungus.games.graphchanger.game.graph;
 
 /**
- * Created by Peti on 2015.05.18..
+ * Provides access to Nodes by their ID.
  */
 public interface NodeList {
     Node get(int id);

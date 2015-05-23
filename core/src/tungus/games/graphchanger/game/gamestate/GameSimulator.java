@@ -14,8 +14,8 @@ import java.util.List;
  * resimulating a few ticks if a move happened some ticks earlier than the current one.
  */
 public class GameSimulator implements MoveListener {
-    private static final float TICK_TIME = 0.2f; // 5 ticks per sec
-    private static final int STORED_TICKS = 5;
+    private static final float TICK_TIME = 0.1f; // 10 ticks per sec
+    private static final int STORED_TICKS = 15;
 
     /**
      * The states of the past STORED_TICKS ticks. Array used for arbitrary element access.

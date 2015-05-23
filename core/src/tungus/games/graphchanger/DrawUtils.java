@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
 /**
- * Created by Peti on 2015.03.22..
+ * Routines related to rendering
  */
 public class DrawUtils {
 

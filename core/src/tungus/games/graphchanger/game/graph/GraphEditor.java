@@ -20,7 +20,6 @@ public class GraphEditor {
     private EditingState state = EditingState.IDLE;
 
     private List<Node> nodes = null;
-    private List<Edge> edges = null;
     private final EdgeIntersector cutChecker;
 
     private int startNodeID = -1;
@@ -102,7 +101,7 @@ public class GraphEditor {
 
     public void bindGraphInstance(Graph graph) {
         nodes = graph.nodes;
-        edges = graph.edges;
+        List<Edge> edges = graph.edges;
         cutChecker.setEdgeList(edges);
         cutChecker.updateFor(touchStart, touchEnd);
     }

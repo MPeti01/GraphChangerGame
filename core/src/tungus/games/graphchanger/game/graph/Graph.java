@@ -2,7 +2,6 @@ package tungus.games.graphchanger.game.graph;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
-import tungus.games.graphchanger.BasicTouchListener;
 import tungus.games.graphchanger.game.gamestate.Move;
 import tungus.games.graphchanger.game.players.Army;
 
@@ -12,7 +11,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Created by Peti on 2015.03.19..
+ * Class representing the game's "map" or graph. Handles/delegates loading from file, updating, rendering.
+ * Can copy data from another instance.
  */
 public class Graph implements NodeList {
 
@@ -25,7 +25,10 @@ public class Graph implements NodeList {
         this.editor = editor;
         for (int i = 0; i < 6; i++) {
             for (int j = 0; j < 7; j++) {
-                nodes.add(new Node(new Vector2(30 + i * 80, 30 + j * 120), i * 7 + j, this));
+                if (i == 0 && j == 0)
+                    nodes.add(new Node(armies[1], new Vector2(30 + i * 80, 30 + j * 120), i * 7 + j, this));
+                else
+                    nodes.add(new Node(new Vector2(30 + i * 80, 30 + j * 120), i * 7 + j, this));
             }
         }
         nodes.add(new Node(armies[0], new Vector2(230, 450), 42, this));
@@ -33,10 +36,6 @@ public class Graph implements NodeList {
         edges.add(new Edge(nodes.get(0), nodes.get(10)));
         nodes.get(0).addNeighbor(nodes.get(10));
         nodes.get(10).addNeighbor(nodes.get(0));
-    }
-
-    public BasicTouchListener getEditorInput() {
-        return editor.input;
     }
 
     public void updateNodes(float delta) {

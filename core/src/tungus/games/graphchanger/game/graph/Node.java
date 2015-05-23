@@ -9,7 +9,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Created by Peti on 2015.03.19..
+ * A node in the graph to be conquered by players. Handles/delegates neighbor relations, spawning units
+ * and giving direction to passing units.
  */
 public class Node {
 
@@ -103,7 +104,7 @@ public class Node {
     }
 
     public void set(Node other, Army... armies) {
-        //TODO Investigate setting of spawnChecker..
+        spawnCheck.set(other.spawnCheck);
         if (other.owner == null)
             owner = null;
         else

@@ -3,7 +3,8 @@ package tungus.games.graphchanger.game.graph;
 import com.badlogic.gdx.math.Vector2;
 
 /**
- * Created by Peti on 2015.03.19..
+ * An edge in the graph, connecting two Nodes. (Nodes store their neighbors, so this class is mostly for convenience,
+ * useful e.g. when rendering.)
  */
 class Edge {
 

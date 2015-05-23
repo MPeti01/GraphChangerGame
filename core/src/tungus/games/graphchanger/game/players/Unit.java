@@ -10,8 +10,6 @@ import tungus.games.graphchanger.game.graph.Node;
  */
 class Unit {
 
-    private static final Vector2 temp = new Vector2();
-    private static final float TIME_PER_EDGE = 1.3f;
     private static final float SIZE = 8f;
     private static final float SPEED = 100f;
 
@@ -54,7 +52,7 @@ class Unit {
 
     public void render(SpriteBatch batch, float sinceTick) {
         pos.add(vel.x * sinceTick, vel.y * sinceTick);
-        batch.draw(Assets.Tex.UNIT1.t, pos.x, pos.y, SIZE, SIZE);
+        batch.draw(Assets.Tex.UNITS[owner.id()].t, pos.x, pos.y, SIZE, SIZE);
         pos.sub(vel.x * sinceTick, vel.y * sinceTick);
     }
 

@@ -5,11 +5,14 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 /**
- * Created by Peti on 2015.03.19..
+ * Stores and loads the assets (textures, sounds etc) needed in static members.
  */
 public class Assets {
     public static enum Tex {
-        NODE0, NODE1, NODE2, NODE_SELECTED, LINE, UNIT1;
+        NODE0, NODE1, NODE2, NODE_SELECTED, LINE, UNIT1, UNIT2;
+
+        public static final Tex[] NODES = new Tex[]{NODE1, NODE2};
+        public static final Tex[] UNITS = new Tex[]{UNIT1, UNIT2};
 
         private final String filename;
         public TextureRegion t = null;

@@ -9,7 +9,9 @@ import tungus.games.graphchanger.game.players.Army;
  */
 public class GameState {
     public final Graph graph;
+    @SuppressWarnings("WeakerAccess")
     public final Army p1;
+    @SuppressWarnings("WeakerAccess")
     public final Army p2;
 
     public GameState(Graph graph, Army p1, Army p2) {
