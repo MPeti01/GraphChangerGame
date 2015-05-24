@@ -8,7 +8,7 @@ import tungus.games.graphchanger.game.editor.GraphEditor;
 import java.util.List;
 
 /**
- * Renders the Nodes and Edges in a Graph.
+ * Renders the {@link Node Nodes} and {@link tungus.games.graphchanger.game.graph.Edge Edges} in a Graph.
  */
 class GraphRenderer {
 

@@ -12,7 +12,7 @@ import tungus.games.graphchanger.game.players.Player;
 import java.util.List;
 
 /**
- * Handles the UI for adding edges to the graph or removing them.
+ * Handles the UI for adding edges to the {@link Graph} or removing them.
  * Checks legality using MoveValidator and EdgeIntersector.
  */
 public class GraphEditor {

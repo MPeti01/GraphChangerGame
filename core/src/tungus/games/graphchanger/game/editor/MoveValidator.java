@@ -5,7 +5,7 @@ import tungus.games.graphchanger.game.graph.Node;
 import tungus.games.graphchanger.game.players.Player;
 
 /**
- * Tests whether a player can make certain moves based on Node ownership
+ * Tests whether a player can make certain moves based on {@link Node} ownership
  */
 class MoveValidator {
 

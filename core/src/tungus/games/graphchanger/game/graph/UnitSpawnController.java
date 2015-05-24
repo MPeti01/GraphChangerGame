@@ -1,7 +1,7 @@
 package tungus.games.graphchanger.game.graph;
 
 /**
- * Decides whether the Node it's attached to can spawn a new unit.
+ * Decides whether the {@link Node} it's attached to can spawn a new unit.
  */
 class UnitSpawnController {
 

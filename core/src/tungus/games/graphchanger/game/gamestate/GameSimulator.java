@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Stores a queue of GameStates, updates the game to the head of the queue and handles incoming moves,
+ * Stores a queue of {@link GameState GameStates}, updates the game to the head of the queue and handles incoming moves,
  * resimulating a few ticks if a move happened some ticks earlier than the current one.
  */
 public class GameSimulator implements MoveListener {

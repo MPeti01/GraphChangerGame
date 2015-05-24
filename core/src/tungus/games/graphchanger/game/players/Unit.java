@@ -6,7 +6,7 @@ import tungus.games.graphchanger.Assets;
 import tungus.games.graphchanger.game.graph.Node;
 
 /**
- * One unit moving independently on the map.
+ * A single unit moving independently on the map.
  */
 class Unit {
 

@@ -6,7 +6,7 @@ import tungus.games.graphchanger.game.graph.Graph;
 import tungus.games.graphchanger.game.players.Army;
 
 /**
- * Stores and handles all the objects describing a game state: The graph and two armies.
+ * Stores and handles all the objects describing a game state: The {@link Graph} and two {@link Army Armies}.
  */
 public class GameState {
     public final Graph graph;

@@ -9,8 +9,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * A node in the graph to be conquered by players. Handles/delegates neighbor relations, spawning units
- * and giving direction to passing units.
+ * A node in the graph to be conquered by players. Handles/delegates neighbor relations, spawning
+ * {@link tungus.games.graphchanger.game.players.Unit units} and giving direction to passing units.
  */
 public class Node {
 

@@ -10,7 +10,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Class containing and managing units for one player
+ * Class containing and managing {@link Unit units} for one player
  */
 public class Army {
     private final List<Unit> units = new LinkedList<Unit>();
