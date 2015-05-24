@@ -34,9 +34,9 @@ public class Graph implements NodeList {
         }
         nodes.add(new Node(armies[0], new Vector2(230, 450), 42, this));
 
-        edges.add(new Edge(nodes.get(0), nodes.get(10)));
-        nodes.get(0).addNeighbor(nodes.get(10));
-        nodes.get(10).addNeighbor(nodes.get(0));
+        edges.add(new Edge(nodes.get(0), nodes.get(41)));
+        nodes.get(0).addNeighbor(nodes.get(41));
+        nodes.get(41).addNeighbor(nodes.get(0));
     }
 
     public void updateNodes(float delta) {

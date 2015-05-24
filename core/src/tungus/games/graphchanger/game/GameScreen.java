@@ -13,11 +13,14 @@ import com.badlogic.gdx.math.Vector3;
 import tungus.games.graphchanger.BaseScreen;
 import tungus.games.graphchanger.game.players.Player;
 
+import java.io.InputStream;
+import java.io.OutputStream;
+
 public class GameScreen extends BaseScreen {
 
     private final SpriteBatch batch;
     private final Camera cam;
-    private  final GameController gameController = new GameController(Player.P1);
+    private final GameController gameController;
 
     @SuppressWarnings("FieldCanBeLocal")
     private final InputProcessor input = new InputAdapter() {
@@ -50,6 +53,10 @@ public class GameScreen extends BaseScreen {
     };
 
     public GameScreen(Game game) {
+        this(game, Player.P1, null, null);
+    }
+
+    public GameScreen(Game game, Player player, InputStream in, OutputStream out) {
         super(game);
         cam = new OrthographicCamera(480, 800);
         cam.position.set(cam.viewportWidth / 2, cam.viewportHeight / 2, 0);
@@ -57,6 +64,7 @@ public class GameScreen extends BaseScreen {
         batch = new SpriteBatch();
         batch.setProjectionMatrix(cam.combined);
         Gdx.input.setInputProcessor(input);
+        gameController = new GameController(player, in, out);
     }
 
     @Override

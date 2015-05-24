@@ -1,6 +1,8 @@
 package tungus.games.graphchanger.game.gamestate;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.IntMap;
+import com.badlogic.gdx.utils.TimeUtils;
 import tungus.games.graphchanger.game.editor.GraphEditor;
 import tungus.games.graphchanger.game.editor.Move;
 import tungus.games.graphchanger.game.editor.MoveListener;
@@ -17,7 +19,7 @@ import java.util.List;
  */
 public class GameSimulator implements MoveListener {
     private static final float TICK_TIME = 0.1f; // 10 ticks per sec
-    private static final int STORED_TICKS = 15;
+    private static final int STORED_TICKS = 50;
 
     /**
      * The states of the past STORED_TICKS ticks. Array used for arbitrary element access.
@@ -61,12 +63,13 @@ public class GameSimulator implements MoveListener {
     private float timeSinceTick = 0;
 
     private void tick() {
+        Gdx.app.log("TICK", "Tick " + currentTickNum + " - real time " + TimeUtils.millis());
         // Iterate from oldest frame with a new move added to the latest frame
         for (int tickNum = oldestNewMove; tickNum <= currentTickNum; tickNum++)
         {
             // Get the frame in question, and the one following it
-            GameState old = queue[(queueHead - (currentTickNum-tickNum)) % STORED_TICKS];
-            GameState next = queue[(queueHead - (currentTickNum-tickNum) + 1) % STORED_TICKS];
+            GameState old = queue[(queueHead - (currentTickNum-tickNum) + STORED_TICKS) % STORED_TICKS];
+            GameState next = queue[(queueHead - (currentTickNum-tickNum) + STORED_TICKS + 1) % STORED_TICKS];
 
             next.set(old);
             List<Move> movesToApply = movesEachTick.get(tickNum);
@@ -74,21 +77,28 @@ public class GameSimulator implements MoveListener {
                 for (Move m : movesToApply) {
                     next.applyMove(m);
                 }
-                movesEachTick.remove(tickNum);
             }
             next.update(TICK_TIME);
         }
         currentTickNum++;
+        movesEachTick.remove(currentTickNum - STORED_TICKS);
         queueHead = (queueHead+1) % STORED_TICKS;
         oldestNewMove = currentTickNum;
     }
 
-    public void update(float delta) {
+    /**
+     * Notes a given amount of time passed, and simulates a tick if the last one was more than TICK_TIME ago.
+     * @param delta The time since the method was last called.
+     * @return <code>true</code> if a tick was simulated
+     */
+    public boolean update(float delta) {
         timeSinceTick += delta;
         if (timeSinceTick >= TICK_TIME) {
             tick();
             timeSinceTick -= TICK_TIME;
+            return true;
         }
+        return false;
     }
 
     public float timeSinceTick() {
