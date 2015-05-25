@@ -4,7 +4,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Pool;
 import tungus.games.graphchanger.game.graph.Node;
-import tungus.games.graphchanger.game.graph.NodeList;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -58,7 +57,7 @@ public class Army {
         return player;
     }
 
-    public void set(Army other, NodeList nodes) {
+    public void set(Army other, List<Node> nodes) {
         for (Unit u : units) {
             unitPool.free(u);
         }

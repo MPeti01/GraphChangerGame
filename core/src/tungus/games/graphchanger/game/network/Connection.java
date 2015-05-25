@@ -2,12 +2,12 @@ package tungus.games.graphchanger.game.network;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import tungus.games.graphchanger.game.editor.Move;
-import tungus.games.graphchanger.game.editor.MoveListener;
+import tungus.games.graphchanger.game.graph.editor.Move;
+import tungus.games.graphchanger.game.graph.editor.MoveListener;
 
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayDeque;
+import java.util.LinkedList;
 import java.util.Queue;
 
 /**
@@ -21,7 +21,7 @@ public class Connection implements MoveListener {
     private final MoveEncoder encoder = new MoveEncoder();
     private final IntReaderWriter intSender = new IntReaderWriter();
 
-    private final Queue<Move> received = new ArrayDeque<Move>();
+    private final Queue<Move> received = new LinkedList<Move>();
     private int nextReceivedTick = 0;
 
     private Move toSend = null;

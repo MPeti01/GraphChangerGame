@@ -1,4 +1,4 @@
-package tungus.games.graphchanger.game.editor;
+package tungus.games.graphchanger.game.graph.editor;
 
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector2;
@@ -19,7 +19,7 @@ class EdgeIntersector {
     private boolean hasIntersectingNode;
 
 
-    void setLists(List<Edge> edges, List<Node> nodes) {
+    public EdgeIntersector(List<Node> nodes, List<Edge> edges) {
         this.edges = edges; this.nodes = nodes;
     }
 

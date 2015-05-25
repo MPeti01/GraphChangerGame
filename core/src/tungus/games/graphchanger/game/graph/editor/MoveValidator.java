@@ -1,4 +1,4 @@
-package tungus.games.graphchanger.game.editor;
+package tungus.games.graphchanger.game.graph.editor;
 
 import tungus.games.graphchanger.game.graph.Edge;
 import tungus.games.graphchanger.game.graph.Node;

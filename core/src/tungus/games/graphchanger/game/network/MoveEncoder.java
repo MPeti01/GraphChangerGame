@@ -1,11 +1,11 @@
 package tungus.games.graphchanger.game.network;
 
-import tungus.games.graphchanger.game.editor.Move;
+import tungus.games.graphchanger.game.graph.editor.Move;
 
 /**
  * Encodes a {@link Move} to a 4-byte int and decodes ints that were encoded this way.
  */
-public class MoveEncoder {
+class MoveEncoder {
     public int encode(Move m) {
         if (m == null)
             return 0;

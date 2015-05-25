@@ -3,36 +3,40 @@ package tungus.games.graphchanger.game;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import tungus.games.graphchanger.BasicTouchListener;
-import tungus.games.graphchanger.game.editor.GraphEditor;
-import tungus.games.graphchanger.game.editor.MoveListenerMultiplexer;
 import tungus.games.graphchanger.game.gamestate.GameSimulator;
 import tungus.games.graphchanger.game.gamestate.GameState;
+import tungus.games.graphchanger.game.graph.GraphRenderer;
 import tungus.games.graphchanger.game.network.Connection;
 import tungus.games.graphchanger.game.players.Player;
 
 import java.io.InputStream;
 import java.io.OutputStream;
 
+/**
+ * Coordinates the game's components (network, simulation, rendering, later AI?), dictating when everything should happen.
+ */
 class GameController {
-    private final GraphEditor editor;
     private final Connection connection;
     private final GameSimulator simulator;
+    private final GraphRenderer graphRenderer = new GraphRenderer();
 
+    /**
+     * Constructs a single-player game, currently with a passive other player.
+     * @param player Which side the player controls.
+     * @param level The file to load the level from
+     */
     public GameController(Player player, FileHandle level) {
         this(player, level, null, null);
     }
 
     public GameController(Player player, FileHandle level, InputStream in, OutputStream out) {
-        editor = new GraphEditor(player);
-        simulator = new GameSimulator(editor, level);
         if (in != null && out != null) {
             connection = new Connection(in, out);
-            editor.setMoveListener(new MoveListenerMultiplexer(simulator, connection));
+            simulator = new GameSimulator(level, player, connection);
         } else {
             connection = null;
-            editor.setMoveListener(simulator);
+            simulator = new GameSimulator(level, player);
         }
-        editor.bindGraphInstance(simulator.latestState().graph);
     }
 
     public void render(float delta, SpriteBatch batch) {
@@ -43,12 +47,13 @@ class GameController {
         if (simulator.update(delta) && connection != null) {
             connection.send();
         }
+
         GameState current = simulator.latestState();
-        editor.bindGraphInstance(current.graph);
-        current.render(batch, simulator.timeSinceTick());
+        graphRenderer.render(current.graph, current.editor, batch);
+        current.renderArmies(batch, simulator.timeSinceTick());
     }
 
     public BasicTouchListener getTouchListener() {
-        return editor.input;
+        return simulator.latestState().editorTouchListener();
     }
 }

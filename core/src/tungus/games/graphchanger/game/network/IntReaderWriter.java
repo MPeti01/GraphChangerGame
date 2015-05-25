@@ -10,7 +10,7 @@ import java.io.OutputStream;
  * Writes 32 bit integers to OutputStreams and reads them from InputStreams. <br>
  * (The streams' methods only support writing bytes.)
  */
-public class IntReaderWriter {
+class IntReaderWriter {
     public int read(InputStream in) {
         try {
             int x = in.read();

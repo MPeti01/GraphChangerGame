@@ -3,14 +3,20 @@ package tungus.games.graphchanger.game.graph;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import tungus.games.graphchanger.Assets;
 import tungus.games.graphchanger.DrawUtils;
-import tungus.games.graphchanger.game.editor.GraphEditor;
+import tungus.games.graphchanger.game.graph.editor.GraphEditor;
 
 import java.util.List;
 
 /**
  * Renders the {@link Node Nodes} and {@link tungus.games.graphchanger.game.graph.Edge Edges} in a Graph.
  */
-class GraphRenderer {
+public class GraphRenderer {
+
+    public void render(Graph graph, GraphEditor editor, SpriteBatch batch) {
+        drawEdges(graph.edges, editor, batch);
+        editor.render(batch);
+        drawNodes(graph.nodes, editor, batch);
+    }
 
     public void drawEdges(List<Edge> edges, GraphEditor editor, SpriteBatch batch) {
         for (Edge edge : edges) {

@@ -16,21 +16,27 @@ public class Node {
 
     public static final float RADIUS = 15f;
 
-    private final List<Node> neighbors = new LinkedList<Node>();
+    final List<Node> neighbors = new LinkedList<Node>();
 
-    private final NodeList allNodes;
+    private final List<Node> allNodes;
 
     private Army owner = null;
     private final Vector2 pos;
     private final UnitSpawnController spawnCheck = new UnitSpawnController();
 
+    /**
+     * Stores the neighboring node(s) with the closest neutral/enemy nodes that way. Empty if none reachable.
+     */
+    List<Node> primaryNeighbors = new LinkedList<Node>();
+    private int nextDirectionIndex = 0;
+
     public final int id;
 
-    Node(Vector2 pos, int id, NodeList allNodes) {
+    Node(Vector2 pos, int id, List<Node> allNodes) {
         this(null, pos, id, allNodes);
     }
 
-    Node(Army owner, Vector2 pos, int id, NodeList allNodes) {
+    Node(Army owner, Vector2 pos, int id, List<Node> allNodes) {
         this.pos = pos;
         this.owner = owner;
         this.id = id;
@@ -71,15 +77,20 @@ public class Node {
         }
     }
 
-    //TODO Implement proper unit movement logic
-    private int quickBadSolution = 0;
     public Node destinationFromHere() {
-        if (neighbors.size() == 0)
+        if (!primaryNeighbors.isEmpty())
+            return nextDirection(primaryNeighbors);
+        else
+            return nextDirection(neighbors);
+    }
+
+    public Node nextDirection(List<Node> list) {
+        if (list.size() == 0)
             return this;
-        quickBadSolution++;
-        if (quickBadSolution >= neighbors.size())
-            quickBadSolution = 0;
-        return neighbors.get(quickBadSolution);
+        nextDirectionIndex++;
+        if (nextDirectionIndex >= list.size())
+            nextDirectionIndex = 0;
+        return list.get(nextDirectionIndex);
     }
 
     public void unitPassedBy() {

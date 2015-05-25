@@ -1,22 +1,22 @@
 package tungus.games.graphchanger.game.gamestate;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.IntMap;
-import com.badlogic.gdx.utils.TimeUtils;
-import tungus.games.graphchanger.game.editor.GraphEditor;
-import tungus.games.graphchanger.game.editor.Move;
-import tungus.games.graphchanger.game.editor.MoveListener;
 import tungus.games.graphchanger.game.graph.Graph;
+import tungus.games.graphchanger.game.graph.GraphLoader;
+import tungus.games.graphchanger.game.graph.editor.GraphEditor;
+import tungus.games.graphchanger.game.graph.editor.Move;
+import tungus.games.graphchanger.game.graph.editor.MoveListener;
+import tungus.games.graphchanger.game.graph.editor.MoveListenerMultiplexer;
 import tungus.games.graphchanger.game.players.Army;
 import tungus.games.graphchanger.game.players.Player;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
-import java.util.Scanner;
 
 /**
+ * Handles updating the gameplay. <br>
  * Stores a queue of {@link GameState GameStates}, updates the game to the head of the queue and handles incoming moves,
  * resimulating a few ticks if a move happened some ticks earlier than the current one.
  */
@@ -34,15 +34,24 @@ public class GameSimulator implements MoveListener {
      */
     private final IntMap<List<Move>> movesEachTick = new IntMap<List<Move>>(STORED_TICKS *2);
 
-    public GameSimulator(GraphEditor editor, FileHandle level) {
+    public GameSimulator(FileHandle level, Player player, MoveListener... outsideListeners) {
+        GraphLoader loader = new GraphLoader(level);
         for (int i = 0; i < STORED_TICKS; i++)
         {
             Army p1 = new Army(Player.P1);
             Army p2 = new Army(Player.P2);
-            Scanner sc = new Scanner(level.read());
-            sc.useLocale(Locale.US);
-            Graph g = new Graph(editor, sc, p1, p2);
-            queue[i] = new GameState(g, p1, p2);
+            loader.load(p1, p2);
+            Graph g = new Graph(loader.nodes, loader.edges);
+            GraphEditor editor;
+            if (outsideListeners.length == 0)
+                editor = new GraphEditor(g, player, this);
+            else {
+                MoveListener[] listeners = Arrays.copyOf(outsideListeners, outsideListeners.length+1);
+                listeners[listeners.length-1] = this;
+                MoveListener multiplexer = new MoveListenerMultiplexer(listeners);
+                editor = new GraphEditor(g, player, multiplexer);
+            }
+            queue[i] = new GameState(g, editor, p1, p2);
         }
     }
     public void addMove(Move m) {
@@ -68,7 +77,6 @@ public class GameSimulator implements MoveListener {
     private float timeSinceTick = 0;
 
     private void tick() {
-        Gdx.app.log("TICK", "Tick " + currentTickNum + " - real time " + TimeUtils.millis());
         // Iterate from oldest frame with a new move added to the latest frame
         for (int tickNum = oldestNewMove; tickNum <= currentTickNum; tickNum++)
         {
@@ -116,5 +124,9 @@ public class GameSimulator implements MoveListener {
 
     public int latestTickNum() {
         return currentTickNum;
+    }
+
+    public int earliestStoredTick() {
+        return currentTickNum - STORED_TICKS + 1;
     }
 }

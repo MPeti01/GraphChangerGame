@@ -1,4 +1,4 @@
-package tungus.games.graphchanger.game.editor;
+package tungus.games.graphchanger.game.graph.editor;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
@@ -20,7 +20,7 @@ public class GraphEditor {
     private static enum EditingState {IDLE, ADD, REMOVE}
     private EditingState state = EditingState.IDLE;
 
-    private List<Node> nodes = null;
+    private final List<Node> nodes;
     private final EdgeIntersector cutChecker;
 
     private int startNodeID = -1;
@@ -92,18 +92,11 @@ public class GraphEditor {
         }
     };
 
-    public GraphEditor(Player p) {
+    public GraphEditor(Graph graph, Player p, MoveListener moveListener) {
         this.moveValidator = new MoveValidator(p);
-        cutChecker = new EdgeIntersector();
-    }
-
-    public void setMoveListener(MoveListener listener) {
-        moveListener = listener;
-    }
-
-    public void bindGraphInstance(Graph graph) {
-        nodes = graph.getNodes();
-        cutChecker.setLists(graph.getEdges(), graph.getNodes());
+        this.nodes = graph.nodes;
+        this.moveListener = moveListener;
+        cutChecker = new EdgeIntersector(graph.nodes, graph.edges);
         cutChecker.updateFor(touchStart, touchEnd);
     }
 
@@ -134,5 +127,14 @@ public class GraphEditor {
             DrawUtils.drawLine(batch, touchStart, touchEnd, 5f);
         }
         batch.setColor(1, 1, 1, 1);
+    }
+
+    public void set(GraphEditor other) {
+        state = other.state;
+        startNodeID = other.startNodeID;
+        endNodeID = other.endNodeID;
+        touchStart.set(other.touchStart);
+        touchEnd.set(other.touchEnd);
+        cutChecker.updateFor(touchStart, touchEnd);
     }
 }

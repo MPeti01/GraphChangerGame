@@ -66,14 +66,14 @@ public class LevelGenerator {
     public void genRandomNodes(int nodeCount, float minX, float maxX, float minY, float maxY, float minDist) {
         float width = maxX - minX;
         float height = maxY - minY;
-        Vector2 topright = new Vector2(maxX, maxY);
-        Vector2 bottomleft = new Vector2(minX, minY);
+        Vector2 topRight = new Vector2(maxX, maxY);
+        Vector2 bottomLeft = new Vector2(minX, minY);
 
         while (nodeCount > 0) {
             Vector2 p1 = new Vector2(rand.nextFloat()*width, rand.nextFloat()*height);
-            Vector2 p2 = new Vector2(topright).sub(p1);
+            Vector2 p2 = new Vector2(topRight).sub(p1);
             float minDist2 = minDist*minDist;
-            p1.add(bottomleft);
+            p1.add(bottomLeft);
             if (p1.dst2(p2) < minDist2) {
                 continue;
             }
