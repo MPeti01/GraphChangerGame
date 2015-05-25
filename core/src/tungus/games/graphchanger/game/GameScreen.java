@@ -64,7 +64,7 @@ public class GameScreen extends BaseScreen {
         batch = new SpriteBatch();
         batch.setProjectionMatrix(cam.combined);
         Gdx.input.setInputProcessor(input);
-        gameController = new GameController(player, in, out);
+        gameController = new GameController(player, Gdx.files.internal("levels/random1.lvl"), in, out);
     }
 
     @Override

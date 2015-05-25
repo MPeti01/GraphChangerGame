@@ -1,5 +1,6 @@
 package tungus.games.graphchanger.game;
 
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import tungus.games.graphchanger.BasicTouchListener;
 import tungus.games.graphchanger.game.editor.GraphEditor;
@@ -17,13 +18,13 @@ class GameController {
     private final Connection connection;
     private final GameSimulator simulator;
 
-    public GameController(Player player) {
-        this(player, null, null);
+    public GameController(Player player, FileHandle level) {
+        this(player, level, null, null);
     }
 
-    public GameController(Player player, InputStream in, OutputStream out) {
+    public GameController(Player player, FileHandle level, InputStream in, OutputStream out) {
         editor = new GraphEditor(player);
-        simulator = new GameSimulator(editor, "levels/whatever..");
+        simulator = new GameSimulator(editor, level);
         if (in != null && out != null) {
             connection = new Connection(in, out);
             editor.setMoveListener(new MoveListenerMultiplexer(simulator, connection));
@@ -32,13 +33,6 @@ class GameController {
             editor.setMoveListener(simulator);
         }
         editor.bindGraphInstance(simulator.latestState().graph);
-        /*if (player == Player.P1) {
-            try {
-                Thread.sleep(10000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }*/
     }
 
     public void render(float delta, SpriteBatch batch) {

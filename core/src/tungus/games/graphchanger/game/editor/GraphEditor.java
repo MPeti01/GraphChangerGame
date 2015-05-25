@@ -79,6 +79,7 @@ public class GraphEditor {
                     Node startNode = nodes.get(startNodeID);
                     Node endNode = nodes.get(endNodeID);
                     if (cutChecker.cutCount() == 0
+                            && !cutChecker.hasIntersectingNode()
                             && !startNode.hasNeighbor(endNode) && startNode != endNode
                             && moveValidator.canConnect(startNode, endNode)) {
                         moveListener.addMove(new Move(startNodeID, endNodeID, true));
@@ -102,8 +103,7 @@ public class GraphEditor {
 
     public void bindGraphInstance(Graph graph) {
         nodes = graph.getNodes();
-        List<Edge> edges = graph.getEdges();
-        cutChecker.setEdgeList(edges);
+        cutChecker.setLists(graph.getEdges(), graph.getNodes());
         cutChecker.updateFor(touchStart, touchEnd);
     }
 
@@ -119,7 +119,7 @@ public class GraphEditor {
 
     public void render(SpriteBatch batch) {
         if (state == EditingState.ADD) {
-            if (cutChecker.cutCount() == 0) {
+            if (cutChecker.cutCount() == 0 && !cutChecker.hasIntersectingNode()) {
                 batch.setColor(1, 1, 1, 0.5f);
             } else {
                 batch.setColor(1, 0.5f, 0.5f, 0.5f);

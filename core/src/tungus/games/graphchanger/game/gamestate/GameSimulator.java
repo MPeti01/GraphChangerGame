@@ -1,6 +1,7 @@
 package tungus.games.graphchanger.game.gamestate;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.IntMap;
 import com.badlogic.gdx.utils.TimeUtils;
 import tungus.games.graphchanger.game.editor.GraphEditor;
@@ -12,6 +13,8 @@ import tungus.games.graphchanger.game.players.Player;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.Scanner;
 
 /**
  * Stores a queue of {@link GameState GameStates}, updates the game to the head of the queue and handles incoming moves,
@@ -31,12 +34,14 @@ public class GameSimulator implements MoveListener {
      */
     private final IntMap<List<Move>> movesEachTick = new IntMap<List<Move>>(STORED_TICKS *2);
 
-    public GameSimulator(GraphEditor editor, String level) {
+    public GameSimulator(GraphEditor editor, FileHandle level) {
         for (int i = 0; i < STORED_TICKS; i++)
         {
             Army p1 = new Army(Player.P1);
             Army p2 = new Army(Player.P2);
-            Graph g = new Graph(editor, level, p1, p2);
+            Scanner sc = new Scanner(level.read());
+            sc.useLocale(Locale.US);
+            Graph g = new Graph(editor, sc, p1, p2);
             queue[i] = new GameState(g, p1, p2);
         }
     }

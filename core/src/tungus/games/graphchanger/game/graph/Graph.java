@@ -6,10 +6,7 @@ import tungus.games.graphchanger.game.editor.GraphEditor;
 import tungus.games.graphchanger.game.editor.Move;
 import tungus.games.graphchanger.game.players.Army;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Class representing the game's "map" or graph. Handles/delegates loading from file, updating, rendering.
@@ -22,21 +19,15 @@ public class Graph implements NodeList {
     private final GraphEditor editor;
     private final GraphRenderer renderer = new GraphRenderer();
 
-    public Graph(@SuppressWarnings({"SameParameterValue", "UnusedParameters"}) GraphEditor editor, String s, Army... armies) {
+    public Graph(@SuppressWarnings({"SameParameterValue", "UnusedParameters"}) GraphEditor editor, Scanner sc, Army... armies) {
         this.editor = editor;
-        for (int i = 0; i < 6; i++) {
-            for (int j = 0; j < 7; j++) {
-                if (i == 0 && j == 0)
-                    nodes.add(new Node(armies[1], new Vector2(30 + i * 80, 30 + j * 120), i * 7 + j, this));
-                else
-                    nodes.add(new Node(new Vector2(30 + i * 80, 30 + j * 120), i * 7 + j, this));
-            }
+        while (sc.hasNext()) {
+            int p = sc.nextInt();
+            if (p == 0)
+                nodes.add(new Node(new Vector2(sc.nextFloat(), sc.nextFloat()), nodes.size(), this));
+            else
+                nodes.add(new Node(armies[p-1], new Vector2(sc.nextFloat(), sc.nextFloat()), nodes.size(), this));
         }
-        nodes.add(new Node(armies[0], new Vector2(230, 450), 42, this));
-
-        edges.add(new Edge(nodes.get(0), nodes.get(41)));
-        nodes.get(0).addNeighbor(nodes.get(41));
-        nodes.get(41).addNeighbor(nodes.get(0));
     }
 
     public void updateNodes(float delta) {
