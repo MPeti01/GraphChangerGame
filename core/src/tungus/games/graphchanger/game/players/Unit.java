@@ -56,7 +56,7 @@ class Unit {
         pos.sub(vel.x * sinceTick, vel.y * sinceTick);
     }
 
-    private void kill() {
+    void kill() {
         owner.removeUnit(this);
     }
 }

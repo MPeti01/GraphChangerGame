@@ -10,6 +10,7 @@ import tungus.games.graphchanger.game.graph.editor.MoveListener;
 import tungus.games.graphchanger.game.graph.editor.MoveListenerMultiplexer;
 import tungus.games.graphchanger.game.players.Army;
 import tungus.games.graphchanger.game.players.Player;
+import tungus.games.graphchanger.game.players.UnitCollisionChecker;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,8 +22,8 @@ import java.util.List;
  * resimulating a few ticks if a move happened some ticks earlier than the current one.
  */
 public class GameSimulator implements MoveListener {
-    private static final float TICK_TIME = 0.1f; // 10 ticks per sec
-    private static final int STORED_TICKS = 50;
+    private static final float TICK_TIME = 0.05f; // 20 ticks per sec
+    private static final int STORED_TICKS = 60;
 
     /**
      * The states of the past STORED_TICKS ticks. Array used for arbitrary element access.
@@ -33,6 +34,13 @@ public class GameSimulator implements MoveListener {
      * Moves made after each frame
      */
     private final IntMap<List<Move>> movesEachTick = new IntMap<List<Move>>(STORED_TICKS *2);
+
+    private int currentTickNum = 0;
+    private int queueHead = 0;
+    private int oldestNewMove = 0;
+    private float timeSinceTick = 0;
+
+    private final UnitCollisionChecker unitCollider = new UnitCollisionChecker();
 
     public GameSimulator(FileHandle level, Player player, MoveListener... outsideListeners) {
         GraphLoader loader = new GraphLoader(level);
@@ -54,6 +62,7 @@ public class GameSimulator implements MoveListener {
             queue[i] = new GameState(g, editor, p1, p2);
         }
     }
+
     public void addMove(Move m) {
         addMove(m, currentTickNum);
     }
@@ -71,11 +80,6 @@ public class GameSimulator implements MoveListener {
         oldestNewMove = Math.min(oldestNewMove, tickNum);
     }
 
-    private int currentTickNum = 0;
-    private int queueHead = 0;
-    private int oldestNewMove = 0;
-    private float timeSinceTick = 0;
-
     private void tick() {
         // Iterate from oldest frame with a new move added to the latest frame
         for (int tickNum = oldestNewMove; tickNum <= currentTickNum; tickNum++)
@@ -91,7 +95,7 @@ public class GameSimulator implements MoveListener {
                     next.applyMove(m);
                 }
             }
-            next.update(TICK_TIME);
+            next.update(TICK_TIME, unitCollider);
         }
         currentTickNum++;
         movesEachTick.remove(currentTickNum - STORED_TICKS);

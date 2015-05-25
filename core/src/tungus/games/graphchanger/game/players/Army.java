@@ -12,7 +12,7 @@ import java.util.List;
  * Class containing and managing {@link Unit units} for one player
  */
 public class Army {
-    private final List<Unit> units = new LinkedList<Unit>();
+    final List<Unit> units = new LinkedList<Unit>();
     private final Player player;
     private final Pool<Unit> unitPool = new Pool<Unit>() {
         @Override
