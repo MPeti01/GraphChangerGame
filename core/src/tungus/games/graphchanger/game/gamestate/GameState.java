@@ -46,6 +46,7 @@ public class GameState {
 
     public void update(float delta, UnitCollisionChecker unitCollider) {
         graph.updateNodes(delta);
+        editor.update(delta);
         unitCollider.removeColliders(p1, p2);
         p1.updateUnits(delta);
         p2.updateUnits(delta);

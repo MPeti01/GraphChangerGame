@@ -2,6 +2,7 @@ package tungus.games.graphchanger.game.graph.editor;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import tungus.games.graphchanger.Assets;
 import tungus.games.graphchanger.BasicTouchListener;
 import tungus.games.graphchanger.DrawUtils;
 import tungus.games.graphchanger.game.graph.Edge;
@@ -70,9 +71,11 @@ public class GraphEditor {
             touchEnd.set(touch);
             if (state == EditingState.REMOVE) {
                 cutChecker.updateFor(touchStart, touchEnd);
-                if (cutChecker.cutCount() == 1 && moveValidator.canCut(cutChecker.cutEdge())) {
+                if (cutChecker.cutCount() == 1 && moveValidator.canCut(cutChecker.cutEdge())
+                        && touchStart.dst(touchEnd) <= maxDistance) {
                     Edge edge = cutChecker.cutEdge();
                     moveListener.addMove(new Move(edge.node1.id, edge.node2.id, false));
+                    maxDistance -= touchStart.dst(touchEnd);
                 }
             } else if (state == EditingState.ADD) {
                 if (endNodeID != -1) {
@@ -81,8 +84,10 @@ public class GraphEditor {
                     if (cutChecker.cutCount() == 0
                             && !cutChecker.hasIntersectingNode()
                             && !startNode.hasNeighbor(endNode) && startNode != endNode
-                            && moveValidator.canConnect(startNode, endNode)) {
+                            && moveValidator.canConnect(startNode, endNode)
+                            && startNode.pos().dst(endNode.pos()) <= maxDistance) {
                         moveListener.addMove(new Move(startNodeID, endNodeID, true));
+                        maxDistance -= startNode.pos().dst(endNode.pos());
                     }
                 }
                 startNodeID = -1;
@@ -118,6 +123,9 @@ public class GraphEditor {
                 batch.setColor(1, 0.5f, 0.5f, 0.5f);
             }
             DrawUtils.drawLine(batch, touchStart, touchEnd, 10f);
+            batch.setColor(1, 1, 1, 0.3f);
+            batch.draw(Assets.Tex.NODE0.t, touchStart.x - maxDistance, touchStart.y - maxDistance, 2*maxDistance, 2*maxDistance);
+            batch.setColor(1,1,1,1);
         } else if (state == EditingState.REMOVE) {
             if (cutChecker.cutCount() <= 1) {
                 batch.setColor(1, 0.2f, 0.2f, 1f);
@@ -131,10 +139,18 @@ public class GraphEditor {
 
     public void set(GraphEditor other) {
         state = other.state;
+        maxDistance = other.maxDistance;
         startNodeID = other.startNodeID;
         endNodeID = other.endNodeID;
         touchStart.set(other.touchStart);
         touchEnd.set(other.touchEnd);
         cutChecker.updateFor(touchStart, touchEnd);
+    }
+
+    private float maxDistance = 0;
+    private static final float DISTANCE_INCREASE = 50; // per sec
+    public void update(float delta) {
+        maxDistance += delta * DISTANCE_INCREASE;
+        maxDistance = Math.min(maxDistance, 800);
     }
 }
