@@ -11,7 +11,7 @@ import tungus.games.graphchanger.game.graph.Node;
 class Unit {
 
     private static final float SIZE = 8f;
-    private static final float SPEED = 100f;
+    private static final float SPEED = 50f;
 
     private final Army owner;
     private Node destination;
@@ -52,7 +52,7 @@ class Unit {
 
     public void render(SpriteBatch batch, float sinceTick) {
         pos.add(vel.x * sinceTick, vel.y * sinceTick);
-        batch.draw(Assets.Tex.UNITS[owner.id()].t, pos.x, pos.y, SIZE, SIZE);
+        batch.draw(Assets.Tex.UNITS[owner.id()].t, pos.x-SIZE/2, pos.y-SIZE/2, SIZE, SIZE);
         pos.sub(vel.x * sinceTick, vel.y * sinceTick);
     }
 

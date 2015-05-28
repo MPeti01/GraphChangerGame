@@ -75,7 +75,7 @@ public class GraphEditor {
                         && touchStart.dst(touchEnd) <= maxDistance) {
                     Edge edge = cutChecker.cutEdge();
                     moveListener.addMove(new Move(edge.node1.id, edge.node2.id, false));
-                    maxDistance -= touchStart.dst(touchEnd);
+                    maxDistance = 0;
                 }
             } else if (state == EditingState.ADD) {
                 if (endNodeID != -1) {
@@ -87,7 +87,7 @@ public class GraphEditor {
                             && moveValidator.canConnect(startNode, endNode)
                             && startNode.pos().dst(endNode.pos()) <= maxDistance) {
                         moveListener.addMove(new Move(startNodeID, endNodeID, true));
-                        maxDistance -= startNode.pos().dst(endNode.pos());
+                        maxDistance = 0;
                     }
                 }
                 startNodeID = -1;
@@ -148,7 +148,7 @@ public class GraphEditor {
     }
 
     private float maxDistance = 0;
-    private static final float DISTANCE_INCREASE = 50; // per sec
+    private static final float DISTANCE_INCREASE = 35; // per sec
     public void update(float delta) {
         maxDistance += delta * DISTANCE_INCREASE;
         maxDistance = Math.min(maxDistance, 800);

@@ -5,7 +5,7 @@ package tungus.games.graphchanger.game.graph;
  */
 class UnitSpawnController {
 
-    private static final float SPAWN_RELOAD = 2f;
+    private static final float SPAWN_RELOAD = 6f;
     //private static final int MAX_PASSES_PER_SEC = 3;
 
     // Could be optimized by implementing a deque of floats

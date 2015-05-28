@@ -16,7 +16,7 @@ class MoveValidator {
     }
 
     boolean canCut(Edge edgeToCut) {
-        return edgeToCut.node1.player() == moveMaker && edgeToCut.node2.player() == moveMaker;
+        return edgeToCut.node1.player() == moveMaker || edgeToCut.node2.player() == moveMaker;
     }
 
     boolean canConnect(Node node1, Node node2) {

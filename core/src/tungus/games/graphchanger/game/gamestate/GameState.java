@@ -14,7 +14,6 @@ import tungus.games.graphchanger.game.players.UnitCollisionChecker;
 public class GameState {
     public final Graph graph;
     public final GraphEditor editor;
-    @SuppressWarnings("WeakerAccess")
     public final Army p1;
     @SuppressWarnings("WeakerAccess")
     public final Army p2;

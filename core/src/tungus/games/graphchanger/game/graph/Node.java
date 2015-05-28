@@ -116,6 +116,7 @@ public class Node {
 
     public void set(Node other, Army... armies) {
         spawnCheck.set(other.spawnCheck);
+        nextDirectionIndex = other.nextDirectionIndex;
         if (other.owner == null)
             owner = null;
         else

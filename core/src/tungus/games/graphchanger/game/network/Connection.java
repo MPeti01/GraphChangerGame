@@ -37,7 +37,7 @@ public class Connection implements MoveListener {
                         Move m = encoder.decode(receivedCode);
                         if (m != null) {
                             received.add(m);
-                            Gdx.app.log("NETWORK", "Received code " + receivedCode + ", Move " + m.toString());
+                           // Gdx.app.log("NETWORK", "Received code " + receivedCode + ", Move " + m.toString());
                         }
                         else
                             received.add(NULL_MOVE);
@@ -77,7 +77,7 @@ public class Connection implements MoveListener {
             int code = encoder.encode(toSend);
             intSender.write(out, code);
             if (toSend != null)
-                Gdx.app.log("NETWORK", "Sent Move " + toSend.toString() + " as code " + code);
+                Gdx.app.log("NETWORK", "Tick " + sentTicks + ": Sent Move " + toSend.toString() + " as code " + code);
         } catch (RuntimeException e) {
             throw new GdxRuntimeException("Failed to send move", e);
         }
@@ -95,7 +95,7 @@ public class Connection implements MoveListener {
                 Move m = received.remove();
                 if (m != NULL_MOVE) {
                     listener.addMove(m, nextReceivedTick);
-                    Gdx.app.log("NETWORK", "Processing Move " + m.toString());
+                    Gdx.app.log("NETWORK", "Tick " + nextReceivedTick + ": Processing Move " + m.toString());
                 }
                 nextReceivedTick++;
             }
