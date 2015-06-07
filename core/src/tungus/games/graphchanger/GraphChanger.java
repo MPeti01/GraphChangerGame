@@ -6,8 +6,7 @@ public class GraphChanger extends Game {
 
 	@Override
 	public void create () {
-        Assets.load();
+		Assets.load();
 		setScreen(new NetMPScreen(this));
 	}
-
 }
