@@ -27,7 +27,7 @@ public class DesktopLauncher implements ActionListener{
     JFrame jf = new JFrame("Graph Changer");
     JButton jb = new JButton("Start");
     JTextField jtf_port = new JTextField("12345", 4);
-    JTextField jtf_host = new JTextField("37.143.74.55", 10);
+    JTextField jtf_host = new JTextField("localhost", 10);
 
     public DesktopLauncher(){
         jb.addActionListener(this);

@@ -50,10 +50,11 @@ class Unit {
         }
     }
 
+    private static final Vector2 temppos = new Vector2();
     public void render(SpriteBatch batch, float sinceTick) {
-        pos.add(vel.x * sinceTick, vel.y * sinceTick);
-        batch.draw(Assets.Tex.UNITS[owner.id()].t, pos.x-SIZE/2, pos.y-SIZE/2, SIZE, SIZE);
-        pos.sub(vel.x * sinceTick, vel.y * sinceTick);
+        temppos.set(pos);
+        temppos.add(vel.x * sinceTick, vel.y * sinceTick);
+        batch.draw(Assets.Tex.UNITS[owner.id()].t, temppos.x - SIZE / 2, temppos.y - SIZE / 2, SIZE, SIZE);
     }
 
     void kill() {
