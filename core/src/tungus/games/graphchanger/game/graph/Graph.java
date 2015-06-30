@@ -1,6 +1,7 @@
 package tungus.games.graphchanger.game.graph;
 
-import tungus.games.graphchanger.game.graph.editor.Move;
+import tungus.games.graphchanger.game.graph.node.DirectionCalculator;
+import tungus.games.graphchanger.game.graph.node.Node;
 import tungus.games.graphchanger.game.players.Army;
 
 import java.util.Iterator;
@@ -51,18 +52,20 @@ public class Graph {
         }
     }
 
-    public void applyMove(Move m) {
-        Node n1 = nodes.get(m.node1ID);
-        Node n2 = nodes.get(m.node2ID);
-        if (m.add) {
-            n1.addNeighbor(n2);
-            n2.addNeighbor(n1);
-            edges.add(new Edge(n1, n2));
-        } else {
-            n1.removeNeighbor(n2);
-            n2.removeNeighbor(n1);
-            edges.remove(new Edge(n1, n2));
-        }
+    public void addEdge(int n1, int n2) {
+        Node node1 = nodes.get(n1);
+        Node node2 = nodes.get(n2);
+        node1.addNeighbor(node2);
+        node2.addNeighbor(node1);
+        edges.add(new Edge(node1, node2));
+    }
+
+    public void removeEdge(int n1, int n2) {
+        Node node1 = nodes.get(n1);
+        Node node2 = nodes.get(n2);
+        node1.removeNeighbor(node2);
+        node2.removeNeighbor(node1);
+        edges.remove(new Edge(node1, node2));
     }
 
 }

@@ -15,16 +15,13 @@ import java.util.Queue;
  */
 public class Connection implements MoveListener {
 
-    private static final Move NULL_MOVE = new Move(0,0,false); // Used because Queue doesn't support null elements
     private final InputStream in;
     private final OutputStream out;
-    private final MoveEncoder encoder = new MoveEncoder();
-    private final IntReaderWriter intSender = new IntReaderWriter();
 
     private final Queue<Move> received = new LinkedList<Move>();
     private int nextReceivedTick = 0;
 
-    private Move toSend = null;
+    private Move toSend = Move.NULL;
     private int sentTicks = 0;
 
     private final Thread reader = new Thread() {
@@ -32,15 +29,9 @@ public class Connection implements MoveListener {
         public void run() {
             while (true) {
                 try {
-                    int receivedCode = intSender.read(in);
+                    Move m = Move.read(in);
                     synchronized(received) {
-                        Move m = encoder.decode(receivedCode);
-                        if (m != null) {
-                            received.add(m);
-                           // Gdx.app.log("NETWORK", "Received code " + receivedCode + ", Move " + m.toString());
-                        }
-                        else
-                            received.add(NULL_MOVE);
+                        received.add(m);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -74,14 +65,13 @@ public class Connection implements MoveListener {
      */
     public void send() {
         try {
-            int code = encoder.encode(toSend);
-            intSender.write(out, code);
-            if (toSend != null)
-                Gdx.app.log("NETWORK", "Tick " + sentTicks + ": Sent Move " + toSend.toString() + " as code " + code);
+            toSend.write(out);
+            if (toSend != Move.NULL)
+                Gdx.app.log("NETWORK", "Tick " + sentTicks + ": Sent Move " + toSend.toString());
         } catch (RuntimeException e) {
             throw new GdxRuntimeException("Failed to send move", e);
         }
-        toSend = null;
+        toSend = Move.NULL;
         sentTicks++;
     }
 
@@ -93,7 +83,7 @@ public class Connection implements MoveListener {
         while(!received.isEmpty()) {
             synchronized (received) {
                 Move m = received.remove();
-                if (m != NULL_MOVE) {
+                if (m != Move.NULL) {
                     listener.addMove(m, nextReceivedTick);
                     Gdx.app.log("NETWORK", "Tick " + nextReceivedTick + ": Processing Move " + m.toString());
                 }

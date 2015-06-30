@@ -1,9 +1,10 @@
 package tungus.games.graphchanger.game.graph;
 
 import com.badlogic.gdx.math.Vector2;
+import tungus.games.graphchanger.game.graph.node.Node;
 
 /**
- * An edge in the graph, connecting two {@link Node Nodes}. <br>
+ * An edge in the graph, connecting two {@link tungus.games.graphchanger.game.graph.node.Node Nodes}. <br>
  * (Nodes store their neighbors, so this class is mostly for convenience, useful e.g. when rendering.)
  */
 public class Edge {

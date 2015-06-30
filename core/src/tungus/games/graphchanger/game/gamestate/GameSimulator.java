@@ -4,7 +4,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.IntMap;
 import tungus.games.graphchanger.game.graph.Graph;
 import tungus.games.graphchanger.game.graph.GraphLoader;
-import tungus.games.graphchanger.game.graph.editor.GraphEditor;
+import tungus.games.graphchanger.game.graph.editor.GraphEditingUI;
 import tungus.games.graphchanger.game.graph.editor.Move;
 import tungus.games.graphchanger.game.graph.editor.MoveListener;
 import tungus.games.graphchanger.game.graph.editor.MoveListenerMultiplexer;
@@ -50,14 +50,14 @@ public class GameSimulator implements MoveListener {
             Army p2 = new Army(Player.P2);
             loader.load(p1, p2);
             Graph g = new Graph(loader.nodes, loader.edges);
-            GraphEditor editor;
+            GraphEditingUI editor;
             if (outsideListeners.length == 0)
-                editor = new GraphEditor(g, player, this);
+                editor = new GraphEditingUI(g, player, this);
             else {
                 MoveListener[] listeners = Arrays.copyOf(outsideListeners, outsideListeners.length+1);
                 listeners[listeners.length-1] = this;
                 MoveListener multiplexer = new MoveListenerMultiplexer(listeners);
-                editor = new GraphEditor(g, player, multiplexer);
+                editor = new GraphEditingUI(g, player, multiplexer);
             }
             queue[i] = new GameState(g, editor, p1, p2);
         }

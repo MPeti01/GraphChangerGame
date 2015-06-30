@@ -1,4 +1,4 @@
-package tungus.games.graphchanger.game.graph;
+package tungus.games.graphchanger.game.graph.node;
 
 import com.badlogic.gdx.math.Vector2;
 import tungus.games.graphchanger.game.players.Army;
@@ -32,43 +32,18 @@ public class Node {
 
     public final int id;
 
-    Node(Vector2 pos, int id, List<Node> allNodes) {
+    public Node(Vector2 pos, int id, List<Node> allNodes) {
         this(null, pos, id, allNodes);
     }
 
-    Node(Army owner, Vector2 pos, int id, List<Node> allNodes) {
+    public Node(Army owner, Vector2 pos, int id, List<Node> allNodes) {
         this.pos = pos;
         this.owner = owner;
         this.id = id;
         this.allNodes = allNodes;
     }
 
-    void addNeighbor(int neighborID) {
-        addNeighbor(allNodes.get(neighborID));
-    }
-
-    void addNeighbor(Node newNeighbor) {
-        if (!neighbors.contains(newNeighbor)) {
-            neighbors.add(newNeighbor);
-        }
-    }
-
-    void removeNeighbor(Node neighbor) {
-        neighbors.remove(neighbor);
-    }
-
-    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-    public boolean hasNeighbor(Node other) {
-        return neighbors.contains(other);
-    }
-
-    public boolean hasNeighbor(int otherID) {
-        for (Node o : neighbors)
-            if (o.id == otherID) return true;
-        return false;
-    }
-
-    void update(float delta) {
+    public void update(float delta) {
         if (owner != null) {
             spawnCheck.update(delta);
             if (spawnCheck.shouldSpawn()) {
@@ -93,8 +68,44 @@ public class Node {
         return list.get(nextDirectionIndex);
     }
 
-    public void unitPassedBy() {
-        spawnCheck.unitPassedBy();
+    /**
+     * Notfies the Node that a unit passed it. Asks whether it should be removed.
+     * @param passingArmy The owner of the unit
+     * @return Whether the unit should be removed (i.e. whether it is consumed for conquering/upgrading)
+     */
+    public boolean removeUnitPassedBy(Army passingArmy) {
+        if (passingArmy == owner) {
+            spawnCheck.unitPassedBy();
+            return false;
+        } else {
+            this.owner = passingArmy;
+            return true;
+        }
+    }
+
+    public void addNeighbor(int neighborID) {
+        addNeighbor(allNodes.get(neighborID));
+    }
+
+    public void addNeighbor(Node newNeighbor) {
+        if (!neighbors.contains(newNeighbor)) {
+            neighbors.add(newNeighbor);
+        }
+    }
+
+    public void removeNeighbor(Node neighbor) {
+        neighbors.remove(neighbor);
+    }
+
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
+    public boolean hasNeighbor(Node other) {
+        return neighbors.contains(other);
+    }
+
+    public boolean hasNeighbor(int otherID) {
+        for (Node o : neighbors)
+            if (o.id == otherID) return true;
+        return false;
     }
 
     public Player player() {
@@ -103,15 +114,6 @@ public class Node {
 
     public Vector2 pos() {
         return pos;
-    }
-
-    public void hitBy(Army army) {
-        this.owner = army;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        return (o instanceof Node && ((Node)o).id == id);
     }
 
     public void set(Node other, Army... armies) {
@@ -133,5 +135,14 @@ public class Node {
                 neighbors.add(allNodes.get(n.id));
             }
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return (o instanceof Node && ((Node)o).id == id);
+    }
+
+    public void upgrade() {
+        // TODO Upgrade node
     }
 }

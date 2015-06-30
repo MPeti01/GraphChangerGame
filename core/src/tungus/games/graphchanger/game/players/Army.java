@@ -3,7 +3,7 @@ package tungus.games.graphchanger.game.players;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Pool;
-import tungus.games.graphchanger.game.graph.Node;
+import tungus.games.graphchanger.game.graph.node.Node;
 
 import java.util.LinkedList;
 import java.util.List;

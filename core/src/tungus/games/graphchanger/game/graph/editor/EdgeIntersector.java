@@ -3,7 +3,7 @@ package tungus.games.graphchanger.game.graph.editor;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector2;
 import tungus.games.graphchanger.game.graph.Edge;
-import tungus.games.graphchanger.game.graph.Node;
+import tungus.games.graphchanger.game.graph.node.Node;
 
 import java.util.LinkedList;
 import java.util.List;

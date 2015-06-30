@@ -1,4 +1,4 @@
-package tungus.games.graphchanger.game.graph;
+package tungus.games.graphchanger.game.graph.node;
 
 import tungus.games.graphchanger.game.players.Player;
 
@@ -10,7 +10,7 @@ import java.util.Queue;
  * Calculates where Units should go from each given Node.
  * For each player, runs a breadth-first search from all nodes neighboring enemy or neutral nodes.
  */
-class DirectionCalculator {
+public class DirectionCalculator {
 
     private final int[] distanceFromGoal;
 

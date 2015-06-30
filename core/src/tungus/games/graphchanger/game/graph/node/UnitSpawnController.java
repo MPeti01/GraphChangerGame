@@ -1,4 +1,4 @@
-package tungus.games.graphchanger.game.graph;
+package tungus.games.graphchanger.game.graph.node;
 
 /**
  * Decides whether the {@link Node} it's attached to can spawn a new unit.

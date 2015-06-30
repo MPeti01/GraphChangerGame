@@ -2,12 +2,13 @@ package tungus.games.graphchanger.game.graph;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector2;
+import tungus.games.graphchanger.game.graph.node.Node;
 import tungus.games.graphchanger.game.players.Army;
 
 import java.util.*;
 
 /**
- * Loads the {@link Node Nodes} and {@link Edge Edges} for a {@link Graph} from a file.
+ * Loads the {@link tungus.games.graphchanger.game.graph.node.Node Nodes} and {@link Edge Edges} for a {@link Graph} from a file.
  */
 public class GraphLoader {
 
