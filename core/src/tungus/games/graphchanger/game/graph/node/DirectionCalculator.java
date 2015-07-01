@@ -32,19 +32,19 @@ public class DirectionCalculator {
 
     private void setDirections(List<Node> nodes, Player player) {
         Queue<Node> queue = new LinkedList<Node>();
-        // Fill the queue with nodes bordering neutral/enemy nodes
+        // Fill the queue with nodes where units should go
         for (Node node : nodes) {
             if (node.player() == player) {
-                boolean hasEnemyNeighbor = false;
-                for (Node neighbor : node.neighbors) {
-                    if (neighbor.player() != player) {
-                        hasEnemyNeighbor = true;
-                        node.primaryNeighbors.add(neighbor);
-                        distanceFromGoal[node.id] = 1;
-                    }
-                }
-                if (hasEnemyNeighbor) {
+                if (node.wouldUseUnitFrom(player)) {
                     queue.add(node);
+                    distanceFromGoal[node.id] = 0;
+                } else {
+                    for (Node neighbor : node.neighbors) {
+                        if (neighbor.player() != player) {
+                            queue.add(neighbor);
+                            distanceFromGoal[neighbor.id] = 0;
+                        }
+                    }
                 }
             }
         }
@@ -53,7 +53,7 @@ public class DirectionCalculator {
             Node node = queue.remove();
             for (Node neighbor : node.neighbors) {
                 if (neighbor.player() == player) {
-                    if (neighbor.primaryNeighbors.size() == 0) {
+                    if (distanceFromGoal[neighbor.id] == -1) {
                         // Newly visited node, add to queue
                         neighbor.primaryNeighbors.add(node);
                         distanceFromGoal[neighbor.id] = distanceFromGoal[node.id] + 1;

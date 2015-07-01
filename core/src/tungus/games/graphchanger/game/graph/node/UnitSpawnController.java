@@ -5,33 +5,21 @@ package tungus.games.graphchanger.game.graph.node;
  */
 class UnitSpawnController {
 
-    private static final float SPAWN_RELOAD = 6f;
-    //private static final int MAX_PASSES_PER_SEC = 3;
-
-    // Could be optimized by implementing a deque of floats
-    //private List<Float> passTimes = new LinkedList<Float>();
+    private final Upgrader reloadTeller;
 
     private float time = 0;
-    private float lastSpawn = -SPAWN_RELOAD;
+    private float lastSpawn = 0;
 
-    public void unitPassedBy() {
-        //passTimes.add(time);
+    public UnitSpawnController(Upgrader u) {
+        reloadTeller = u;
     }
 
     public void update(float delta) {
         time += delta;
-        /*for (Iterator<Float> it = passTimes.iterator(); it.hasNext();) {
-            Float pass = it.next();
-            if (pass < time - 1f) {
-                it.remove();
-            } else {
-                break;
-            }
-        }*/
     }
 
     public boolean shouldSpawn() {
-        if (/*passTimes.size() < MAX_PASSES_PER_SEC && */time > lastSpawn + SPAWN_RELOAD) {
+        if (time > lastSpawn + reloadTeller.spawnReload()) {
             lastSpawn = time;
             return true;
         } else {

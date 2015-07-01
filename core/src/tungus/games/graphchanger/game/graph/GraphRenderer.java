@@ -36,6 +36,7 @@ public class GraphRenderer {
                 tex = Assets.Tex.NODE_SELECTED;
             }
             batch.draw(tex.t, node.pos().x - Node.RADIUS, node.pos().y - Node.RADIUS, 2*Node.RADIUS, 2*Node.RADIUS);
+            node.render(batch); //TODO sort this out properly..
         }
     }
 }

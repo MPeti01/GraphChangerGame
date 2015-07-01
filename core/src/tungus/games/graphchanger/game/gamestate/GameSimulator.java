@@ -2,14 +2,12 @@ package tungus.games.graphchanger.game.gamestate;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.IntMap;
-import tungus.games.graphchanger.game.graph.Edge;
 import tungus.games.graphchanger.game.graph.Graph;
 import tungus.games.graphchanger.game.graph.GraphLoader;
 import tungus.games.graphchanger.game.graph.editor.GraphEditingUI;
 import tungus.games.graphchanger.game.graph.editor.Move;
 import tungus.games.graphchanger.game.graph.editor.MoveListener;
 import tungus.games.graphchanger.game.graph.editor.MoveListenerMultiplexer;
-import tungus.games.graphchanger.game.graph.node.Node;
 import tungus.games.graphchanger.game.players.Army;
 import tungus.games.graphchanger.game.players.Player;
 import tungus.games.graphchanger.game.players.UnitCollisionChecker;
@@ -48,12 +46,8 @@ public class GameSimulator implements MoveListener {
         GraphLoader loader = new GraphLoader(level);
         for (int i = 0; i < STORED_TICKS; i++)
         {
-            Army p1 = new Army(Player.P1);
-            Army p2 = new Army(Player.P2);
-            // Make sure no Node instances are shared between states
-            loader.load(p1, p2);
-            // Make sure no List<Node> instances are shared between states
-            Graph g = new Graph(new ArrayList<Node>(loader.nodes), new ArrayList<Edge>(loader.edges));
+            loader.load(); // Make sure no Node and List<Node> instances are shared between states
+            Graph g = new Graph(loader.nodes, loader.edges);
             GraphEditingUI editor;
             if (outsideListeners.length == 0)
                 editor = new GraphEditingUI(g, player, this);
@@ -63,7 +57,7 @@ public class GameSimulator implements MoveListener {
                 MoveListener multiplexer = new MoveListenerMultiplexer(listeners);
                 editor = new GraphEditingUI(g, player, multiplexer);
             }
-            queue[i] = new GameState(g, editor, p1, p2);
+            queue[i] = new GameState(g, editor, new Army(Player.P1), new Army(Player.P2));
         }
     }
 

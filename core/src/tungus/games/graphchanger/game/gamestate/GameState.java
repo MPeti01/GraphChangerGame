@@ -26,14 +26,14 @@ public class GameState {
     }
 
     public void set(GameState other) {
-        graph.set(other.graph, p1, p2);
+        graph.set(other.graph);
         editor.set(other.editor);
         p1.set(other.p1, graph.nodes);
         p2.set(other.p2, graph.nodes);
     }
 
     public void set(Graph graph, GraphEditingUI editor, Army p1, Army p2) {
-        this.graph.set(graph, this.p1, this.p2);
+        this.graph.set(graph);
         this.editor.set(editor);
         this.p1.set(p1, this.graph.nodes);
         this.p2.set(p2, this.graph.nodes);
@@ -44,7 +44,7 @@ public class GameState {
     }
 
     public void update(float delta, UnitCollisionChecker unitCollider) {
-        graph.updateNodes(delta);
+        graph.updateNodes(delta, p1, p2);
         editor.update(delta);
         unitCollider.removeColliders(p1, p2);
         p1.updateUnits(delta);

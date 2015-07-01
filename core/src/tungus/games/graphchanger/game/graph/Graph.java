@@ -23,16 +23,16 @@ public class Graph {
         directionCalculator = new DirectionCalculator(this.nodes.size());
     }
 
-    public void updateNodes(float delta) {
+    public void updateNodes(float delta, Army... armies) {
         directionCalculator.setDirections(nodes);
         for (Node n : nodes) {
-            n.update(delta);
+            n.update(delta, armies);
         }
     }
 
-    public void set(Graph other, Army p1, Army p2) {
+    public void set(Graph other) {
         for (int i = 0; i < nodes.size(); i++) {
-            nodes.get(i).set(other.nodes.get(i), p1, p2);
+            nodes.get(i).set(other.nodes.get(i));
         }
         setEdges(other.edges);
     }

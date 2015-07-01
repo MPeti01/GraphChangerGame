@@ -1,5 +1,6 @@
 package tungus.games.graphchanger.game.graph.node;
 
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import tungus.games.graphchanger.game.players.Army;
 import tungus.games.graphchanger.game.players.Player;
@@ -20,9 +21,10 @@ public class Node {
 
     private final List<Node> allNodes;
 
-    private Army owner = null;
     private final Vector2 pos;
-    private final UnitSpawnController spawnCheck = new UnitSpawnController();
+    private final CaptureHandler captureHandler;
+    private final Upgrader upgrader;
+    private final UnitSpawnController spawnCheck;
 
     /**
      * Stores the neighboring node(s) with the closest neutral/enemy nodes that way. Empty if none reachable.
@@ -36,18 +38,21 @@ public class Node {
         this(null, pos, id, allNodes);
     }
 
-    public Node(Army owner, Vector2 pos, int id, List<Node> allNodes) {
+    public Node(Player owner, Vector2 pos, int id, List<Node> allNodes) {
         this.pos = pos;
-        this.owner = owner;
         this.id = id;
         this.allNodes = allNodes;
+
+        captureHandler = new CaptureHandler(owner, pos);
+        upgrader = new Upgrader(captureHandler, pos);
+        spawnCheck = new UnitSpawnController(upgrader);
     }
 
-    public void update(float delta) {
-        if (owner != null) {
+    public void update(float delta, Army... armies) {
+        if (captureHandler.owner() != null) {
             spawnCheck.update(delta);
             if (spawnCheck.shouldSpawn()) {
-                owner.addUnit(this, destinationFromHere());
+                armies[captureHandler.owner().ordinal()].addUnit(this, destinationFromHere());
             }
         }
     }
@@ -70,17 +75,21 @@ public class Node {
 
     /**
      * Notfies the Node that a unit passed it. Asks whether it should be removed.
-     * @param passingArmy The owner of the unit
+     * @param passingPlayer The owner of the unit
      * @return Whether the unit should be removed (i.e. whether it is consumed for conquering/upgrading)
      */
-    public boolean removeUnitPassedBy(Army passingArmy) {
-        if (passingArmy == owner) {
-            spawnCheck.unitPassedBy();
-            return false;
-        } else {
-            this.owner = passingArmy;
+    public boolean usesUnitPassingFrom(Player passingPlayer) {
+        if (captureHandler.usesUnitPassingFrom(passingPlayer)) {
             return true;
+        } else if (upgrader.usesUnitPassingFrom(passingPlayer)) {
+            return true;
+        } else {
+            return false;
         }
+    }
+
+    public boolean wouldUseUnitFrom(Player p) {
+        return captureHandler.wouldUseUnitFrom(p) || upgrader.wouldUseUnitFrom(p);
     }
 
     public void addNeighbor(int neighborID) {
@@ -108,21 +117,19 @@ public class Node {
         return false;
     }
 
-    public Player player() {
-        return owner == null ? null : owner.player();
-    }
-
     public Vector2 pos() {
         return pos;
     }
 
-    public void set(Node other, Army... armies) {
+    public Player player() {
+        return captureHandler.owner();
+    }
+
+    public void set(Node other) {
         spawnCheck.set(other.spawnCheck);
+        captureHandler.set(other.captureHandler);
         nextDirectionIndex = other.nextDirectionIndex;
-        if (other.owner == null)
-            owner = null;
-        else
-            owner = armies[other.owner.id()];
+
         Iterator<Node> it = neighbors.iterator();
         while (it.hasNext()) {
             Node neighbor = it.next();
@@ -137,12 +144,20 @@ public class Node {
         }
     }
 
+    public void render(SpriteBatch batch) {
+        if (captureHandler.isUnderAttack())
+            captureHandler.renderBar(batch);
+        if (upgrader.upgrading()) {
+            upgrader.render(batch);
+        }
+    }
+
     @Override
     public boolean equals(Object o) {
         return (o instanceof Node && ((Node)o).id == id);
     }
 
     public void upgrade() {
-        // TODO Upgrade node
+        upgrader.startUpgrade();
     }
 }

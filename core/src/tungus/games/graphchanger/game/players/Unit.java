@@ -38,7 +38,7 @@ class Unit {
     public void update(float delta) {
         if (pos.dst2(destination.pos()) < SPEED * SPEED * delta*delta) {
             pos.set(destination.pos());
-            if (destination.removeUnitPassedBy(owner)) {
+            if (destination.usesUnitPassingFrom(owner.player())) {
                 kill();
             } else {
                 setDestination(destination.destinationFromHere());
