@@ -15,11 +15,12 @@ public class CaptureHandler {
     private Player attacker = null;
     private int captureProgress = 0;
 
-    public Upgrader upgrader; // TODO Fix this horrible implementation
+    private Upgrader upgrader;
     private final BarDrawer bar;
 
-    public CaptureHandler(Player initialOwner, Vector2 pos) {
+    public CaptureHandler(Player initialOwner, Vector2 pos, Upgrader up) {
         owner = initialOwner;
+        upgrader = up;
         bar = new BarDrawer(pos.cpy().add(-BAR_LENGTH/2, BAR_DIST_ABOVE), BAR_LENGTH, BAR_WIDTH);
     }
 
@@ -38,6 +39,7 @@ public class CaptureHandler {
         if (captureProgress == upgrader.unitsToCapture()) {
             owner = attacker;
             captureProgress = 0;
+            upgrader.setOwner(attacker);
         }
         return true;
     }

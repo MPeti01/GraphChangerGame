@@ -2,6 +2,7 @@ package tungus.games.graphchanger.game.graph.node;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import tungus.games.graphchanger.Assets;
 import tungus.games.graphchanger.game.players.Army;
 import tungus.games.graphchanger.game.players.Player;
 
@@ -15,7 +16,7 @@ import java.util.List;
  */
 public class Node {
 
-    public static float RADIUS = 21.5f; //TODO re-final
+    public static final float RADIUS = 21.5f;
 
     final List<Node> neighbors = new LinkedList<Node>();
 
@@ -43,10 +44,9 @@ public class Node {
         this.id = id;
         this.allNodes = allNodes;
 
-        captureHandler = new CaptureHandler(owner, pos);
-        upgrader = new Upgrader(captureHandler, pos);
-        captureHandler.upgrader = upgrader;
+        upgrader = new Upgrader(owner, pos);
         spawnCheck = new UnitSpawnController(upgrader);
+        captureHandler = new CaptureHandler(owner, pos, upgrader);
     }
 
     public Node(Node n, List<Node> allNodes) {
@@ -150,7 +150,12 @@ public class Node {
         }
     }
 
-    public void render(SpriteBatch batch) {
+    public void render(SpriteBatch batch, boolean isSelected) {
+        Assets.Tex tex = (player() == null ? Assets.Tex.NODE0 : Assets.Tex.NODES[player().ordinal()][upgrader.level]);
+        if (isSelected) {
+            tex = Assets.Tex.NODE_SELECTED;
+        }
+        batch.draw(tex.t, pos.x - Node.RADIUS, pos.y - Node.RADIUS, 2*Node.RADIUS, 2*Node.RADIUS);
         if (captureHandler.isUnderAttack())
             captureHandler.renderBar(batch);
         if (upgrader.upgrading()) {

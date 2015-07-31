@@ -1,7 +1,6 @@
 package tungus.games.graphchanger.game.graph;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import tungus.games.graphchanger.Assets;
 import tungus.games.graphchanger.DrawUtils;
 import tungus.games.graphchanger.game.graph.editor.GraphEditingUI;
 import tungus.games.graphchanger.game.graph.node.Node;
@@ -31,12 +30,7 @@ public class GraphRenderer {
 
     public void drawNodes(List<Node> nodes, GraphEditingUI editor, SpriteBatch batch) {
         for (Node node : nodes) {
-            Assets.Tex tex = (node.player() == null ? Assets.Tex.NODE0 : Assets.Tex.NODES[node.player().ordinal()][node.upgrader.level]);
-            if (editor.isSelected(node)) {
-                tex = Assets.Tex.NODE_SELECTED;
-            }
-            batch.draw(tex.t, node.pos().x - Node.RADIUS, node.pos().y - Node.RADIUS, 2*Node.RADIUS, 2*Node.RADIUS);
-            node.render(batch); //TODO sort this out properly..
+            node.render(batch, editor.isSelected(node));
         }
     }
 }
