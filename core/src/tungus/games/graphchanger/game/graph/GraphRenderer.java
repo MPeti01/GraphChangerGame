@@ -31,7 +31,7 @@ public class GraphRenderer {
 
     public void drawNodes(List<Node> nodes, GraphEditingUI editor, SpriteBatch batch) {
         for (Node node : nodes) {
-            Assets.Tex tex = (node.player() == null ? Assets.Tex.NODE0 : Assets.Tex.NODES[node.player().ordinal()]);
+            Assets.Tex tex = (node.player() == null ? Assets.Tex.NODE0 : Assets.Tex.NODES[node.player().ordinal()][node.upgrader.level]);
             if (editor.isSelected(node)) {
                 tex = Assets.Tex.NODE_SELECTED;
             }

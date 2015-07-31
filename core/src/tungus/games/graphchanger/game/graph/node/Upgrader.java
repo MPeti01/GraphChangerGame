@@ -5,16 +5,17 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import tungus.games.graphchanger.game.players.Player;
 
-class Upgrader {
+public class Upgrader {
 
-    private static final float[] SPAWN_TIMES = new float[]{3.5f, 1.5f, 1f};
-    private static final int[] UPGRADE_COSTS =   new int[]{0,   8,   15};
+    public static final float[] SPAWN_TIMES = new float[]{3.6f, 1.2f, 0.4f};
+    public static final int[] UPGRADE_COSTS =   new int[]{0,  20,   60};
+    public static final int[] UNITS_TO_CAP =   new int[]{4,  10,   25};
 
     private static final float BAR_LENGTH = 50;
     private static final float BAR_WIDTH = 7;
     private static final float BAR_DIST_BELOW = 25;
 
-    private int level = 0;
+    public int level = 0;
     private int unitsNeeded = 0;
     private final BarDrawer bar;
     private final CaptureHandler captureHandler;
@@ -26,7 +27,7 @@ class Upgrader {
     }
 
     public void startUpgrade() {
-        if (level < UPGRADE_COSTS.length-1)
+        if (level < UPGRADE_COSTS.length-1 && !upgrading())
             unitsNeeded = UPGRADE_COSTS[level+1];
     }
 
@@ -57,5 +58,14 @@ class Upgrader {
         if (unitsNeeded > 0) {
             bar.draw(batch, 1 - (float)unitsNeeded / UPGRADE_COSTS[level+1]);
         }
+    }
+
+    public void set(Upgrader other) {
+        level = other.level;
+        unitsNeeded = other.unitsNeeded;
+    }
+
+    public int unitsToCapture() {
+        return UNITS_TO_CAP[level];
     }
 }

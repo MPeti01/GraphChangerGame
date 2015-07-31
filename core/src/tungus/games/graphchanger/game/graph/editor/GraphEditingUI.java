@@ -96,12 +96,26 @@ public class GraphEditingUI {
             }
             state = EditingState.IDLE;
         }
+
+        @Override
+        public void doubleTap(Vector2 touch) {
+            for (Node n : nodes) {
+                if (touch.dst2(n.pos()) < Node.RADIUS * Node.RADIUS) {
+                    if (n.player() == p) {
+                        moveListener.addMove(new UpgradeNodeMove(n.id));
+                    }
+                    break;
+                }
+            }
+        }
     };
 
+    private final Player p; //TODO Solve properly.. along with this whole damn class
     public GraphEditingUI(Graph graph, Player p, MoveListener moveListener) {
         this.moveValidator = new MoveValidator(p);
         this.nodes = graph.nodes;
         this.moveListener = moveListener;
+        this.p = p;
         cutChecker = new EdgeIntersector(graph.nodes, graph.edges);
         cutChecker.updateFor(touchStart, touchEnd);
     }
@@ -149,7 +163,7 @@ public class GraphEditingUI {
     }
 
     private float maxDistance = 0;
-    private static final float DISTANCE_INCREASE = 35; // per sec
+    public static float DISTANCE_INCREASE = 35; // per sec
     public void update(float delta) {
         maxDistance += delta * DISTANCE_INCREASE;
         maxDistance = Math.min(maxDistance, 800);

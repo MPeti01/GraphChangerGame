@@ -1,4 +1,4 @@
-package tungus.games.graphchanger;
+package tungus.games.graphchanger.desktop;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -8,6 +8,7 @@ import com.badlogic.gdx.net.ServerSocketHints;
 import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.net.SocketHints;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import tungus.games.graphchanger.BaseScreen;
 import tungus.games.graphchanger.game.GameScreen;
 import tungus.games.graphchanger.game.players.Player;
 

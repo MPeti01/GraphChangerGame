@@ -8,10 +8,10 @@ import tungus.games.graphchanger.game.graph.node.Node;
 /**
  * A single unit moving independently on the map.
  */
-class Unit {
+public class Unit {
 
     private static final float SIZE = 8f;
-    private static final float SPEED = 50f;
+    public static float SPEED = 50f;
 
     private final Army owner;
     private Node destination;

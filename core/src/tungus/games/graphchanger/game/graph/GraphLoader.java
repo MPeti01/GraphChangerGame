@@ -37,4 +37,13 @@ public class GraphLoader {
                 nodes.add(new Node(Player.values()[p-1], new Vector2(sc.nextFloat(), sc.nextFloat()), nodes.size(), nodes));
         }
     }
+
+    public void duplicate() {
+        List<Node> newNodes = new ArrayList<Node>();
+        for (Node n : nodes) {
+            newNodes.add(new Node(n, newNodes));
+        }
+        nodes = newNodes;
+        //TODO Edges as well!
+    }
 }

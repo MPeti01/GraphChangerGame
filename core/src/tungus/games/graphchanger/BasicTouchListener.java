@@ -9,4 +9,5 @@ public interface BasicTouchListener {
     public void onDown(Vector2 touch);
     public void onDrag(Vector2 touch);
     public void onUp(Vector2 touch);
+    public void doubleTap(Vector2 touch);
 }

@@ -29,6 +29,7 @@ public class GameSimulator implements MoveListener {
      * The states of the past STORED_TICKS ticks. Array used for arbitrary element access.
      */
     private final GameState[] queue = new GameState[STORED_TICKS];
+    //TODO Maybe eventually encapsulate the queue? Could be prettier most likely
 
     /**
      * Moves made after each frame
@@ -44,9 +45,9 @@ public class GameSimulator implements MoveListener {
 
     public GameSimulator(FileHandle level, Player player, MoveListener... outsideListeners) {
         GraphLoader loader = new GraphLoader(level);
+        loader.load();
         for (int i = 0; i < STORED_TICKS; i++)
         {
-            loader.load(); // Make sure no Node and List<Node> instances are shared between states
             Graph g = new Graph(loader.nodes, loader.edges);
             GraphEditingUI editor;
             if (outsideListeners.length == 0)
@@ -58,6 +59,7 @@ public class GameSimulator implements MoveListener {
                 editor = new GraphEditingUI(g, player, multiplexer);
             }
             queue[i] = new GameState(g, editor, new Army(Player.P1), new Army(Player.P2));
+            loader.duplicate();
         }
     }
 

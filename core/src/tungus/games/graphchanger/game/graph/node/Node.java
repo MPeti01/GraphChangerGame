@@ -15,7 +15,7 @@ import java.util.List;
  */
 public class Node {
 
-    public static final float RADIUS = 15f;
+    public static float RADIUS = 21.5f; //TODO re-final
 
     final List<Node> neighbors = new LinkedList<Node>();
 
@@ -23,7 +23,7 @@ public class Node {
 
     private final Vector2 pos;
     private final CaptureHandler captureHandler;
-    private final Upgrader upgrader;
+    public final Upgrader upgrader;
     private final UnitSpawnController spawnCheck;
 
     /**
@@ -45,7 +45,12 @@ public class Node {
 
         captureHandler = new CaptureHandler(owner, pos);
         upgrader = new Upgrader(captureHandler, pos);
+        captureHandler.upgrader = upgrader;
         spawnCheck = new UnitSpawnController(upgrader);
+    }
+
+    public Node(Node n, List<Node> allNodes) {
+        this(n.player(), n.pos, n.id, allNodes);
     }
 
     public void update(float delta, Army... armies) {
@@ -128,6 +133,7 @@ public class Node {
     public void set(Node other) {
         spawnCheck.set(other.spawnCheck);
         captureHandler.set(other.captureHandler);
+        upgrader.set(other.upgrader);
         nextDirectionIndex = other.nextDirectionIndex;
 
         Iterator<Node> it = neighbors.iterator();

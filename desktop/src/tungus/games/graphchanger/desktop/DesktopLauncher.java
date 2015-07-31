@@ -3,7 +3,6 @@ package tungus.games.graphchanger.desktop;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import tungus.games.graphchanger.GraphChanger;
-import tungus.games.graphchanger.NetMPScreen;
 
 import javax.swing.*;
 import java.awt.*;
@@ -38,6 +37,7 @@ public class DesktopLauncher implements ActionListener{
         jf.add(jtf_port);
         jf.add(jb);
         jf.setVisible(true);
+        GraphChanger.mpScreen = NetMPScreen.class;
     }
 
     public static void main(String[] arg) {
