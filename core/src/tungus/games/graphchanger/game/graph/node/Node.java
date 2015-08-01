@@ -24,13 +24,13 @@ public class Node {
 
     private final Vector2 pos;
     private final CaptureHandler captureHandler;
-    public final Upgrader upgrader;
+    private final Upgrader upgrader;
     private final UnitSpawnController spawnCheck;
 
     /**
      * Stores the neighboring node(s) with the closest neutral/enemy nodes that way. Empty if none reachable.
      */
-    List<Node> primaryNeighbors = new LinkedList<Node>();
+    final List<Node> primaryNeighbors = new LinkedList<Node>();
     private int nextDirectionIndex = 0;
 
     public final int id;
@@ -69,7 +69,7 @@ public class Node {
             return nextDirection(neighbors);
     }
 
-    public Node nextDirection(List<Node> list) {
+    private Node nextDirection(List<Node> list) {
         if (list.size() == 0)
             return this;
         nextDirectionIndex++;

@@ -1,4 +1,4 @@
-package tungus.games.graphchanger.game.graph.editor;
+package tungus.games.graphchanger.game.graph.editing.moves;
 
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import tungus.games.graphchanger.game.graph.Graph;
@@ -39,7 +39,7 @@ public abstract class Move {
      * Used to represent no Move made in a tick in communication
      * (Technical reason: Queue doesn't support actual null elements...)
      */
-    public static Move NULL = new Move() {
+    public static final Move NULL = new Move() {
         @Override
         public void applyTo(Graph graph) {}
         @Override

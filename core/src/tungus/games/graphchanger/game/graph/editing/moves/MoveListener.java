@@ -1,4 +1,4 @@
-package tungus.games.graphchanger.game.graph.editor;
+package tungus.games.graphchanger.game.graph.editing.moves;
 
 /**
  * Accepts a {@link Move}, possibly happened at a given earlier time.

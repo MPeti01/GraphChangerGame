@@ -2,8 +2,8 @@ package tungus.games.graphchanger.game.network;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import tungus.games.graphchanger.game.graph.editor.Move;
-import tungus.games.graphchanger.game.graph.editor.MoveListener;
+import tungus.games.graphchanger.game.graph.editing.moves.Move;
+import tungus.games.graphchanger.game.graph.editing.moves.MoveListener;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -24,6 +24,7 @@ public class Connection implements MoveListener {
     private Move toSend = Move.NULL;
     private int sentTicks = 0;
 
+    @SuppressWarnings("FieldCanBeLocal")
     private final Thread reader = new Thread() {
         @Override
         public void run() {

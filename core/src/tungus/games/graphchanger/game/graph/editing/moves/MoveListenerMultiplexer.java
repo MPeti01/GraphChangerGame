@@ -1,4 +1,4 @@
-package tungus.games.graphchanger.game.graph.editor;
+package tungus.games.graphchanger.game.graph.editing.moves;
 
 /**
  * Delegates to a list of other MoveListeners. 

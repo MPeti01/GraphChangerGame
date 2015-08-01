@@ -1,4 +1,4 @@
-package tungus.games.graphchanger.game.graph.editor;
+package tungus.games.graphchanger.game.graph.editing.moves;
 
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import tungus.games.graphchanger.game.graph.Graph;
@@ -6,34 +6,28 @@ import tungus.games.graphchanger.game.graph.Graph;
 import java.io.IOException;
 import java.io.OutputStream;
 
-class RemoveEdgeMove extends Move {
-    public static final int TYPE_ID = 2;
-    private final int node1, node2;
+public class UpgradeNodeMove extends Move {
+    public static final int TYPE_ID = 3;
+    private final int node;
 
-    public RemoveEdgeMove(int node1, int node2) {
-        this.node1 = node1;
-        this.node2 = node2;
+    public UpgradeNodeMove(int node) {
+        this.node = node;
     }
 
     @Override
     public void applyTo(Graph graph) {
-        graph.removeEdge(node1, node2);
+        graph.nodes.get(node).upgrade();
     }
 
     @Override
     public void write(OutputStream out) {
         try {
             out.write(TYPE_ID);
-            out.write(node1);
-            out.write(node2);
+            out.write(node);
         } catch (IOException e) {
             e.printStackTrace();
             throw new GdxRuntimeException("Failed to write Move");
         }
-    }
 
-    @Override
-    public String toString() {
-        return "[Cut " + node1 + " and " + node2 + "]";
     }
 }

@@ -1,4 +1,4 @@
-package tungus.games.graphchanger.game.graph.editor;
+package tungus.games.graphchanger.game.graph.editing.moves;
 
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import tungus.games.graphchanger.game.graph.Graph;
@@ -6,7 +6,7 @@ import tungus.games.graphchanger.game.graph.Graph;
 import java.io.IOException;
 import java.io.OutputStream;
 
-class AddEdgeMove extends Move {
+public class AddEdgeMove extends Move {
 
     public static final int TYPE_ID = 1;
     private final int node1, node2;

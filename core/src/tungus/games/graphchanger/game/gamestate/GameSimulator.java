@@ -3,14 +3,12 @@ package tungus.games.graphchanger.game.gamestate;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.IntMap;
 import tungus.games.graphchanger.game.graph.GraphLoader;
-import tungus.games.graphchanger.game.graph.editor.Move;
-import tungus.games.graphchanger.game.graph.editor.MoveListener;
-import tungus.games.graphchanger.game.graph.editor.MoveListenerMultiplexer;
+import tungus.games.graphchanger.game.graph.editing.moves.Move;
+import tungus.games.graphchanger.game.graph.editing.moves.MoveListener;
 import tungus.games.graphchanger.game.players.Player;
 import tungus.games.graphchanger.game.players.UnitCollisionChecker;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -36,21 +34,9 @@ public class GameSimulator implements MoveListener {
 
     private final UnitCollisionChecker unitCollider = new UnitCollisionChecker();
 
-    public GameSimulator(FileHandle level, Player player, MoveListener... outsideListeners) {
+    public GameSimulator(FileHandle level, Player player) {
         GraphLoader loader = new GraphLoader(level);
-        queue = new StateQueue(loader, addThisTo(outsideListeners), player, STORED_TICKS);
-    }
-
-    private MoveListener addThisTo(MoveListener[] outsideListeners) {
-        MoveListener listener;
-        if (outsideListeners.length == 0) {
-            listener = this;
-        } else {
-            MoveListener[] listeners = Arrays.copyOf(outsideListeners, outsideListeners.length+1);
-            listeners[listeners.length-1] = this;
-            listener = new MoveListenerMultiplexer(listeners);
-        }
-        return listener;
+        queue = new StateQueue(loader, STORED_TICKS);
     }
 
     public void addMove(Move m) {
@@ -76,7 +62,7 @@ public class GameSimulator implements MoveListener {
         {
             // Get the frame in question, and the one following it
             GameState old = queue.atDepth(currentTickNum-tickNum);
-            GameState next = queue.atDepth(currentTickNum-tickNum);
+            GameState next = queue.atDepth(currentTickNum-tickNum-1);
 
             next.set(old);
             List<Move> movesToApply = movesEachTick.get(tickNum);
@@ -87,6 +73,7 @@ public class GameSimulator implements MoveListener {
             }
             next.update(TICK_TIME, unitCollider);
         }
+        queue.rotate();
         currentTickNum++;
         movesEachTick.remove(currentTickNum - STORED_TICKS);
         oldestNewMove = currentTickNum;
@@ -115,11 +102,4 @@ public class GameSimulator implements MoveListener {
         return queue.atDepth(0);
     }
 
-    public int latestTickNum() {
-        return currentTickNum;
-    }
-
-    public int earliestStoredTick() {
-        return currentTickNum - STORED_TICKS + 1;
-    }
 }

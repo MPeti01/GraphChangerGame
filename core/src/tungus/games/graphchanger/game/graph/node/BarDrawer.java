@@ -10,7 +10,8 @@ class BarDrawer {
     private final Vector2 leftEnd;
     private final Vector2 rightEnd;
     private final float length, width;
-    private Color leftColor, rightColor;
+    private final Color leftColor;
+    private final Color rightColor;
 
     public BarDrawer(Vector2 middleLeft, float length, float width) {
         this.leftEnd = middleLeft;

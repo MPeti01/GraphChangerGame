@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import tungus.games.graphchanger.game.players.Player;
 
-public class CaptureHandler {
+class CaptureHandler {
 
     private static final float BAR_LENGTH = 50;
     private static final float BAR_WIDTH = 7;
@@ -15,6 +15,7 @@ public class CaptureHandler {
     private Player attacker = null;
     private int captureProgress = 0;
 
+    @SuppressWarnings("CanBeFinal")
     private Upgrader upgrader;
     private final BarDrawer bar;
 

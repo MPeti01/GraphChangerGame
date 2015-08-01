@@ -6,6 +6,10 @@ import tungus.games.graphchanger.BasicTouchListener;
 import tungus.games.graphchanger.game.gamestate.GameSimulator;
 import tungus.games.graphchanger.game.gamestate.GameState;
 import tungus.games.graphchanger.game.graph.GraphRenderer;
+import tungus.games.graphchanger.game.graph.editing.GraphEditingUI;
+import tungus.games.graphchanger.game.graph.editing.InputInterpreter;
+import tungus.games.graphchanger.game.graph.editing.moves.MoveListener;
+import tungus.games.graphchanger.game.graph.editing.moves.MoveListenerMultiplexer;
 import tungus.games.graphchanger.game.network.Connection;
 import tungus.games.graphchanger.game.players.Player;
 
@@ -16,27 +20,22 @@ import java.io.OutputStream;
  * Coordinates the game's components (network, simulation, rendering, later AI?), dictating when everything should happen.
  */
 class GameController {
-    private final Connection connection;
     private final GameSimulator simulator;
+    private final Connection connection;
+    private final InputInterpreter gameInput;
+    private final GraphEditingUI editUI = new GraphEditingUI();
     private final GraphRenderer graphRenderer = new GraphRenderer();
 
-    /**
-     * Constructs a single-player game, currently with a passive other player.
-     * @param player Which side the player controls.
-     * @param level The file to load the level from
-     */
-    public GameController(Player player, FileHandle level) {
-        this(player, level, null, null);
-    }
-
     public GameController(Player player, FileHandle level, InputStream in, OutputStream out) {
+        simulator = new GameSimulator(level, player);
+        MoveListener moveListener = simulator;
         if (in != null && out != null) {
             connection = new Connection(in, out);
-            simulator = new GameSimulator(level, player, connection);
+            moveListener = new MoveListenerMultiplexer(connection, moveListener);
         } else {
             connection = null;
-            simulator = new GameSimulator(level, player);
         }
+        gameInput = new InputInterpreter(moveListener, player);
     }
 
     public void render(float delta, SpriteBatch batch) {
@@ -49,11 +48,17 @@ class GameController {
         }
 
         GameState current = simulator.latestState();
-        graphRenderer.render(current.graph, current.editor, batch);
+        gameInput.setGraph(current.graph);
+        gameInput.updateUI(editUI);
+
+        graphRenderer.renderEdges(current.graph.edges, editUI, batch);
+        editUI.render(batch);
+        graphRenderer.renderNodes(current.graph.nodes, editUI, batch);
+
         current.renderArmies(batch, simulator.timeSinceTick());
     }
 
     public BasicTouchListener getTouchListener() {
-        return simulator.latestState().editorTouchListener();
+        return gameInput;
     }
 }
