@@ -31,10 +31,10 @@ public class Graph {
     }
 
     public void set(Graph other) {
+        setEdges(other.edges);
         for (int i = 0; i < nodes.size(); i++) {
             nodes.get(i).set(other.nodes.get(i));
         }
-        setEdges(other.edges);
     }
 
     private void setEdges(List<Edge> other) {
@@ -46,26 +46,27 @@ public class Graph {
             }
         }
         for (Edge there : other) {
-            if (!edges.contains(there)) {
-                edges.add(new Edge(nodes.get(there.node1.id), nodes.get(there.node2.id)));
+
+            boolean contains = false;
+            for (Edge here : edges) {
+                if (here.equals(there)) {
+                    here.costLeft = there.costLeft;
+                    contains = true;
+                    break;
+                }
+            }
+            if (!contains) {
+                edges.add(new Edge(nodes.get(there.node1.id), nodes.get(there.node2.id), there.totalCost, there.costLeft));
             }
         }
     }
 
     public void addEdge(int n1, int n2) {
-        Node node1 = nodes.get(n1);
-        Node node2 = nodes.get(n2);
-        node1.addNeighbor(node2);
-        node2.addNeighbor(node1);
-        edges.add(new Edge(node1, node2));
+        nodes.get(n1).addEdgeTo(nodes.get(n2));
     }
 
     public void removeEdge(int n1, int n2) {
-        Node node1 = nodes.get(n1);
-        Node node2 = nodes.get(n2);
-        node1.removeNeighbor(node2);
-        node2.removeNeighbor(node1);
-        edges.remove(new Edge(node1, node2));
+        nodes.get(n1).removeEdgeTo(nodes.get(n2));
     }
 
 }

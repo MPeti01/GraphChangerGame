@@ -18,6 +18,7 @@ class CaptureHandler {
     @SuppressWarnings("CanBeFinal")
     private Upgrader upgrader;
     private final BarDrawer bar;
+    private boolean justCaptured = false;
 
     public CaptureHandler(Player initialOwner, Vector2 pos, Upgrader up) {
         owner = initialOwner;
@@ -26,6 +27,7 @@ class CaptureHandler {
     }
 
     public boolean usesUnitPassingFrom(Player passing) {
+        justCaptured = false;
         if (isUnderAttack()) {
             if (passing == attacker)
                 captureProgress++;
@@ -41,8 +43,13 @@ class CaptureHandler {
             owner = attacker;
             captureProgress = 0;
             upgrader.setOwner(attacker);
+            justCaptured = true;
         }
         return true;
+    }
+
+    public boolean justCaptured() {
+        return justCaptured;
     }
 
     public boolean wouldUseUnitFrom(Player p) {

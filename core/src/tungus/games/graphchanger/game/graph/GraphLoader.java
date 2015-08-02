@@ -32,18 +32,19 @@ public class GraphLoader {
         while (sc.hasNext()) {
             int p = sc.nextInt();
             if (p == 0)
-                nodes.add(new Node(new Vector2(sc.nextFloat(), sc.nextFloat()), nodes.size(), nodes));
+                nodes.add(new Node(new Vector2(sc.nextFloat(), sc.nextFloat()), nodes.size(), nodes, edges));
             else
-                nodes.add(new Node(Player.values()[p-1], new Vector2(sc.nextFloat(), sc.nextFloat()), nodes.size(), nodes));
+                nodes.add(new Node(Player.values()[p-1], new Vector2(sc.nextFloat(), sc.nextFloat()), nodes.size(), nodes, edges));
         }
     }
 
     public void duplicate() {
         List<Node> newNodes = new ArrayList<Node>();
+        List<Edge> newEdges = new ArrayList<Edge>();
         for (Node n : nodes) {
-            newNodes.add(new Node(n, newNodes));
+            newNodes.add(new Node(n, newNodes, newEdges));
         }
         nodes = newNodes;
-        //TODO Edges as well!
+        edges = newEdges;
     }
 }

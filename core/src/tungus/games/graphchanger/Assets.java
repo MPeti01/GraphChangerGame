@@ -7,7 +7,6 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import tungus.games.graphchanger.game.graph.node.Upgrader;
-import tungus.games.graphchanger.game.players.Unit;
 
 import java.io.PrintStream;
 import java.util.Locale;
@@ -72,8 +71,6 @@ public class Assets {
         for (int i = 0; i < 3; i++) Upgrader.SPAWN_TIMES[i] = in.nextFloat();
         in.next();
         for (int i = 0; i < 3; i++) Upgrader.UNITS_TO_CAP[i] = in.nextInt();
-        in.next();
-        Unit.SPEED = in.nextFloat();
     }
 
     private static void writeConfig() {
@@ -81,7 +78,6 @@ public class Assets {
         out.println("Upgradecosts: " + Upgrader.UPGRADE_COSTS[0] + " " + Upgrader.UPGRADE_COSTS[1] + " " + Upgrader.UPGRADE_COSTS[2]);
         out.println("Spawntimes: " + Upgrader.SPAWN_TIMES[0] + " " + Upgrader.SPAWN_TIMES[1] + " " + Upgrader.SPAWN_TIMES[2]);
         out.println("UnitsToCapNode: " + Upgrader.UNITS_TO_CAP[0] + " " + Upgrader.UNITS_TO_CAP[1] + " " + Upgrader.UNITS_TO_CAP[2]);
-        out.println("Unitspeed: " + Unit.SPEED);
 
     }
 }

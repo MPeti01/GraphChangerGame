@@ -1,7 +1,6 @@
 package tungus.games.graphchanger.game.graph;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import tungus.games.graphchanger.DrawUtils;
 import tungus.games.graphchanger.game.graph.editing.GraphEditingUI;
 import tungus.games.graphchanger.game.graph.node.Node;
 
@@ -17,7 +16,7 @@ public class GraphRenderer {
             if (editor.isBeingCut(edge)) {
                 batch.setColor(1, 0.8f, 0.8f, 0.8f);
             }
-            DrawUtils.drawLine(batch, edge.v1, 10f, edge.length, edge.angle);
+            edge.render(batch);
             batch.setColor(1, 1, 1, 1);
         }
     }

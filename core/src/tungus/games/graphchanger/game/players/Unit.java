@@ -8,7 +8,7 @@ import tungus.games.graphchanger.game.graph.node.Node;
 /**
  * A single unit moving independently on the map.
  */
-public class Unit {
+class Unit {
 
     private static final float SIZE = 8f;
     public static float SPEED = 50f;
@@ -38,10 +38,11 @@ public class Unit {
     public void update(float delta) {
         if (pos.dst2(destination.pos()) < SPEED * SPEED * delta*delta) {
             pos.set(destination.pos());
-            if (destination.usesUnitPassingFrom(owner.player())) {
+            Node next = destination.nextDestinationFor(owner.player());
+            if (next == null) {
                 kill();
             } else {
-                setDestination(destination.destinationFromHere());
+                setDestination(next);
             }
         } else {
             pos.add(vel.x * delta, vel.y * delta);

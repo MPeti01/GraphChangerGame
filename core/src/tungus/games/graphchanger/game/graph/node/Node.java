@@ -3,11 +3,10 @@ package tungus.games.graphchanger.game.graph.node;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import tungus.games.graphchanger.Assets;
+import tungus.games.graphchanger.game.graph.Edge;
 import tungus.games.graphchanger.game.players.Army;
 import tungus.games.graphchanger.game.players.Player;
 
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -18,28 +17,17 @@ public class Node {
 
     public static final float RADIUS = 21.5f;
 
-    final List<Node> neighbors = new LinkedList<Node>();
-
     private final List<Node> allNodes;
 
     private final Vector2 pos;
     private final CaptureHandler captureHandler;
     private final Upgrader upgrader;
     private final UnitSpawnController spawnCheck;
-
-    /**
-     * Stores the neighboring node(s) with the closest neutral/enemy nodes that way. Empty if none reachable.
-     */
-    final List<Node> primaryNeighbors = new LinkedList<Node>();
-    private int nextDirectionIndex = 0;
+    private final EdgeHandler edges;
 
     public final int id;
 
-    public Node(Vector2 pos, int id, List<Node> allNodes) {
-        this(null, pos, id, allNodes);
-    }
-
-    public Node(Player owner, Vector2 pos, int id, List<Node> allNodes) {
+    public Node(Player owner, Vector2 pos, int id, List<Node> allNodes, List<Edge> allEdges) {
         this.pos = pos;
         this.id = id;
         this.allNodes = allNodes;
@@ -47,79 +35,64 @@ public class Node {
         upgrader = new Upgrader(owner, pos);
         spawnCheck = new UnitSpawnController(upgrader);
         captureHandler = new CaptureHandler(owner, pos, upgrader);
+        edges = new EdgeHandler(this, allEdges);
     }
 
-    public Node(Node n, List<Node> allNodes) {
-        this(n.player(), n.pos, n.id, allNodes);
+    public Node(Vector2 pos, int id, List<Node> allNodes, List<Edge> allEdges) {
+        this(null, pos, id, allNodes, allEdges);
+    }
+
+    public Node(Node n, List<Node> allNodes, List<Edge> allEdges) {
+        this(n.player(), n.pos, n.id, allNodes, allEdges);
     }
 
     public void update(float delta, Army... armies) {
         if (captureHandler.owner() != null) {
             spawnCheck.update(delta);
             if (spawnCheck.shouldSpawn()) {
-                armies[captureHandler.owner().ordinal()].addUnit(this, destinationFromHere());
+                armies[captureHandler.owner().ordinal()].addUnit(this, edges.destinationFromHere());
             }
         }
     }
 
-    public Node destinationFromHere() {
-        if (!primaryNeighbors.isEmpty())
-            return nextDirection(primaryNeighbors);
-        else
-            return nextDirection(neighbors);
-    }
-
-    private Node nextDirection(List<Node> list) {
-        if (list.size() == 0)
-            return this;
-        nextDirectionIndex++;
-        if (nextDirectionIndex >= list.size())
-            nextDirectionIndex = 0;
-        return list.get(nextDirectionIndex);
-    }
-
     /**
-     * Notfies the Node that a unit passed it. Asks whether it should be removed.
+     * Notfies the Node that a unit passed it. Returns what should happen to it.
      * @param passingPlayer The owner of the unit
-     * @return Whether the unit should be removed (i.e. whether it is consumed for conquering/upgrading)
+     * @return The next destination for the unit if this Node cannot consume it, null if it can and did.
      */
-    public boolean usesUnitPassingFrom(Player passingPlayer) {
+    public Node nextDestinationFor(Player passingPlayer) {
         if (captureHandler.usesUnitPassingFrom(passingPlayer)) {
-            return true;
+            if (captureHandler.justCaptured()) {
+                edges.clearOutNeighbors();
+            }
+            return null;
         } else if (upgrader.usesUnitPassingFrom(passingPlayer)) {
-            return true;
+            return null;
+        } else if (edges.usesPassingUnitFrom(passingPlayer)) {
+            return null;
         } else {
-            return false;
+            return edges.destinationFromHere();
         }
     }
 
     public boolean wouldUseUnitFrom(Player p) {
-        return captureHandler.wouldUseUnitFrom(p) || upgrader.wouldUseUnitFrom(p);
+        return captureHandler.wouldUseUnitFrom(p) || upgrader.wouldUseUnitFrom(p) || edges.wouldUseUnitFrom(p);
     }
 
-    public void addNeighbor(int neighborID) {
-        addNeighbor(allNodes.get(neighborID));
+    public void addEdgeTo(Node other) {
+        edges.startEdgeTo(other);
     }
 
-    public void addNeighbor(Node newNeighbor) {
-        if (!neighbors.contains(newNeighbor)) {
-            neighbors.add(newNeighbor);
-        }
+    void addEdgeFrom(Node other) {
+        edges.addEdgeFrom(other);
     }
 
-    public void removeNeighbor(Node neighbor) {
-        neighbors.remove(neighbor);
+    public void removeEdgeTo(Node other) {
+        edges.removeEdgeTo(other);
     }
 
-    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-    public boolean hasNeighbor(Node other) {
-        return neighbors.contains(other);
-    }
-
-    public boolean hasNeighbor(int otherID) {
-        for (Node o : neighbors)
-            if (o.id == otherID) return true;
-        return false;
+    void removeEdgeFrom(Node other) {
+        edges.removeEdgeFrom(other);
     }
 
     public Vector2 pos() {
@@ -130,24 +103,23 @@ public class Node {
         return captureHandler.owner();
     }
 
+    public List<Node> outNeighbors() {
+        return edges.outNeighbors;
+    }
+
+    public List<Node> inNeighbors() {
+        return edges.inNeighbors;
+    }
+
+    public List<Node> primaryNeighbors() {
+        return edges.primaryNeighbors;
+    }
+
     public void set(Node other) {
         spawnCheck.set(other.spawnCheck);
         captureHandler.set(other.captureHandler);
         upgrader.set(other.upgrader);
-        nextDirectionIndex = other.nextDirectionIndex;
-
-        Iterator<Node> it = neighbors.iterator();
-        while (it.hasNext()) {
-            Node neighbor = it.next();
-            if (!other.neighbors.contains(neighbor)) {
-                it.remove();
-            }
-        }
-        for (Node n : other.neighbors) {
-            if (!neighbors.contains(n)) {
-                neighbors.add(allNodes.get(n.id));
-            }
-        }
+        edges.set(other.edges, allNodes);
     }
 
     public void render(SpriteBatch batch, boolean isSelected) {
