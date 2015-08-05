@@ -10,16 +10,16 @@ import java.util.List;
  */
 public class EdgeBuilder {
 
-    private static int edgesBuilt = 0;
-    public static int edgeCostMultiplier() {
-        return edgesBuilt/4 + 1;
+    private static int[] edgesBuilt = new int[]{0,0};
+    public static int edgeCostMultiplier(int p) {
+        return edgesBuilt[p]/4 + 1;
     }
 
     private List<Edge> edgesToBuild = new LinkedList<Edge>();
 
     public void startEdge(Edge e) {
         edgesToBuild.add(e);
-        edgesBuilt++;
+        edgesBuilt[e.node1.player().ordinal()]++;
     }
 
     public Node unitUsed() {

@@ -28,7 +28,7 @@ public class Edge {
 
     public Edge(Node n1, Node n2) {
         this(n1, n2, 0, 0);
-        totalCost = costLeft = EdgeBuilder.edgeCostMultiplier()*(int)(Math.ceil(length/LENGTH_PER_UNIT_COST)); //TODO THIS IS NOT A GOOD WAY.
+        totalCost = costLeft = EdgeBuilder.edgeCostMultiplier(node1.player().ordinal())*(int)(Math.ceil(length/LENGTH_PER_UNIT_COST)); //TODO THIS IS NOT A GOOD WAY.
         Gdx.app.log("EDGE CREATED", "Cost " + totalCost);
     }
 
