@@ -32,8 +32,10 @@ class MoveValidator {
         Node node1 = nodes.withID(node1ID);
         Node node2 = nodes.withID(node2ID);
         return node1.player() == moveMaker
+                && node1 != node2
                 && nodes.nodesThrough(node1.pos(), node2.pos()).isEmpty()
-                && edges.edgesThrough(node1.pos(), node2.pos()).isEmpty();
+                && edges.edgesThrough(node1.pos(), node2.pos()).isEmpty()
+                && !edges.hasEdgeBetween(node1, node2);
     }
 
     boolean canUpgrade(Node node) {

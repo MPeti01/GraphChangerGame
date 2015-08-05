@@ -50,7 +50,10 @@ public class Node {
         if (captureHandler.owner() != null) {
             spawnCheck.update(delta);
             if (spawnCheck.shouldSpawn()) {
-                armies[captureHandler.owner().ordinal()].addUnit(this, edges.destinationFromHere());
+                Node dest = nextDestinationFor(captureHandler.owner());
+                if (dest != null) { // Unit not consumed on this node
+                    armies[captureHandler.owner().ordinal()].addUnit(this, dest);
+                }
             }
         }
     }

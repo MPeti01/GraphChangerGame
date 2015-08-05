@@ -3,6 +3,7 @@ package tungus.games.graphchanger.game.graph.editing;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector2;
 import tungus.games.graphchanger.game.graph.Edge;
+import tungus.games.graphchanger.game.graph.node.Node;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -28,5 +29,15 @@ class EdgeFinder {
     }
     public void setEdges(List<Edge> edges) {
         this.edges = edges;
+    }
+
+    public boolean hasEdgeBetween(Node node1, Node node2) {
+        for (Edge edge : edges) {
+            if (edge.node1.equals(node1) && edge.node2.equals(node2) ||
+                edge.node1.equals(node2) && edge.node2.equals(node1)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

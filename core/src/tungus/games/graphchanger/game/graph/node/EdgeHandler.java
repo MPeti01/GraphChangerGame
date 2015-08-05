@@ -112,8 +112,9 @@ class EdgeHandler {
     }
 
     public void clearOutNeighbors() {
-        for (Node n : outNeighbors) {
-            removeEdgeTo(n);
+        while(!outNeighbors.isEmpty()) {
+            primaryNeighbors.remove(outNeighbors.get(0));
+            removeEdgeTo(outNeighbors.get(0));
         }
     }
 }

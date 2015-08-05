@@ -53,11 +53,11 @@ public class Assets {
         fontTex.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         TextureRegion fontRegion = new TextureRegion(fontTex);
         font = new BitmapFont(Gdx.files.internal("font/bulletproof.fnt"), fontRegion);
-        if (config.exists()) {
+        /*if (config.exists()) {
             readConfig();
         } else {
             writeConfig();
-        }
+        }*/
     }
 
     private static final FileHandle config = Gdx.files.external("config.txt");
