@@ -33,9 +33,21 @@ public class NetMPScreen extends BaseScreen {
 	public void render(float deltaTime) {
 		Socket s;
 		if (mode == MODE_CONNECT) {
-			Gdx.app.log("MODE", "CONNECT");
-			s = Gdx.net.newClientSocket(Net.Protocol.TCP, IP, port, new SocketHints());
-			game.setScreen(new GameScreen(game, Player.P2, s.getInputStream(), s.getOutputStream()));
+            while(true) {
+                try {
+                    Gdx.app.log("MODE", "CONNECT");
+                    s = Gdx.net.newClientSocket(Net.Protocol.TCP, IP, port, new SocketHints());
+                    game.setScreen(new GameScreen(game, Player.P2, s.getInputStream(), s.getOutputStream()));
+                    break;
+                } catch (Exception e) {
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e1) {
+                        e1.printStackTrace();
+                    }
+                }
+            }
+
 		} else if (mode == MODE_LISTEN) {
 			Gdx.app.log("MODE", "LISTEN");
 			try {

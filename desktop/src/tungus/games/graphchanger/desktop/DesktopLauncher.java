@@ -8,6 +8,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.*;
 
 @SuppressWarnings("WeakerAccess")
 public class DesktopLauncher implements ActionListener{
@@ -18,15 +19,39 @@ public class DesktopLauncher implements ActionListener{
         LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
         config.width = 480;
         config.height = 800;
+        writeFile(jtf_host.getText());
         NetMPScreen.IP = jtf_host.getText();
         NetMPScreen.port = Integer.valueOf(jtf_port.getText());
         new LwjglApplication(new GraphChanger(), config);
     }
 
     JFrame jf = new JFrame("Graph Changer");
+
     JButton jb = new JButton("Start");
     JTextField jtf_port = new JTextField("12345", 4);
-    JTextField jtf_host = new JTextField("localhost", 10);
+    JTextField jtf_host = new JTextField(readFile(), 10);
+    private String readFile() {
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader("lastconnection.txt"));
+            String str = reader.readLine();
+            reader.close();
+            return str;
+        } catch (java.io.IOException e) {
+            return "";
+        }
+    }
+
+    private void writeFile(String str) {
+        try {
+            PrintWriter writer = new PrintWriter("lastconnection.txt", "UTF-8");
+            writer.println(str);
+            writer.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+    }
 
     public DesktopLauncher(){
         jb.addActionListener(this);
