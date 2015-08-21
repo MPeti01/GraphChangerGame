@@ -30,8 +30,8 @@ public class GameState {
     public void set(Graph graph, EdgePricer pricer, Army p1, Army p2) {
         this.graph.set(graph);
         this.edgePricer.set(pricer);
-        this.p1.set(p1, this.graph.nodes);
-        this.p2.set(p2, this.graph.nodes);
+        this.p1.set(p1, this.graph);
+        this.p2.set(p2, this.graph);
     }
 
     public void applyMove(Move m) {

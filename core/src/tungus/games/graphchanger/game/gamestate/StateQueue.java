@@ -33,7 +33,7 @@ class StateQueue {
                 loader.duplicate(pricer);
             }
 
-            Graph g = new Graph(loader.nodes, loader.edges);
+            Graph g = new Graph(loader.nodes, loader.edges, loader.partialEdges);
             Army a1 = new Army(Player.P1);
             Army a2 = new Army(Player.P2);
             queue[i] = new GameState(g, pricer, a1, a2);

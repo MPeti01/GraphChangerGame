@@ -15,11 +15,13 @@ public class Graph {
 
     public final List<Node> nodes;
     public final List<Edge> edges;
+    public final List<PartialEdge> partialEdges;
     private final DirectionCalculator directionCalculator;
 
-    public Graph(List<Node> nodes, List<Edge> edges) {
+    public Graph(List<Node> nodes, List<Edge> edges, List<PartialEdge> partialEdges) {
         this.nodes = nodes;
         this.edges = edges;
+        this.partialEdges = partialEdges;
         directionCalculator = new DirectionCalculator(this.nodes.size());
     }
 
@@ -50,13 +52,12 @@ public class Graph {
             boolean contains = false;
             for (Edge here : edges) {
                 if (here.equals(there)) {
-                    here.costLeft = there.costLeft;
                     contains = true;
                     break;
                 }
             }
             if (!contains) {
-                edges.add(new Edge(nodes.get(there.node1.id), nodes.get(there.node2.id), there.totalCost, there.costLeft));
+                edges.add(new Edge(nodes.get(there.node1.id), nodes.get(there.node2.id)));
             }
         }
     }

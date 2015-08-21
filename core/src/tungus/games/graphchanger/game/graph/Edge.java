@@ -12,7 +12,6 @@ import tungus.games.graphchanger.game.graph.node.Node;
 public class Edge {
 
     private static final Vector2 temp = new Vector2();
-    private static final Vector2 temp2 = new Vector2();
     public final Node node1;
     public final Node node2;
 
@@ -20,43 +19,23 @@ public class Edge {
     public final Vector2 v2;
     public final float length;
     public final float angle;
-    public final int totalCost;
-    public int costLeft;
 
-    public Edge(Node n1, Node n2, int totalCost, int costLeft) {
+    public Edge(Node n1, Node n2) {
         node1 = n1;
         node2 = n2;
         v1 = n1.pos();
         v2 = n2.pos();
         angle = temp.set(v2).sub(v1).angle();
         length = v1.dst(v2);
-        this.totalCost = totalCost;
-        this.costLeft = costLeft;
-    }
-
-    public Edge(Node n1, Node n2, int price) {
-        this(n1, n2, price, price);
-    }
-
-    public Edge(Edge other) {
-        this(other.node1, other.node2, other.totalCost, other.costLeft);
-    }
-
-    public boolean isComplete() {
-        return costLeft == 0;
-    }
-
-    public void unitArrived() {
-        costLeft--;
     }
 
     public void render(SpriteBatch batch) {
-        float progress = 1f - ((float)costLeft/ totalCost) * 0.9f;
-        temp.set(v2).sub(v1).scl(progress).add(v1);
-        DrawUtils.drawLine(batch, v1, temp, 10f);
-        temp2.set(25f, 0).rotate(angle).add(v1).add(temp).scl(0.5f);
-        DrawUtils.drawLine(batch, temp2, 10f, 25f, angle + 135f);
-        DrawUtils.drawLine(batch, temp2, 10f, 25f, angle - 135f);
+        DrawUtils.drawLine(batch, v1, v2, 10f);
+
+        // Draw the two short lines for the arrow
+        temp.set(25f, 0).rotate(angle).add(v1).add(v2).scl(0.5f);
+        DrawUtils.drawLine(batch, temp, 10f, 25f, angle + 135f);
+        DrawUtils.drawLine(batch, temp, 10f, 25f, angle - 135f);
     }
 
     @Override

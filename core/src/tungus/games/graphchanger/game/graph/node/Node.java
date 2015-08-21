@@ -3,8 +3,7 @@ package tungus.games.graphchanger.game.graph.node;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import tungus.games.graphchanger.Assets;
-import tungus.games.graphchanger.game.graph.Edge;
-import tungus.games.graphchanger.game.graph.EdgePricer;
+import tungus.games.graphchanger.game.graph.*;
 import tungus.games.graphchanger.game.players.Army;
 import tungus.games.graphchanger.game.players.Player;
 
@@ -14,7 +13,7 @@ import java.util.List;
  * A node in the graph to be conquered by players. Handles/delegates neighbor relations, spawning
  * {@link tungus.games.graphchanger.game.players.Unit units} and giving direction to passing units.
  */
-public class Node {
+public class Node implements Destination {
 
     public static final float RADIUS = 21.5f;
 
@@ -28,7 +27,8 @@ public class Node {
 
     public final int id;
 
-    public Node(Player owner, Vector2 pos, int id, List<Node> allNodes, List<Edge> allEdges, EdgePricer pricer) {
+    public Node(Player owner, Vector2 pos, int id, List<Node> allNodes,
+                List<Edge> allEdges, EdgePricer pricer, List<PartialEdge> partialEdges) {
         this.pos = pos;
         this.id = id;
         this.allNodes = allNodes;
@@ -36,15 +36,16 @@ public class Node {
         upgrader = new Upgrader(owner, pos);
         spawnCheck = new UnitSpawnController(upgrader);
         captureHandler = new CaptureHandler(owner, pos, upgrader);
-        edges = new EdgeHandler(this, allEdges, pricer);
+        edges = new EdgeHandler(this, allNodes, allEdges, pricer, partialEdges);
     }
 
-    public Node(Vector2 pos, int id, List<Node> allNodes, List<Edge> allEdges, EdgePricer pricer) {
-        this(null, pos, id, allNodes, allEdges, pricer);
+    public Node(Vector2 pos, int id, List<Node> allNodes,
+                List<Edge> allEdges, EdgePricer pricer, List<PartialEdge> partialEdges) {
+        this(null, pos, id, allNodes, allEdges, pricer, partialEdges);
     }
 
-    public Node(Node n, List<Node> allNodes, List<Edge> allEdges, EdgePricer pricer) {
-        this(n.player(), n.pos, n.id, allNodes, allEdges, pricer);
+    public Node(Node n, List<Node> allNodes, List<Edge> allEdges, EdgePricer pricer, List<PartialEdge> partialEdges) {
+        this(n.player(), n.pos, n.id, allNodes, allEdges, pricer, partialEdges);
     }
 
     public void update(float delta, Army... armies) {
@@ -57,6 +58,11 @@ public class Node {
                 }
             }
         }
+    }
+
+    @Override
+    public boolean isReachedAt(Vector2 unitPos) {
+        return unitPos.dst2(pos) < 16;
     }
 
     /**
@@ -124,6 +130,11 @@ public class Node {
         captureHandler.set(other.captureHandler);
         upgrader.set(other.upgrader);
         edges.set(other.edges, allNodes);
+    }
+
+    @Override
+    public Destination localCopy(Graph g) {
+        return g.nodes.get(id);
     }
 
     public void render(SpriteBatch batch, boolean isSelected) {

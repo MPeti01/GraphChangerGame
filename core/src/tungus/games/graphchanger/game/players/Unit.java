@@ -3,7 +3,7 @@ package tungus.games.graphchanger.game.players;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import tungus.games.graphchanger.Assets;
-import tungus.games.graphchanger.game.graph.node.Node;
+import tungus.games.graphchanger.game.graph.Destination;
 
 /**
  * A single unit moving independently on the map.
@@ -14,7 +14,7 @@ class Unit {
     public static float SPEED = 50f;
 
     private final Army owner;
-    private Node destination;
+    private Destination destination;
     final Vector2 pos;
     private final Vector2 vel;
 
@@ -26,19 +26,18 @@ class Unit {
         this.vel = new Vector2();
     }
 
-    public void setDestination(Node dest) {
+    public void setDestination(Destination dest) {
         this.destination = dest;
         vel.set(dest.pos()).sub(pos).nor().scl(SPEED);
     }
 
-    public Node getDestination() {
+    public Destination getDestination() {
         return destination;
     }
 
     public void update(float delta) {
-        if (pos.dst2(destination.pos()) < SPEED * SPEED * delta*delta) {
-            pos.set(destination.pos());
-            Node next = destination.nextDestinationFor(owner.player());
+        if (destination.isReachedAt(pos)) {
+            Destination next = destination.nextDestinationFor(owner.player());
             if (next == null) {
                 kill();
             } else {

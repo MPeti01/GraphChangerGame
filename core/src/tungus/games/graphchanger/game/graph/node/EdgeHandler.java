@@ -2,6 +2,7 @@ package tungus.games.graphchanger.game.graph.node;
 
 import tungus.games.graphchanger.game.graph.Edge;
 import tungus.games.graphchanger.game.graph.EdgePricer;
+import tungus.games.graphchanger.game.graph.PartialEdge;
 import tungus.games.graphchanger.game.players.Player;
 
 import java.util.ArrayList;
@@ -20,7 +21,6 @@ class EdgeHandler {
     private final Node thisNode;
     private final EdgeBuilder builder;
 
-    private final EdgePricer pricer;
 
     /**
      * Stores the neighboring node(s) with the closest neutral/enemy nodes that way. Empty if none reachable.
@@ -28,11 +28,10 @@ class EdgeHandler {
     public final List<Node> primaryNeighbors = new ArrayList<Node>();
     private int nextDirectionIndex = 0;
 
-    public EdgeHandler(Node node, List<Edge> edges, EdgePricer pricer) {
+    public EdgeHandler(Node node, List<Node> nodes, List<Edge> edges, EdgePricer pricer, List<PartialEdge> partialEdges) {
         allEdgesInGraph = edges;
         thisNode = node;
-        builder = new EdgeBuilder(pricer);
-        this.pricer = pricer;
+        builder = new EdgeBuilder(node, pricer, partialEdges, nodes);
     }
 
     public Node destinationFromHere() {
@@ -43,9 +42,7 @@ class EdgeHandler {
     }
 
     public void startEdgeTo(Node other) {
-        Edge e = new Edge(thisNode, other, pricer.totalPrice(thisNode, other));
-        allEdgesInGraph.add(e);
-        builder.startEdge(e);
+        builder.startEdgeTo(other);
     }
 
     public void addEdgeFrom(Node other) {
@@ -55,7 +52,7 @@ class EdgeHandler {
     public void removeEdgeTo(Node other) {
         outNeighbors.remove(other);
         other.removeEdgeFrom(thisNode);
-        allEdgesInGraph.remove(new Edge(thisNode, other, 0));
+        allEdgesInGraph.remove(new Edge(thisNode, other));
     }
 
     public void removeEdgeFrom(Node other) {
@@ -76,6 +73,7 @@ class EdgeHandler {
         Node built = builder.unitUsed();
         if (built != null) {
             outNeighbors.add(built);
+            allEdgesInGraph.add(new Edge(thisNode, built));
             built.addEdgeFrom(thisNode);
         }
         return true;
@@ -113,7 +111,7 @@ class EdgeHandler {
                 inNeighbors.add(allNodes.get(n.id));
             }
         }
-        builder.set(other.builder, allEdgesInGraph);
+        builder.set(other.builder);
     }
 
     public void clearOutNeighbors() {

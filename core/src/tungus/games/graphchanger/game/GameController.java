@@ -51,7 +51,7 @@ class GameController {
         gameInput.setGameState(current);
         gameInput.updateUI(editUI);
 
-        graphRenderer.renderEdges(current.graph.edges, editUI, batch);
+        graphRenderer.renderEdges(current.graph.edges, current.graph.partialEdges, editUI, batch);
         editUI.renderBehindNodes(batch);
         graphRenderer.renderNodes(current.graph.nodes, editUI, batch);
         editUI.renderOnTop(batch);

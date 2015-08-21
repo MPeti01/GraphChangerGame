@@ -11,13 +11,16 @@ import java.util.List;
  */
 public class GraphRenderer {
 
-    public void renderEdges(List<Edge> edges, GraphEditingUI editor, SpriteBatch batch) {
+    public void renderEdges(List<Edge> edges, List<PartialEdge> partialEdges, GraphEditingUI editor, SpriteBatch batch) {
         for (Edge edge : edges) {
             if (editor.isBeingCut(edge)) {
                 batch.setColor(1, 0.8f, 0.8f, 0.8f);
             }
             edge.render(batch);
             batch.setColor(1, 1, 1, 1);
+        }
+        for (PartialEdge edge : partialEdges) {
+            edge.render(batch);
         }
     }
 
