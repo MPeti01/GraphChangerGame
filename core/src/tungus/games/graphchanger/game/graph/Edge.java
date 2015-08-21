@@ -1,10 +1,8 @@
 package tungus.games.graphchanger.game.graph;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import tungus.games.graphchanger.DrawUtils;
-import tungus.games.graphchanger.game.graph.node.EdgeBuilder;
 import tungus.games.graphchanger.game.graph.node.Node;
 
 /**
@@ -13,7 +11,6 @@ import tungus.games.graphchanger.game.graph.node.Node;
  */
 public class Edge {
 
-    private static final float LENGTH_PER_UNIT_COST = 120f;
     private static final Vector2 temp = new Vector2();
     private static final Vector2 temp2 = new Vector2();
     public final Node node1;
@@ -23,14 +20,8 @@ public class Edge {
     public final Vector2 v2;
     public final float length;
     public final float angle;
-    public int totalCost;
+    public final int totalCost;
     public int costLeft;
-
-    public Edge(Node n1, Node n2) {
-        this(n1, n2, 0, 0);
-        totalCost = costLeft = EdgeBuilder.edgeCostMultiplier(node1.player().ordinal())*(int)(Math.ceil(length/LENGTH_PER_UNIT_COST)); //TODO THIS IS NOT A GOOD WAY.
-        Gdx.app.log("EDGE CREATED", "Cost " + totalCost);
-    }
 
     public Edge(Node n1, Node n2, int totalCost, int costLeft) {
         node1 = n1;
@@ -43,10 +34,12 @@ public class Edge {
         this.costLeft = costLeft;
     }
 
+    public Edge(Node n1, Node n2, int price) {
+        this(n1, n2, price, price);
+    }
+
     public Edge(Edge other) {
-        this(other.node1, other.node2);
-        totalCost = other.totalCost;
-        costLeft = other.costLeft;
+        this(other.node1, other.node2, other.totalCost, other.costLeft);
     }
 
     public boolean isComplete() {

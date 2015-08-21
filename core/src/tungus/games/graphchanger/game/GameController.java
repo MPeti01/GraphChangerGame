@@ -48,12 +48,13 @@ class GameController {
         }
 
         GameState current = simulator.latestState();
-        gameInput.setGraph(current.graph);
+        gameInput.setGameState(current);
         gameInput.updateUI(editUI);
 
         graphRenderer.renderEdges(current.graph.edges, editUI, batch);
-        editUI.render(batch);
+        editUI.renderBehindNodes(batch);
         graphRenderer.renderNodes(current.graph.nodes, editUI, batch);
+        editUI.renderOnTop(batch);
 
         current.renderArmies(batch, simulator.timeSinceTick());
     }

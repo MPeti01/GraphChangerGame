@@ -24,7 +24,7 @@ public class GraphLoader {
         this.file = file;
     }
 
-    public void load() {
+    public void load(EdgePricer pricer) {
         nodes = new ArrayList<Node>();
         edges = new ArrayList<Edge>();
         Scanner sc = new Scanner(file.read());
@@ -32,17 +32,17 @@ public class GraphLoader {
         while (sc.hasNext()) {
             int p = sc.nextInt();
             if (p == 0)
-                nodes.add(new Node(new Vector2(sc.nextFloat(), sc.nextFloat()), nodes.size(), nodes, edges));
+                nodes.add(new Node(new Vector2(sc.nextFloat(), sc.nextFloat()), nodes.size(), nodes, edges, pricer));
             else
-                nodes.add(new Node(Player.values()[p-1], new Vector2(sc.nextFloat(), sc.nextFloat()), nodes.size(), nodes, edges));
+                nodes.add(new Node(Player.values()[p-1], new Vector2(sc.nextFloat(), sc.nextFloat()), nodes.size(), nodes, edges, pricer));
         }
     }
 
-    public void duplicate() {
+    public void duplicate(EdgePricer pricer) {
         List<Node> newNodes = new ArrayList<Node>();
         List<Edge> newEdges = new ArrayList<Edge>();
         for (Node n : nodes) {
-            newNodes.add(new Node(n, newNodes, newEdges));
+            newNodes.add(new Node(n, newNodes, newEdges, pricer));
         }
         nodes = newNodes;
         edges = newEdges;

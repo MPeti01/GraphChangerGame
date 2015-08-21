@@ -1,0 +1,18 @@
+Longer term:
+- Front fight
+- UI for edge prices
+- Levelgen
+    - Spawn upgraded neutral nodes as well
+
+Short term:
+- Bugfree edge price handling
+
+    - Field of State: EdgePricer
+    - int lengthPrice(pos, pos)
+    - int priceMultiplier(Player)
+    - void build()
+
+    - EdgePricer passed down when constructing
+      Graph-Node-EdgeHandler-EdgeBuilder
+    - EdgePricer passed to InputInterpreter
+      as part of GameState, II tells UI the price

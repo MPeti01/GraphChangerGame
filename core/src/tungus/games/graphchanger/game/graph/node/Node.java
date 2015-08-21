@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import tungus.games.graphchanger.Assets;
 import tungus.games.graphchanger.game.graph.Edge;
+import tungus.games.graphchanger.game.graph.EdgePricer;
 import tungus.games.graphchanger.game.players.Army;
 import tungus.games.graphchanger.game.players.Player;
 
@@ -27,7 +28,7 @@ public class Node {
 
     public final int id;
 
-    public Node(Player owner, Vector2 pos, int id, List<Node> allNodes, List<Edge> allEdges) {
+    public Node(Player owner, Vector2 pos, int id, List<Node> allNodes, List<Edge> allEdges, EdgePricer pricer) {
         this.pos = pos;
         this.id = id;
         this.allNodes = allNodes;
@@ -35,15 +36,15 @@ public class Node {
         upgrader = new Upgrader(owner, pos);
         spawnCheck = new UnitSpawnController(upgrader);
         captureHandler = new CaptureHandler(owner, pos, upgrader);
-        edges = new EdgeHandler(this, allEdges);
+        edges = new EdgeHandler(this, allEdges, pricer);
     }
 
-    public Node(Vector2 pos, int id, List<Node> allNodes, List<Edge> allEdges) {
-        this(null, pos, id, allNodes, allEdges);
+    public Node(Vector2 pos, int id, List<Node> allNodes, List<Edge> allEdges, EdgePricer pricer) {
+        this(null, pos, id, allNodes, allEdges, pricer);
     }
 
-    public Node(Node n, List<Node> allNodes, List<Edge> allEdges) {
-        this(n.player(), n.pos, n.id, allNodes, allEdges);
+    public Node(Node n, List<Node> allNodes, List<Edge> allEdges, EdgePricer pricer) {
+        this(n.player(), n.pos, n.id, allNodes, allEdges, pricer);
     }
 
     public void update(float delta, Army... armies) {

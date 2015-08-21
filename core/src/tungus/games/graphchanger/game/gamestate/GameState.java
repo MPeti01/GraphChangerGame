@@ -1,6 +1,7 @@
 package tungus.games.graphchanger.game.gamestate;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import tungus.games.graphchanger.game.graph.EdgePricer;
 import tungus.games.graphchanger.game.graph.Graph;
 import tungus.games.graphchanger.game.graph.editing.moves.Move;
 import tungus.games.graphchanger.game.players.Army;
@@ -11,21 +12,24 @@ import tungus.games.graphchanger.game.players.UnitCollisionChecker;
  */
 public class GameState {
     public final Graph graph;
+    public final EdgePricer edgePricer;
     private final Army p1;
     private final Army p2;
 
-    public GameState(Graph graph, Army p1, Army p2) {
+    public GameState(Graph graph, EdgePricer pricer, Army p1, Army p2) {
         this.graph = graph;
+        this.edgePricer = pricer;
         this.p1 = p1;
         this.p2 = p2;
     }
 
     public void set(GameState other) {
-        set(other.graph, other.p1, other.p2);
+        set(other.graph, other.edgePricer, other.p1, other.p2);
     }
 
-    public void set(Graph graph, Army p1, Army p2) {
+    public void set(Graph graph, EdgePricer pricer, Army p1, Army p2) {
         this.graph.set(graph);
+        this.edgePricer.set(pricer);
         this.p1.set(p1, this.graph.nodes);
         this.p2.set(p2, this.graph.nodes);
     }

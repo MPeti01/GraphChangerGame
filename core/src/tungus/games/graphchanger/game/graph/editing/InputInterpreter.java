@@ -2,8 +2,9 @@ package tungus.games.graphchanger.game.graph.editing;
 
 import com.badlogic.gdx.math.Vector2;
 import tungus.games.graphchanger.BasicTouchListener;
+import tungus.games.graphchanger.game.gamestate.GameState;
 import tungus.games.graphchanger.game.graph.Edge;
-import tungus.games.graphchanger.game.graph.Graph;
+import tungus.games.graphchanger.game.graph.EdgePricer;
 import tungus.games.graphchanger.game.graph.editing.moves.AddEdgeMove;
 import tungus.games.graphchanger.game.graph.editing.moves.MoveListener;
 import tungus.games.graphchanger.game.graph.editing.moves.RemoveEdgeMove;
@@ -24,10 +25,13 @@ public class InputInterpreter implements BasicTouchListener {
     private EditingState state = EditingState.IDLE;
 
     private final MoveListener moveListener;
+    private final Player moveMaker;
 
     private final NodeFinder nodeFinder = new NodeFinder();
     private final EdgeFinder edgeFinder = new EdgeFinder();
     private final MoveValidator validator;
+
+    private EdgePricer pricer = null;
 
     private int startNodeID = -1;
     private int endNodeID = -1;
@@ -35,7 +39,9 @@ public class InputInterpreter implements BasicTouchListener {
     private final Vector2 touchEnd = new Vector2();
 
     public InputInterpreter(MoveListener l, Player moveMaker) {
-        moveListener = l;
+        this.moveListener = l;
+        this.moveMaker = moveMaker;
+
         validator = new MoveValidator(nodeFinder, edgeFinder, moveMaker);
     }
 
@@ -102,8 +108,15 @@ public class InputInterpreter implements BasicTouchListener {
                 ui.noMove();
                 break;
             case ADD:
-                ui.connect(startNodeID, endNodeID, touchStart, touchEnd,
-                        endNodeID != -1 && validator.canConnect(startNodeID, endNodeID));
+
+                boolean valid = endNodeID != -1 && validator.canConnect(startNodeID, endNodeID);
+                ui.connect(startNodeID, endNodeID, touchStart, touchEnd, valid);
+                if (valid) {
+                    String priceText = pricer.priceMultiplier(moveMaker)
+                            + "*" + pricer.lengthPrice(touchStart, touchEnd);
+                    ui.setConnectPrice(priceText);
+                }
+
                 break;
             case REMOVE:
                 List<Edge> toCut = edgeFinder.edgesThrough(touchStart, touchEnd);
@@ -112,8 +125,9 @@ public class InputInterpreter implements BasicTouchListener {
         }
     }
 
-    public void setGraph(Graph g) {
-        edgeFinder.setEdges(g.edges);
-        nodeFinder.setNodes(g.nodes);
+    public void setGameState(GameState state) {
+        edgeFinder.setEdges(state.graph.edges);
+        nodeFinder.setNodes(state.graph.nodes);
+        pricer = state.edgePricer;
     }
 }

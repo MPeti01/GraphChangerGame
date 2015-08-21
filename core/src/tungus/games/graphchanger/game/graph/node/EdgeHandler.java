@@ -1,6 +1,7 @@
 package tungus.games.graphchanger.game.graph.node;
 
 import tungus.games.graphchanger.game.graph.Edge;
+import tungus.games.graphchanger.game.graph.EdgePricer;
 import tungus.games.graphchanger.game.players.Player;
 
 import java.util.ArrayList;
@@ -17,7 +18,9 @@ class EdgeHandler {
     public final List<Node> inNeighbors = new LinkedList<Node>();
     public final List<Node> outNeighbors = new LinkedList<Node>();
     private final Node thisNode;
-    private final EdgeBuilder builder = new EdgeBuilder();
+    private final EdgeBuilder builder;
+
+    private final EdgePricer pricer;
 
     /**
      * Stores the neighboring node(s) with the closest neutral/enemy nodes that way. Empty if none reachable.
@@ -25,9 +28,11 @@ class EdgeHandler {
     public final List<Node> primaryNeighbors = new ArrayList<Node>();
     private int nextDirectionIndex = 0;
 
-    public EdgeHandler(Node node, List<Edge> edges) {
+    public EdgeHandler(Node node, List<Edge> edges, EdgePricer pricer) {
         allEdgesInGraph = edges;
         thisNode = node;
+        builder = new EdgeBuilder(pricer);
+        this.pricer = pricer;
     }
 
     public Node destinationFromHere() {
@@ -38,7 +43,7 @@ class EdgeHandler {
     }
 
     public void startEdgeTo(Node other) {
-        Edge e = new Edge(thisNode, other);
+        Edge e = new Edge(thisNode, other, pricer.totalPrice(thisNode, other));
         allEdgesInGraph.add(e);
         builder.startEdge(e);
     }
@@ -50,7 +55,7 @@ class EdgeHandler {
     public void removeEdgeTo(Node other) {
         outNeighbors.remove(other);
         other.removeEdgeFrom(thisNode);
-        allEdgesInGraph.remove(new Edge(thisNode, other));
+        allEdgesInGraph.remove(new Edge(thisNode, other, 0));
     }
 
     public void removeEdgeFrom(Node other) {

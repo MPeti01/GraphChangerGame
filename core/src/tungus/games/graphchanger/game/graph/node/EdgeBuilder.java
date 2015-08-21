@@ -1,6 +1,7 @@
 package tungus.games.graphchanger.game.graph.node;
 
 import tungus.games.graphchanger.game.graph.Edge;
+import tungus.games.graphchanger.game.graph.EdgePricer;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -10,16 +11,17 @@ import java.util.List;
  */
 public class EdgeBuilder {
 
-    private static int[] edgesBuilt = new int[]{0,0};
-    public static int edgeCostMultiplier(int p) {
-        return edgesBuilt[p]/4 + 1;
+    private final EdgePricer pricer;
+
+    public EdgeBuilder(EdgePricer pricer) {
+        this.pricer = pricer;
     }
 
     private List<Edge> edgesToBuild = new LinkedList<Edge>();
 
     public void startEdge(Edge e) {
         edgesToBuild.add(e);
-        edgesBuilt[e.node1.player().ordinal()]++;
+        pricer.edgeBuilt(e.node1.player());
     }
 
     public Node unitUsed() {

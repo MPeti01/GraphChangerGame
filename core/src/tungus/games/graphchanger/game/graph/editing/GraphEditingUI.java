@@ -2,6 +2,7 @@ package tungus.games.graphchanger.game.graph.editing;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import tungus.games.graphchanger.Assets;
 import tungus.games.graphchanger.DrawUtils;
 import tungus.games.graphchanger.game.graph.Edge;
 import tungus.games.graphchanger.game.graph.Graph;
@@ -22,6 +23,7 @@ public class GraphEditingUI {
     private Vector2 lineStart = new Vector2(), lineEnd = new Vector2();
     private EditingState state = EditingState.IDLE;
     private boolean isMoveValid = false;
+    private String priceText;
 
     void noMove() {
         state = EditingState.IDLE;
@@ -56,7 +58,7 @@ public class GraphEditingUI {
                 && edgesToCut.contains(edge);
     }
 
-    public void render(SpriteBatch batch) {
+    public void renderBehindNodes(SpriteBatch batch) {
         if (state == EditingState.ADD) {
             if (isMoveValid) {
                 batch.setColor(1, 1, 1, 0.5f);
@@ -64,7 +66,16 @@ public class GraphEditingUI {
                 batch.setColor(1, 0.5f, 0.5f, 0.5f);
             }
             DrawUtils.drawLine(batch, lineStart, lineEnd, 10f);
-        } else if (state == EditingState.REMOVE) {
+        }
+        batch.setColor(1, 1, 1, 1);
+    }
+
+    public void renderOnTop(SpriteBatch batch) {
+        if (state == EditingState.ADD && isMoveValid) {
+            Assets.font.draw(batch, priceText,
+                    (lineStart.x + lineEnd.x) / 2, (lineStart.y + lineEnd.y) / 2);
+        }
+        else if (state == EditingState.REMOVE) {
             if (isMoveValid) {
                 batch.setColor(1, 0.2f, 0.2f, 1f);
             } else {
@@ -73,5 +84,9 @@ public class GraphEditingUI {
             DrawUtils.drawLine(batch, lineStart, lineEnd, 5f);
         }
         batch.setColor(1, 1, 1, 1);
+    }
+
+    public void setConnectPrice(String text) {
+        priceText = text;
     }
 }
