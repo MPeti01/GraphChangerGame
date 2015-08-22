@@ -1,6 +1,7 @@
 package tungus.games.graphchanger.game.graph.editing;
 
 import tungus.games.graphchanger.game.graph.Edge;
+import tungus.games.graphchanger.game.graph.PartialEdge;
 import tungus.games.graphchanger.game.graph.node.Node;
 import tungus.games.graphchanger.game.players.Player;
 
@@ -21,11 +22,15 @@ class MoveValidator {
         this.edges = edges;
     }
 
-    boolean canCut(List<Edge> edgesToCut) {
-        if (edgesToCut.size() > 1) return false;
-        if (edgesToCut.isEmpty()) return true;
-        Edge edgeToCut = edgesToCut.get(0);
-        return edgeToCut.node1.player() == moveMaker;
+    boolean canCut(List<Edge> edgesToCut, List<PartialEdge> partialToCut) {
+        for (Edge edge : edgesToCut) {
+            if (edge.node1.player() != moveMaker) return false;
+        }
+        for (PartialEdge partialEdge : partialToCut) {
+            if (partialEdge.startNode().player() != moveMaker || partialEdge.progress() == 0)
+                return false;
+        }
+        return true;
     }
 
     boolean canConnect(int node1ID, int node2ID) {

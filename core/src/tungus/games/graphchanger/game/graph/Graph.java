@@ -4,7 +4,6 @@ import tungus.games.graphchanger.game.graph.node.DirectionCalculator;
 import tungus.games.graphchanger.game.graph.node.Node;
 import tungus.games.graphchanger.game.players.Army;
 
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -33,32 +32,9 @@ public class Graph {
     }
 
     public void set(Graph other) {
-        setEdges(other.edges);
+        // Edges are set by Nodes when they find missing / additional neighbors
         for (int i = 0; i < nodes.size(); i++) {
             nodes.get(i).set(other.nodes.get(i));
-        }
-    }
-
-    private void setEdges(List<Edge> other) {
-        Iterator<Edge> it = edges.iterator();
-        while (it.hasNext()) {
-            Edge here = it.next();
-            if (!other.contains(here)) {
-                it.remove();
-            }
-        }
-        for (Edge there : other) {
-
-            boolean contains = false;
-            for (Edge here : edges) {
-                if (here.equals(there)) {
-                    contains = true;
-                    break;
-                }
-            }
-            if (!contains) {
-                edges.add(new Edge(nodes.get(there.node1.id), nodes.get(there.node2.id)));
-            }
         }
     }
 

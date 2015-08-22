@@ -5,6 +5,7 @@ import tungus.games.graphchanger.BasicTouchListener;
 import tungus.games.graphchanger.game.gamestate.GameState;
 import tungus.games.graphchanger.game.graph.Edge;
 import tungus.games.graphchanger.game.graph.EdgePricer;
+import tungus.games.graphchanger.game.graph.PartialEdge;
 import tungus.games.graphchanger.game.graph.editing.moves.AddEdgeMove;
 import tungus.games.graphchanger.game.graph.editing.moves.MoveListener;
 import tungus.games.graphchanger.game.graph.editing.moves.RemoveEdgeMove;
@@ -84,9 +85,9 @@ public class InputInterpreter implements BasicTouchListener {
         }
         else if (state == EditingState.REMOVE) {
             List<Edge> edgesToCut = edgeFinder.edgesThrough(touchStart, touchEnd);
-            if (!edgesToCut.isEmpty() && validator.canCut(edgesToCut)) {
-                moveListener.addMove(new RemoveEdgeMove(edgesToCut.get(0)));
-                // TODO Multiple edges cut?
+            List<PartialEdge> partialToCut = edgeFinder.partialEdgesThrough(touchStart, touchEnd);
+            if (!(edgesToCut.isEmpty() && partialToCut.isEmpty()) && validator.canCut(edgesToCut, partialToCut)) {
+                moveListener.addMove(new RemoveEdgeMove(edgesToCut, partialToCut));
             }
         }
 
@@ -119,14 +120,15 @@ public class InputInterpreter implements BasicTouchListener {
 
                 break;
             case REMOVE:
-                List<Edge> toCut = edgeFinder.edgesThrough(touchStart, touchEnd);
-                ui.cut(toCut, validator.canCut(toCut), touchStart, touchEnd);
+                List<Edge> fullToCut = edgeFinder.edgesThrough(touchStart, touchEnd);
+                List<PartialEdge> partialToCut = edgeFinder.partialEdgesThrough(touchStart, touchEnd);
+                ui.cut(fullToCut, partialToCut, validator.canCut(fullToCut, partialToCut), touchStart, touchEnd);
                 break;
         }
     }
 
     public void setGameState(GameState state) {
-        edgeFinder.setEdges(state.graph.edges);
+        edgeFinder.setEdges(state.graph.edges, state.graph.partialEdges);
         nodeFinder.setNodes(state.graph.nodes);
         pricer = state.edgePricer;
     }

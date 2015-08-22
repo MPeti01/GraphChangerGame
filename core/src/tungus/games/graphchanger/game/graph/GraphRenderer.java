@@ -20,7 +20,11 @@ public class GraphRenderer {
             batch.setColor(1, 1, 1, 1);
         }
         for (PartialEdge edge : partialEdges) {
+            if (editor.isBeingCut(edge)) {
+                batch.setColor(1, 0.8f, 0.8f, 0.8f);
+            }
             edge.render(batch);
+            batch.setColor(1, 1, 1, 1);
         }
     }
 

@@ -6,6 +6,7 @@ import tungus.games.graphchanger.Assets;
 import tungus.games.graphchanger.DrawUtils;
 import tungus.games.graphchanger.game.graph.Edge;
 import tungus.games.graphchanger.game.graph.Graph;
+import tungus.games.graphchanger.game.graph.PartialEdge;
 import tungus.games.graphchanger.game.graph.editing.InputInterpreter.EditingState;
 import tungus.games.graphchanger.game.graph.node.Node;
 
@@ -20,6 +21,7 @@ public class GraphEditingUI {
 
     private int startNodeID = -1, endNodeID = -1;
     private final List<Edge> edgesToCut = new ArrayList<Edge>();
+    private final List<PartialEdge> partialEdgesToCut = new ArrayList<PartialEdge>();
     private Vector2 lineStart = new Vector2(), lineEnd = new Vector2();
     private EditingState state = EditingState.IDLE;
     private boolean isMoveValid = false;
@@ -38,10 +40,12 @@ public class GraphEditingUI {
         lineEnd.set(pos2);
     }
 
-    void cut(List<Edge> edges, boolean valid, Vector2 touchStart, Vector2 touchEnd) {
+    void cut(List<Edge> edges, List<PartialEdge> partialToCut, boolean valid, Vector2 touchStart, Vector2 touchEnd) {
         state = EditingState.REMOVE;
         edgesToCut.clear();
         edgesToCut.addAll(edges);
+        partialEdgesToCut.clear();
+        partialEdgesToCut.addAll(partialToCut);
         lineStart.set(touchStart);
         lineEnd.set(touchEnd);
         isMoveValid = valid;
@@ -56,6 +60,12 @@ public class GraphEditingUI {
         return state == EditingState.REMOVE
                 && isMoveValid
                 && edgesToCut.contains(edge);
+    }
+
+    public boolean isBeingCut(PartialEdge partialEdge) {
+        return state == EditingState.REMOVE
+                && isMoveValid
+                && partialEdgesToCut.contains(partialEdge);
     }
 
     public void renderBehindNodes(SpriteBatch batch) {

@@ -4,6 +4,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import tungus.games.graphchanger.game.graph.Graph;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 
 public class AddEdgeMove extends Move {
@@ -14,6 +15,10 @@ public class AddEdgeMove extends Move {
     public AddEdgeMove(int node1, int node2) {
         this.node1 = node1;
         this.node2 = node2;
+    }
+
+    public AddEdgeMove(InputStream in) throws IOException {
+        this(in.read(), in.read());
     }
 
     @Override

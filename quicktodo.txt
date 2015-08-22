@@ -1,13 +1,14 @@
 Q2:
-- UI for edge prices
 - Levelgen
     - Spawn upgraded neutral nodes as well
 - ..............graphics...............menus........yay.....
 
 Q1:
-- Cutting PartialEdges!
 - Actually implement front mess and Units walking there
 
 Q4:
 - Random movement of Units when stopped
-- Cut multiple Edges
+- Safer PartialEdge unit collision detection (see TODO)
+- Consider whether handling multiple PartialEdges in progress
+  from one Node makes any sense, usability-wise
+- Stop thread...

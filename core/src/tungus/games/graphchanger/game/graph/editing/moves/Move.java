@@ -19,11 +19,11 @@ public abstract class Move {
             int type = in.read();
             switch(type) {
                 case AddEdgeMove.TYPE_ID:
-                    return new AddEdgeMove(in.read(), in.read());
+                    return new AddEdgeMove(in);
                 case RemoveEdgeMove.TYPE_ID:
-                    return new RemoveEdgeMove(in.read(), in.read());
+                    return new RemoveEdgeMove(in);
                 case UpgradeNodeMove.TYPE_ID:
-                    return new UpgradeNodeMove(in.read());
+                    return new UpgradeNodeMove(in);
                 case 0:
                     return NULL; // No Move made
                 default:

@@ -76,4 +76,16 @@ public class EdgeBuilder {
             }
         }
     }
+
+    public void stopEdgeTo(Node other) {
+        Iterator<PartialEdge> it = edgesToBuild.iterator();
+        while (it.hasNext()) {
+            PartialEdge e = it.next();
+            if (e.endNode() == other) {
+                allPartialEdges.remove(e);
+                it.remove();
+                break;
+            }
+        }
+    }
 }

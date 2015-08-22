@@ -53,6 +53,8 @@ class EdgeHandler {
         outNeighbors.remove(other);
         other.removeEdgeFrom(thisNode);
         allEdgesInGraph.remove(new Edge(thisNode, other));
+
+        builder.stopEdgeTo(other);
     }
 
     public void removeEdgeFrom(Node other) {
@@ -91,11 +93,13 @@ class EdgeHandler {
             Node neighbor = it.next();
             if (!other.outNeighbors.contains(neighbor)) {
                 it.remove();
+                allEdgesInGraph.remove(new Edge(thisNode, neighbor));
             }
         }
         for (Node n : other.outNeighbors) {
             if (!outNeighbors.contains(n)) {
                 outNeighbors.add(allNodes.get(n.id));
+                allEdgesInGraph.add(new Edge(thisNode, allNodes.get(n.id)));
             }
         }
 
