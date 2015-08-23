@@ -1,15 +1,40 @@
-Q2:
+Reeeally long term reeeeallly big stuff
+=======================================
+- Graphics
+- Menu + UI
+- AI
+
+
+Kinda mid-long term bigger stuff
+================================
 - Levelgen
     - Spawn upgraded neutral nodes as well
-- ..............graphics...............menus........yay.....
+    - Spawn with prebuilt graph stuff?
 
-Q1:
-- Should it be possible to start a front fight by going against
-  an existing Edge? How? What prior to defend?
 
-Q4:
-- Random movement of Units when stopped
+Bigger things kinda next
+========================
+- Edge contesting
+    - Able to turn built edges
+    - 0% edges visible easily somehow
+    - Even if a contest-edge is down to 0%, try to rebuild until cancelled or 100%
+    - Full Edges can exist fine if there's a 0% PartialEdge against them.
+      They are replaced with PartialEdges when they are "decreased"
+- Priorities:
+    - Defend Node
+    - Fight for contested edges
+        - Spread equally!
+    - Upgrade
+    - Build uncontested edges
+        - Sequentially? Meh, their fault maybe?
+        - Only send the number of units actually needed
+
+
+Small things whenever
+=======================
+- Restart..
+- Random movement of Units when standing
 - Safer PartialEdge unit collision detection (see TODO)
-- Consider whether handling multiple PartialEdges in progress
-  from one Node makes any sense, usability-wise
-- Stop thread...
+- Threads..
+    - Stop read thread when game is over
+    - Listen, connect in separate threads
