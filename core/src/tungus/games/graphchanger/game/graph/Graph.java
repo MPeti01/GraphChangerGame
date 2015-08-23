@@ -39,7 +39,7 @@ public class Graph {
     }
 
     public void addEdge(int n1, int n2) {
-        nodes.get(n1).addEdgeTo(nodes.get(n2));
+        nodes.get(n1).buildEdgeTo(nodes.get(n2));
     }
 
     public void removeEdge(int n1, int n2) {

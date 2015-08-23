@@ -4,7 +4,8 @@ Q2:
 - ..............graphics...............menus........yay.....
 
 Q1:
-- Actually implement front mess and Units walking there
+- Should it be possible to start a front fight by going against
+  an existing Edge? How? What prior to defend?
 
 Q4:
 - Random movement of Units when stopped

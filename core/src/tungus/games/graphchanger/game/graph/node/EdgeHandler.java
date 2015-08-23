@@ -1,5 +1,6 @@
 package tungus.games.graphchanger.game.graph.node;
 
+import tungus.games.graphchanger.game.graph.Destination;
 import tungus.games.graphchanger.game.graph.Edge;
 import tungus.games.graphchanger.game.graph.EdgePricer;
 import tungus.games.graphchanger.game.graph.PartialEdge;
@@ -34,19 +35,29 @@ class EdgeHandler {
         builder = new EdgeBuilder(node, pricer, partialEdges, nodes);
     }
 
-    public Node destinationFromHere() {
-        if (!primaryNeighbors.isEmpty())
-            return nextDirection(primaryNeighbors);
-        else
-            return nextDirection(outNeighbors);
-    }
-
+    /**
+     * Starts building an Edge towards the given Node.
+     */
     public void startEdgeTo(Node other) {
         builder.startEdgeTo(other);
     }
 
+    /**
+     * Adds an incoming Edge to this Node.
+     * Only to be called when the Edge is added to the other Node and the Edge list in other.addEdgeTo(node)
+     */
     public void addEdgeFrom(Node other) {
         inNeighbors.add(other);
+    }
+
+    /**
+     * Instantly creates an Edge between thisNode and the given other Node.
+     * Includes adding the Edge to the list an notifying the other Node to add an inNeighbor.
+     */
+    public void addEdgeTo(Node other) {
+        outNeighbors.add(other);
+        allEdgesInGraph.add(new Edge(thisNode, other));
+        other.addEdgeFrom(thisNode);
     }
 
     public void removeEdgeTo(Node other) {
@@ -61,6 +72,18 @@ class EdgeHandler {
         inNeighbors.remove(other);
     }
 
+    public Destination destinationFromHere(Player p) {
+        PartialEdge toBuild = builder.edgeToBuild();
+        if (toBuild != null) {
+            return toBuild;
+        } else {
+            if (!primaryNeighbors.isEmpty())
+                return nextDirection(primaryNeighbors);
+            else
+                return nextDirection(outNeighbors);
+        }
+    }
+
     private Node nextDirection(List<Node> list) {
         if (list.size() == 0)
             return thisNode;
@@ -68,17 +91,6 @@ class EdgeHandler {
         if (nextDirectionIndex >= list.size())
             nextDirectionIndex = 0;
         return list.get(nextDirectionIndex);
-    }
-
-    public boolean usesPassingUnitFrom(Player p) {
-        if (!wouldUseUnitFrom(p)) return false;
-        Node built = builder.unitUsed();
-        if (built != null) {
-            outNeighbors.add(built);
-            allEdgesInGraph.add(new Edge(thisNode, built));
-            built.addEdgeFrom(thisNode);
-        }
-        return true;
     }
 
     public boolean wouldUseUnitFrom(Player p) {
@@ -123,5 +135,9 @@ class EdgeHandler {
             primaryNeighbors.remove(outNeighbors.get(0));
             removeEdgeTo(outNeighbors.get(0));
         }
+    }
+
+    public void reachingWithEdge(Node source, float progress) {
+        builder.reachingWithEdge(source, progress);
     }
 }

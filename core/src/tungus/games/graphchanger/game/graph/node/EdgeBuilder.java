@@ -1,5 +1,6 @@
 package tungus.games.graphchanger.game.graph.node;
 
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import tungus.games.graphchanger.game.graph.EdgePricer;
 import tungus.games.graphchanger.game.graph.PartialEdge;
 
@@ -10,12 +11,12 @@ import java.util.List;
 /**
  * Handles the creation of Edges by consuming passing Units.
  */
-public class EdgeBuilder {
+public class EdgeBuilder implements PartialEdge.EdgeCompleteListener {
 
     private final EdgePricer pricer;
+
     private final List<PartialEdge> allPartialEdges;
     private final List<Node> allNodes;
-
     private final Node thisNode;
 
     private List<PartialEdge> edgesToBuild = new LinkedList<PartialEdge>();
@@ -29,23 +30,15 @@ public class EdgeBuilder {
 
     public void startEdgeTo(Node goal) {
         int price = pricer.totalPrice(thisNode, goal);
-        PartialEdge newEdge = new PartialEdge(thisNode, goal, price, 0);
+        PartialEdge newEdge = new PartialEdge(thisNode, goal, price, 0, this);
         edgesToBuild.add(newEdge);
         allPartialEdges.add(newEdge);
 
         pricer.edgeBuilt(thisNode.player());
     }
 
-    public Node unitUsed() {
-        PartialEdge toBuild = edgesToBuild.get(0);
-        toBuild.unitArrived();
-        if (toBuild.isComplete()) {
-            edgesToBuild.remove(0);
-            allPartialEdges.remove(toBuild);
-            return toBuild.endNode();
-        } else {
-            return null;
-        }
+    public PartialEdge edgeToBuild() {
+        return edgesToBuild.isEmpty() ? null : edgesToBuild.get(0);
     }
 
     public boolean isBuilding() {
@@ -68,7 +61,7 @@ public class EdgeBuilder {
                 PartialEdge edgeThere = other.edgesToBuild.get(i);
                 Node start = allNodes.get(edgeThere.startNode().id);
                 Node end = allNodes.get(edgeThere.endNode().id);
-                PartialEdge newEdge = new PartialEdge(start, end, edgeThere.totalCost, edgeThere.progress());
+                PartialEdge newEdge = new PartialEdge(start, end, edgeThere.totalCost, edgeThere.progress(), this);
                 edgesToBuild.add(newEdge);
                 allPartialEdges.add(newEdge);
             } else {
@@ -85,6 +78,32 @@ public class EdgeBuilder {
                 allPartialEdges.remove(e);
                 it.remove();
                 break;
+            }
+        }
+    }
+
+    @Override
+    public void onEdgeComplete(PartialEdge built) {
+        if (built != edgesToBuild.get(0))
+            throw new GdxRuntimeException("Completed non-front edge, makes no sense!");
+
+        allPartialEdges.remove(built);
+        edgesToBuild.remove(0);
+        thisNode.addEdgeTo(built.endNode());
+    }
+
+    public void reachingWithEdge(Node source, float progress) {
+        Iterator<PartialEdge> it = edgesToBuild.iterator();
+        while (it.hasNext()) {
+            PartialEdge edge = it.next();
+            if (edge.endNode() == source) {
+                if (progress == 1) {
+                    allPartialEdges.remove(edge);
+                    it.remove();
+                }
+                else {
+                    edge.boundProgress(1 - progress);
+                }
             }
         }
     }

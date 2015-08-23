@@ -11,6 +11,10 @@ import tungus.games.graphchanger.game.players.Player;
  */
 public class PartialEdge implements Destination {
 
+    public static interface EdgeCompleteListener {
+        public void onEdgeComplete(PartialEdge built);
+    }
+
     private static final float COLLIDER_RADIUS = 15f;
     private static final Vector2 temp = new Vector2();
 
@@ -22,12 +26,15 @@ public class PartialEdge implements Destination {
 
     private final float angle;
 
-    public PartialEdge(Node start, Node end, int cost, float progress) {
+    private final EdgeCompleteListener onCompleteListener;
+
+    public PartialEdge(Node start, Node end, int cost, float progress, EdgeCompleteListener listener) {
         this.progress = progress;
         totalCost = cost;
         progressStep = 1f / cost;
         this.start = start;
         this.end = end;
+        onCompleteListener = listener;
         angle = temp.set(end.pos()).sub(start.pos()).angle();
         updateFront();
     }
@@ -62,11 +69,21 @@ public class PartialEdge implements Destination {
 
     @Override
     public Destination nextDestinationFor(Player owner) {
-        return progress == 1 ? end : null;
+        if (progress == 1) {
+            return end;
+        } else {
+            unitArrived();
+            return null;
+        }
     }
 
     public void unitArrived() {
         progress += progressStep;
+        if (progress > 0.9999f) {
+            progress = 1;
+            onCompleteListener.onEdgeComplete(this);
+        }
+        end.reachingWithEdge(start, progress);
         updateFront();
     }
 

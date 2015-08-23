@@ -52,7 +52,7 @@ public class Node implements Destination {
         if (captureHandler.owner() != null) {
             spawnCheck.update(delta);
             if (spawnCheck.shouldSpawn()) {
-                Node dest = nextDestinationFor(captureHandler.owner());
+                Destination dest = nextDestinationFor(captureHandler.owner());
                 if (dest != null) { // Unit not consumed on this node
                     armies[captureHandler.owner().ordinal()].addUnit(this, dest);
                 }
@@ -70,7 +70,7 @@ public class Node implements Destination {
      * @param passingPlayer The owner of the unit
      * @return The next destination for the unit if this Node cannot consume it, null if it can and did.
      */
-    public Node nextDestinationFor(Player passingPlayer) {
+    public Destination nextDestinationFor(Player passingPlayer) {
         if (captureHandler.usesUnitPassingFrom(passingPlayer)) {
             if (captureHandler.justCaptured()) {
                 edges.clearOutNeighbors();
@@ -78,10 +78,8 @@ public class Node implements Destination {
             return null;
         } else if (upgrader.usesUnitPassingFrom(passingPlayer)) {
             return null;
-        } else if (edges.usesPassingUnitFrom(passingPlayer)) {
-            return null;
         } else {
-            return edges.destinationFromHere();
+            return edges.destinationFromHere(passingPlayer);
         }
     }
 
@@ -89,16 +87,26 @@ public class Node implements Destination {
         return captureHandler.wouldUseUnitFrom(p) || upgrader.wouldUseUnitFrom(p) || edges.wouldUseUnitFrom(p);
     }
 
-    public void addEdgeTo(Node other) {
+    public void removeEdgeTo(Node other) {
+        edges.removeEdgeTo(other);
+    }
+
+    /**
+     * Starts building an Edge to the given Node
+     */
+    public void buildEdgeTo(Node other) {
         edges.startEdgeTo(other);
+    }
+
+    /**
+     * Instantly adds an Edge connecting it to the given Node
+     */
+    void addEdgeTo(Node other) {
+        edges.addEdgeTo(other);
     }
 
     void addEdgeFrom(Node other) {
         edges.addEdgeFrom(other);
-    }
-
-    public void removeEdgeTo(Node other) {
-        edges.removeEdgeTo(other);
     }
 
     void removeEdgeFrom(Node other) {
@@ -157,5 +165,15 @@ public class Node implements Destination {
 
     public void upgrade() {
         upgrader.startUpgrade();
+    }
+
+    /**
+     * Notifies the Node that an Edge is being built towards it. Used to synchronize competing edges being built
+     * in opposite directions
+     * @param source The Node the edge is being built from
+     * @param progress How much of the edge is completed
+     */
+    public void reachingWithEdge(Node source, float progress) {
+        edges.reachingWithEdge(source, progress);
     }
 }
