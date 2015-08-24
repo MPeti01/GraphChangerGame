@@ -111,4 +111,9 @@ public class GameScreen extends BaseScreen {
             batch.end();
         }
     }
+
+    @Override
+    public void dispose() {
+        gameController.dispose();
+    }
 }

@@ -12,7 +12,7 @@ public class Main {
 
     public static void genRandomLevel(String file) {
         LevelGenerator generator = new LevelGenerator(file);
-        generator.addStartNodes(30, 450, 30, 770, 0.3f);
+        generator.addStartNodes(30, 450, 30, 770, 0.1f);
         generator.genRandomNodes(30, 30, 450, 30, 770, 80f);
         generator.write();
     }

@@ -1,10 +1,10 @@
 package tungus.games.graphchanger.game.network;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.utils.GdxRuntimeException;
 import tungus.games.graphchanger.game.graph.editing.moves.Move;
 import tungus.games.graphchanger.game.graph.editing.moves.MoveListener;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.LinkedList;
@@ -24,28 +24,36 @@ public class Connection implements MoveListener {
     private Move toSend = Move.NULL;
     private int sentTicks = 0;
 
-    @SuppressWarnings("FieldCanBeLocal")
-    private final Thread reader = new Thread() {
+    private volatile boolean connected = true;
+
+    private final Runnable reader = new Runnable() {
         @Override
         public void run() {
-            while (true) {
+            while (connected) {
                 try {
                     Move m = Move.read(in);
                     synchronized(received) {
                         received.add(m);
                     }
                 } catch (Exception e) {
+                    Gdx.app.log("CONNECTION", "Failed to read, aborting connection");
                     e.printStackTrace();
+                    abortConnection();
                     break;
                 }
             }
+            Gdx.app.log("CONNECTION", "Reader thread stopped");
         }
     };
+    private final Thread readerThread;
+
 
     public Connection(InputStream in, OutputStream out) {
         this.in = in;
         this.out = out;
-        reader.start();
+        readerThread = new Thread(reader);
+        readerThread.setName("Move reader thread");
+        readerThread.start();
     }
 
     @Override
@@ -65,12 +73,15 @@ public class Connection implements MoveListener {
      * Should be called exactly once per tick.
      */
     public void send() {
+        if (!connected) return;
         try {
             toSend.write(out);
             if (toSend != Move.NULL)
-                Gdx.app.log("NETWORK", "Tick " + sentTicks + ": Sent Move " + toSend.toString());
+                Gdx.app.log("COMM", "Tick " + sentTicks + ": Sent Move " + toSend.toString());
         } catch (RuntimeException e) {
-            throw new GdxRuntimeException("Failed to send move", e);
+            Gdx.app.log("CONNECTION", "Failed to send, aborting connection");
+            e.printStackTrace();
+            abortConnection();
         }
         toSend = Move.NULL;
         sentTicks++;
@@ -86,10 +97,27 @@ public class Connection implements MoveListener {
                 Move m = received.remove();
                 if (m != Move.NULL) {
                     listener.addMove(m, nextReceivedTick);
-                    Gdx.app.log("NETWORK", "Tick " + nextReceivedTick + ": Processing Move " + m.toString());
+                    Gdx.app.log("COMM", "Tick " + nextReceivedTick + ": Processing Move " + m.toString());
                 }
                 nextReceivedTick++;
             }
+        }
+    }
+
+    private void abortConnection() {
+        try {
+            connected = false;
+            in.close();
+            out.close();
+            Gdx.app.log("CONNECTION", "Connection aborted. Any further Moves WILL NOT BE SENT.");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void dispose() {
+        if (connected) {
+            abortConnection();
         }
     }
 }

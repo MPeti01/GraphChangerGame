@@ -62,4 +62,8 @@ class GameController {
     public BasicTouchListener getTouchListener() {
         return gameInput;
     }
+
+    public void dispose() {
+        connection.dispose();
+    }
 }
