@@ -35,6 +35,3 @@ Small things whenever
 - Restart..
 - Random movement of Units when standing
 - Safer PartialEdge unit collision detection (see TODO)
-- Threads..
-    - Stop read thread when game is over
-    - Listen, connect in separate threads
