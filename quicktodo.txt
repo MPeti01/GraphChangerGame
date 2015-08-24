@@ -10,6 +10,7 @@ Kinda mid-long term bigger stuff
 - Levelgen
     - Spawn upgraded neutral nodes as well
     - Spawn with prebuilt graph stuff?
+- Don't let the two games get too much time apart and crash
 
 
 Bigger things kinda next
@@ -35,3 +36,38 @@ Small things whenever
 - Restart..
 - Random movement of Units when standing
 - Safer PartialEdge unit collision detection (see TODO)
+
+
+
+BRAINSTORM for everything above game sim level
+- State machine in GameScreen: Starting, playing, paused, over states
+- A state should read user input, read and write network io, and
+  render itself above the game
+- Starting state must be able to create a new GameController
+- Network comm:
+    - Use a delimiting byte
+    - Have a class responsible for communicating and serving anyone interested under itself
+    - It should have a read thread, and read blocks until the delim, then offer it to the
+      observers until one consumes it
+    - These observers would also want to write, sooo... just have a write method?
+      There are no separate wanna-write threads after all
+
+- NetworkCommunicator instance:
+    created in GameScreen, stored in a field so that it can be disposed
+
+- GameScreenState interface:
+    - GSS update/render(delta) - returns what the next state should be
+    - void onEnter()
+
+- Implementer classes are in the same package as GS, so they access some fields:
+    - the GameController
+    - the States themselves
+- They also implement NetworkTokenListener or whatever it's called and InputProcessor
+
+- The active State needs to get the input. THIS IS THE MOST QUESTIONABLE
+    - Have an InputPasser class also implementing it
+    - NetworkCommunicator and Gdx.input pass stuff to that
+    - It passes stuff to the active State, as set by GC
+    - ALTERNATIVELY, plain and simple:
+      store or get the multiplexer from Gdx.input, modify the state it points to in
+      GameScreen.setState()

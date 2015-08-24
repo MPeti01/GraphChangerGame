@@ -41,6 +41,6 @@ public class AddEdgeMove extends Move {
 
     @Override
     public String toString() {
-        return "[Connect " + node1 + " and " + node2 + "]";
+        return "Connect " + node1 + " and " + node2;
     }
 }

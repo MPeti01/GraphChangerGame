@@ -61,7 +61,10 @@ public class RemoveEdgeMove extends Move {
     public String toString() {
         StringBuilder builder = new StringBuilder();
         for (int i = 0; 2*i < idList.length; i++) {
-            builder.append("Cut " + idList[2 * i] + " and " + idList[2 * i + 1] + "; ");
+            builder.append("Cut " + idList[2 * i] + " and " + idList[2 * i + 1]);
+            if (2*i + 2 < idList.length) { // This is not tha last pair
+                builder.append(", ");
+            }
         }
         return builder.toString();
     }

@@ -35,4 +35,9 @@ public class UpgradeNodeMove extends Move {
         }
 
     }
+
+    @Override
+    public String toString() {
+        return "Upgrade " + node;
+    }
 }

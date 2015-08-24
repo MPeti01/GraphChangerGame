@@ -2,7 +2,7 @@ package tungus.games.graphchanger.game;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import tungus.games.graphchanger.BasicTouchListener;
+import tungus.games.graphchanger.input.BasicTouchListener;
 import tungus.games.graphchanger.game.gamestate.GameSimulator;
 import tungus.games.graphchanger.game.gamestate.GameState;
 import tungus.games.graphchanger.game.graph.GraphRenderer;

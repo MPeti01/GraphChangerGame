@@ -77,7 +77,7 @@ public class Connection implements MoveListener {
         try {
             toSend.write(out);
             if (toSend != Move.NULL)
-                Gdx.app.log("COMM", "Tick " + sentTicks + ": Sent Move " + toSend.toString());
+                Gdx.app.log("COMM", "Tick " + sentTicks + ": Sent Move [" + toSend.toString() + "]");
         } catch (RuntimeException e) {
             Gdx.app.log("CONNECTION", "Failed to send, aborting connection");
             e.printStackTrace();
@@ -97,7 +97,7 @@ public class Connection implements MoveListener {
                 Move m = received.remove();
                 if (m != Move.NULL) {
                     listener.addMove(m, nextReceivedTick);
-                    Gdx.app.log("COMM", "Tick " + nextReceivedTick + ": Processing Move " + m.toString());
+                    Gdx.app.log("COMM", "Tick " + nextReceivedTick + ": Received Move [" + m.toString() + "]");
                 }
                 nextReceivedTick++;
             }

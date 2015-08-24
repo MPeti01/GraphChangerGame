@@ -1,4 +1,4 @@
-package tungus.games.graphchanger;
+package tungus.games.graphchanger.input;
 
 import com.badlogic.gdx.math.Vector2;
 

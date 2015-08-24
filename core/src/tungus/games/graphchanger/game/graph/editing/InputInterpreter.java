@@ -1,7 +1,7 @@
 package tungus.games.graphchanger.game.graph.editing;
 
 import com.badlogic.gdx.math.Vector2;
-import tungus.games.graphchanger.BasicTouchListener;
+import tungus.games.graphchanger.input.BasicTouchListener;
 import tungus.games.graphchanger.game.gamestate.GameState;
 import tungus.games.graphchanger.game.graph.Edge;
 import tungus.games.graphchanger.game.graph.EdgePricer;
