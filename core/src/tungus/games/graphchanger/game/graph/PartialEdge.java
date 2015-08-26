@@ -1,5 +1,6 @@
 package tungus.games.graphchanger.game.graph;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import tungus.games.graphchanger.DrawUtils;
@@ -87,10 +88,6 @@ public class PartialEdge implements Destination {
         updateFront();
     }
 
-    public boolean isComplete() {
-        return progress >= 0.9999f; // Fuzzy testing in case of float inaccuracy
-    }
-
     /**
      * Sets the progress to the given parameter if it was higher.
      */
@@ -99,7 +96,14 @@ public class PartialEdge implements Destination {
         updateFront();
     }
 
-    public void render(SpriteBatch batch) {
+    public void renderBack(SpriteBatch batch) {
+        batch.setColor(start.player().backColor);
+        DrawUtils.drawLine(batch, start.pos(), end.pos(), 20f);
+    }
+
+    public void renderFront(SpriteBatch batch) {
+        Color c = start.player().edgeColor;
+        batch.setColor(c.r, c.g, c.b, batch.getColor().a);
         // Draw the edge
         DrawUtils.drawLine(batch, start.pos(), front, 10f);
 

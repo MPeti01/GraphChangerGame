@@ -1,5 +1,6 @@
 package tungus.games.graphchanger.game.graph;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import tungus.games.graphchanger.DrawUtils;
@@ -30,6 +31,8 @@ public class Edge {
     }
 
     public void render(SpriteBatch batch) {
+        Color c = node1.player().edgeColor;
+        batch.setColor(c.r, c.g, c.b, batch.getColor().a);
         DrawUtils.drawLine(batch, v1, v2, 10f);
 
         // Draw the two short lines for the arrow

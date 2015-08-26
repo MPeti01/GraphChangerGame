@@ -1,5 +1,6 @@
 package tungus.games.graphchanger.game.graph;
 
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import tungus.games.graphchanger.game.graph.editing.GraphEditingUI;
 import tungus.games.graphchanger.game.graph.node.Node;
@@ -12,18 +13,25 @@ import java.util.List;
 public class GraphRenderer {
 
     public void renderEdges(List<Edge> edges, List<PartialEdge> partialEdges, GraphEditingUI editor, SpriteBatch batch) {
+        batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE);
+        for (PartialEdge edge : partialEdges) {
+            edge.renderBack(batch);
+            batch.setColor(1, 1, 1, 1);
+        }
+        batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+
         for (Edge edge : edges) {
             if (editor.isBeingCut(edge)) {
-                batch.setColor(1, 0.8f, 0.8f, 0.8f);
+                batch.setColor(1, 1, 1, 0.5f);
             }
             edge.render(batch);
             batch.setColor(1, 1, 1, 1);
         }
         for (PartialEdge edge : partialEdges) {
             if (editor.isBeingCut(edge)) {
-                batch.setColor(1, 0.8f, 0.8f, 0.8f);
+                batch.setColor(1, 1, 1, 0.5f);
             }
-            edge.render(batch);
+            edge.renderFront(batch);
             batch.setColor(1, 1, 1, 1);
         }
     }

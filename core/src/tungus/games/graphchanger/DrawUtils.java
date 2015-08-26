@@ -12,8 +12,8 @@ public class DrawUtils {
 
     public static void drawLine(SpriteBatch batch, Vector2 v1, float width, float length, float angle) {
         //noinspection SuspiciousNameCombination
-        batch.draw(Assets.Tex.LINE.t, v1.x, v1.y-5f,     // Tex, pos
-                0, 5f,                                   // Rotation point
+        batch.draw(Assets.Tex.LINE.t, v1.x, v1.y - width / 2,     // Tex, pos
+                0, width / 2,                                   // Rotation point
                 length, width,                             // Width, height
                 1, 1,                                    // Scale
                 angle);                                  // Rotation

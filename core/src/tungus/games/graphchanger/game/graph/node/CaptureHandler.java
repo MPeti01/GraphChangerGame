@@ -71,8 +71,8 @@ class CaptureHandler {
     }
 
     public void renderBar(SpriteBatch batch) {
-        bar.setColor(attacker == null ? Color.WHITE : attacker.color(),
-                        owner == null ? Color.WHITE : owner.color());
+        bar.setColor(attacker == null ? Color.WHITE : attacker.mainColor,
+                owner == null ? Color.WHITE : owner.mainColor);
         bar.draw(batch, (float)captureProgress/upgrader.unitsToCapture());
     }
 }

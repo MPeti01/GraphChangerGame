@@ -10,7 +10,6 @@ import tungus.games.graphchanger.game.network.SimpleMessage;
  */
 public class PlayingState extends GameScreenState {
 
-    private GameScreen screen = null;
     private GameScreenState next = null;
     private boolean goNext = false;
 
