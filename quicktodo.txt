@@ -1,13 +1,3 @@
-Directly next up
-================
-- Clean up state stuff
-    - Some logging would be nice
-    - Either don't pass GS to the states or don't have them store it
-    - If they store it, move it to a superclass
-    - Maybe move some of the inputs to a superclass as well
-    - Figure out some place for comm protocol values
-
-
 Small things whenever
 =======================
 - Random movement of Units when standing

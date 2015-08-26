@@ -1,21 +1,27 @@
 package tungus.games.graphchanger.game.gamescreen;
 
-import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import tungus.games.graphchanger.game.network.NetworkCommunicator.NetworkTokenListener;
 
-public interface GameScreenState {
+public abstract class GameScreenState extends InputAdapter implements NetworkTokenListener {
 
-    public void onEnter(GameScreen screen);
+    static final int RESTART_CODE = 254;
+
+    protected final GameScreen screen;
+
+    protected GameScreenState(GameScreen screen) {
+        this.screen = screen;
+    }
+
+    public void onEnter() {
+    }
 
     /**
      * Update and render the screen.
      *
      * @return What the next State should be
      */
-    public GameScreenState render(GameScreen screen, SpriteBatch batch, float delta);
+    public abstract GameScreenState render(SpriteBatch batch, float delta);
 
-    public InputProcessor userInputListener();
-
-    public NetworkTokenListener networkInputListener();
 }

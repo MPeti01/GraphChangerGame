@@ -1,41 +1,28 @@
 package tungus.games.graphchanger.game.gamescreen;
 
-import com.badlogic.gdx.InputAdapter;
-import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import tungus.games.graphchanger.game.network.NetworkCommunicator.NetworkTokenListener;
 
-public class StartingState implements GameScreenState {
+public class StartingState extends GameScreenState {
 
-    public StartingState(boolean seed) {
-
+    public StartingState(GameScreen screen, boolean seed) {
+        super(screen);
     }
 
     @Override
-    public void onEnter(GameScreen screen) {
+    public void onEnter() {
+        Gdx.app.log("LIFECYCLE", "Starting state entered");
         screen.newGame();
     }
 
     @Override
-    public GameScreenState render(GameScreen screen, SpriteBatch batch, float delta) {
-        return new PlayingState();
-    }
-
-    private InputProcessor userInput = new InputAdapter();
-    private NetworkTokenListener remoteInput = new NetworkTokenListener() {
-        @Override
-        public boolean receivedMessage(int[] m) {
-            return false;
-        }
-    };
-
-    @Override
-    public InputProcessor userInputListener() {
-        return userInput;
+    public GameScreenState render(SpriteBatch batch, float delta) {
+        return new PlayingState(screen);
     }
 
     @Override
-    public NetworkTokenListener networkInputListener() {
-        return remoteInput;
+    public boolean receivedMessage(int[] m) {
+        return false;
     }
+
 }

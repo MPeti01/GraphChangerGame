@@ -46,11 +46,11 @@ public class GameScreen extends BaseScreen {
         userInput = new InputMultiplexer();
         Gdx.input.setInputProcessor(userInput);
 
-        currentState = new StartingState(player == Player.P1);
-        comm.addListener(currentState.networkInputListener());
-        userInput.addProcessor(currentState.userInputListener());
+        currentState = new StartingState(this, player == Player.P1);
+        comm.addListener(currentState);
+        userInput.addProcessor(currentState);
 
-        currentState.onEnter(this);
+        currentState.onEnter();
     }
     private final boolean mp;
     private float time = 0;
@@ -70,7 +70,7 @@ public class GameScreen extends BaseScreen {
                 }
             }
         } else {
-            GameScreenState next = currentState.render(this, batch, delta);
+            GameScreenState next = currentState.render(batch, delta);
             if (next != currentState) {
                 setState(next);
             }
@@ -83,13 +83,13 @@ public class GameScreen extends BaseScreen {
     }
 
     public void setState(GameScreenState next) {
-        comm.removeListener(currentState.networkInputListener());
-        userInput.removeProcessor(currentState.userInputListener());
+        comm.removeListener(currentState);
+        userInput.removeProcessor(currentState);
 
-        comm.addListener(0, next.networkInputListener()); // To the front!
-        userInput.addProcessor(0, next.userInputListener());
+        comm.addListener(0, next); // To the front!
+        userInput.addProcessor(0, next);
 
-        next.onEnter(this);
+        next.onEnter();
         currentState = next;
     }
 
