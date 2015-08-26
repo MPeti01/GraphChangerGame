@@ -9,7 +9,7 @@ import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.net.SocketHints;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import tungus.games.graphchanger.BaseScreen;
-import tungus.games.graphchanger.game.GameScreen;
+import tungus.games.graphchanger.game.gamescreen.GameScreen;
 import tungus.games.graphchanger.game.players.Player;
 
 public class NetMPScreen extends BaseScreen {

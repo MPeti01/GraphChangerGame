@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * Handles the creation of Edges by consuming passing Units.
  */
-public class EdgeBuilder implements PartialEdge.EdgeCompleteListener {
+class EdgeBuilder implements PartialEdge.EdgeCompleteListener {
 
     private final EdgePricer pricer;
 

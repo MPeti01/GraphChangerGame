@@ -1,8 +1,7 @@
-package tungus.games.graphchanger.game;
+package tungus.games.graphchanger.game.gamescreen;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import tungus.games.graphchanger.input.BasicTouchListener;
 import tungus.games.graphchanger.game.gamestate.GameSimulator;
 import tungus.games.graphchanger.game.gamestate.GameState;
 import tungus.games.graphchanger.game.graph.GraphRenderer;
@@ -11,10 +10,9 @@ import tungus.games.graphchanger.game.graph.editing.InputInterpreter;
 import tungus.games.graphchanger.game.graph.editing.moves.MoveListener;
 import tungus.games.graphchanger.game.graph.editing.moves.MoveListenerMultiplexer;
 import tungus.games.graphchanger.game.network.Connection;
+import tungus.games.graphchanger.game.network.NetworkCommunicator;
 import tungus.games.graphchanger.game.players.Player;
-
-import java.io.InputStream;
-import java.io.OutputStream;
+import tungus.games.graphchanger.input.BasicTouchListener;
 
 /**
  * Coordinates the game's components (network, simulation, rendering, later AI?), dictating when everything should happen.
@@ -26,11 +24,11 @@ class GameController {
     private final GraphEditingUI editUI = new GraphEditingUI();
     private final GraphRenderer graphRenderer = new GraphRenderer();
 
-    public GameController(Player player, FileHandle level, InputStream in, OutputStream out) {
+    public GameController(Player player, FileHandle level, NetworkCommunicator comm) {
         simulator = new GameSimulator(level, player);
         MoveListener moveListener = simulator;
-        if (in != null && out != null) {
-            connection = new Connection(in, out);
+        if (comm != null) {
+            connection = new Connection(comm);
             moveListener = new MoveListenerMultiplexer(connection, moveListener);
         } else {
             connection = null;
@@ -63,7 +61,7 @@ class GameController {
         return gameInput;
     }
 
-    public void dispose() {
-        connection.dispose();
+    public void takeUserInput(boolean inp) {
+        gameInput.takeUserInput(inp);
     }
 }

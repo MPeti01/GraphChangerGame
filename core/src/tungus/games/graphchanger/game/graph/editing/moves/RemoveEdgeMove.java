@@ -1,12 +1,10 @@
 package tungus.games.graphchanger.game.graph.editing.moves;
 
-import com.badlogic.gdx.utils.GdxRuntimeException;
 import tungus.games.graphchanger.game.graph.Edge;
 import tungus.games.graphchanger.game.graph.Graph;
 import tungus.games.graphchanger.game.graph.PartialEdge;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
 
@@ -29,11 +27,9 @@ public class RemoveEdgeMove extends Move {
         }
     }
 
-    public RemoveEdgeMove(InputStream in) throws IOException {
-        idList = new int[in.read()];
-        for (int i = 0; i < idList.length; i++) {
-            idList[i] = in.read();
-        }
+    public RemoveEdgeMove(int[] m) {
+        idList = new int[m[1]];
+        System.arraycopy(m, 2, idList, 0, idList.length);
     }
 
     @Override
@@ -44,16 +40,11 @@ public class RemoveEdgeMove extends Move {
     }
 
     @Override
-    public void write(OutputStream out) {
-        try {
-            out.write(TYPE_ID);
-            out.write(idList.length);
-            for (int x : idList) {
-                out.write(x);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new GdxRuntimeException("Failed to write Move");
+    public void writeTo(OutputStream out) throws IOException {
+        out.write(TYPE_ID);
+        out.write(idList.length);
+        for (int x : idList) {
+            out.write(x);
         }
     }
 

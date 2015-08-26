@@ -9,17 +9,15 @@ import tungus.games.graphchanger.BaseScreen;
 import tungus.games.graphchanger.android.BluetoothConnector.Client;
 import tungus.games.graphchanger.android.BluetoothConnector.ClientState;
 import tungus.games.graphchanger.android.BluetoothConnector.Server;
-import tungus.games.graphchanger.game.GameScreen;
+import tungus.games.graphchanger.game.gamescreen.GameScreen;
 import tungus.games.graphchanger.game.players.Player;
 
 import java.util.LinkedList;
 import java.util.List;
 
 public class BluetoothConnectScreen extends BaseScreen {
-	
-	private static final int levelNum = 4;
-	
-	private final Client client;
+
+    private final Client client;
 	private final Server server;
 	
 	private boolean serverReady = false;

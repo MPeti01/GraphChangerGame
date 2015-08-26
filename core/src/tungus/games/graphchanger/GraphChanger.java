@@ -5,7 +5,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import tungus.games.graphchanger.game.GameScreen;
+import tungus.games.graphchanger.game.gamescreen.GameScreen;
 
 public class GraphChanger extends Game {
 

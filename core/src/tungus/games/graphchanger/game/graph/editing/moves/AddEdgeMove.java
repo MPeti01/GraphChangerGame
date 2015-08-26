@@ -1,10 +1,8 @@
 package tungus.games.graphchanger.game.graph.editing.moves;
 
-import com.badlogic.gdx.utils.GdxRuntimeException;
 import tungus.games.graphchanger.game.graph.Graph;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 
 public class AddEdgeMove extends Move {
@@ -17,8 +15,8 @@ public class AddEdgeMove extends Move {
         this.node2 = node2;
     }
 
-    public AddEdgeMove(InputStream in) throws IOException {
-        this(in.read(), in.read());
+    public AddEdgeMove(int[] m) {
+        this(m[1], m[2]);
     }
 
     @Override
@@ -27,16 +25,10 @@ public class AddEdgeMove extends Move {
     }
 
     @Override
-    public void write(OutputStream out) {
-        try {
-            out.write(TYPE_ID);
-            out.write(node1);
-            out.write(node2);
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new GdxRuntimeException("Failed to write Move");
-        }
-
+    public void writeTo(OutputStream out) throws IOException {
+        out.write(TYPE_ID);
+        out.write(node1);
+        out.write(node2);
     }
 
     @Override

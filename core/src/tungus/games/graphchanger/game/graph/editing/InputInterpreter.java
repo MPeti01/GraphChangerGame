@@ -1,7 +1,6 @@
 package tungus.games.graphchanger.game.graph.editing;
 
 import com.badlogic.gdx.math.Vector2;
-import tungus.games.graphchanger.input.BasicTouchListener;
 import tungus.games.graphchanger.game.gamestate.GameState;
 import tungus.games.graphchanger.game.graph.Edge;
 import tungus.games.graphchanger.game.graph.EdgePricer;
@@ -12,6 +11,7 @@ import tungus.games.graphchanger.game.graph.editing.moves.RemoveEdgeMove;
 import tungus.games.graphchanger.game.graph.editing.moves.UpgradeNodeMove;
 import tungus.games.graphchanger.game.graph.node.Node;
 import tungus.games.graphchanger.game.players.Player;
+import tungus.games.graphchanger.input.BasicTouchListener;
 
 import java.util.List;
 
@@ -24,20 +24,22 @@ public class InputInterpreter implements BasicTouchListener {
 
     public static enum EditingState {IDLE, ADD, REMOVE}
     private EditingState state = EditingState.IDLE;
-
     private final MoveListener moveListener;
-    private final Player moveMaker;
 
+    private final Player moveMaker;
     private final NodeFinder nodeFinder = new NodeFinder();
+
     private final EdgeFinder edgeFinder = new EdgeFinder();
     private final MoveValidator validator;
-
     private EdgePricer pricer = null;
 
     private int startNodeID = -1;
+
     private int endNodeID = -1;
     private final Vector2 touchStart = new Vector2();
     private final Vector2 touchEnd = new Vector2();
+
+    private boolean inputBlocked = true;
 
     public InputInterpreter(MoveListener l, Player moveMaker) {
         this.moveListener = l;
@@ -46,8 +48,13 @@ public class InputInterpreter implements BasicTouchListener {
         validator = new MoveValidator(nodeFinder, edgeFinder, moveMaker);
     }
 
+    public void takeUserInput(boolean inp) {
+        inputBlocked = !inp;
+    }
+
     @Override
     public void onDown(Vector2 touch) {
+        if (inputBlocked) return;
         touchStart.set(touch);
         touchEnd.set(touch);
         Node start = nodeFinder.nodeAt(touch);
@@ -63,6 +70,7 @@ public class InputInterpreter implements BasicTouchListener {
 
     @Override
     public void onDrag(Vector2 touch) {
+        if (inputBlocked) return;
         touchEnd.set(touch);
         if (state == EditingState.ADD) {
             // Check for end node to snap to
@@ -78,6 +86,7 @@ public class InputInterpreter implements BasicTouchListener {
 
     @Override
     public void onUp(Vector2 touch) {
+        if (inputBlocked) return;
         if (state == EditingState.ADD
                 && endNodeID != -1
                 && validator.canConnect(startNodeID, endNodeID)) {
@@ -97,6 +106,7 @@ public class InputInterpreter implements BasicTouchListener {
 
     @Override
     public void doubleTap(Vector2 touch) {
+        if (inputBlocked) return;
         Node node = nodeFinder.nodeAt(touch);
         if (node != null && validator.canUpgrade(node)) {
             moveListener.addMove(new UpgradeNodeMove(node.id));

@@ -5,10 +5,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import tungus.games.graphchanger.game.players.Player;
 
-public class Upgrader {
+class Upgrader {
 
-    public static final float[] SPAWN_TIMES = new float[]{3.6f, 1.2f, 0.4f};// TODO Eventually remove config
-    public static final int[] UPGRADE_COSTS =   new int[]{0,  16,   40};    // And make classes local...
+    public static final float[] SPAWN_TIMES = new float[]{3.6f, 1.2f, 0.4f};
+    public static final int[] UPGRADE_COSTS = new int[]{0, 16, 40};
     public static final int[] UNITS_TO_CAP =   new int[]{4,  10,   25};
 
     private static final float BAR_LENGTH = 50;
