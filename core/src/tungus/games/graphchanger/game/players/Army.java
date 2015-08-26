@@ -7,6 +7,7 @@ import tungus.games.graphchanger.game.graph.Destination;
 import tungus.games.graphchanger.game.graph.Graph;
 import tungus.games.graphchanger.game.graph.node.Node;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -38,14 +39,12 @@ public class Army {
         units.add(u);
     }
 
-    public void removeUnit(Unit unit) {
-        units.remove(unit);
-    }
-
     public void updateUnits(float delta) {
-        // Units might call to remove themselves from update, so iterate backwards to avoid messing with indices
-        for (int i = units.size()-1; i >= 0; i--) {
-            units.get(i).update(delta);
+        for (Iterator<Unit> it = units.iterator(); it.hasNext(); ) {
+            Unit u = it.next();
+            if (u.update(delta)) {
+                it.remove();
+            }
         }
     }
 

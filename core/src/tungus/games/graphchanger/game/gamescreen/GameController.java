@@ -25,7 +25,7 @@ class GameController {
     private final GraphRenderer graphRenderer = new GraphRenderer();
 
     public GameController(Player player, FileHandle level, NetworkCommunicator comm) {
-        simulator = new GameSimulator(level, player);
+        simulator = new GameSimulator(level);
         MoveListener moveListener = simulator;
         if (comm != null) {
             connection = new Connection(comm);

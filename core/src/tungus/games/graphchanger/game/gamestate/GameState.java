@@ -5,7 +5,6 @@ import tungus.games.graphchanger.game.graph.EdgePricer;
 import tungus.games.graphchanger.game.graph.Graph;
 import tungus.games.graphchanger.game.graph.editing.moves.Move;
 import tungus.games.graphchanger.game.players.Army;
-import tungus.games.graphchanger.game.players.UnitCollisionChecker;
 
 /**
  * Stores and handles all the objects describing a game state: The {@link Graph} and two {@link Army Armies}
@@ -38,9 +37,8 @@ public class GameState {
         m.applyTo(graph);
     }
 
-    public void update(float delta, UnitCollisionChecker unitCollider) {
+    public void update(float delta) {
         graph.updateNodes(delta, p1, p2);
-        unitCollider.removeColliders(p1, p2);
         p1.updateUnits(delta);
         p2.updateUnits(delta);
     }

@@ -35,17 +35,18 @@ class Unit {
         return destination;
     }
 
-    public void update(float delta) {
+    public boolean update(float delta) {
         if (destination.isReachedAt(pos)) {
             Destination next = destination.nextDestinationFor(owner.player());
             if (next == null) {
-                kill();
+                return true;
             } else {
                 setDestination(next);
             }
         } else {
             pos.add(vel.x * delta, vel.y * delta);
         }
+        return false;
     }
 
     private static final Vector2 tempPos = new Vector2();
@@ -53,9 +54,5 @@ class Unit {
         tempPos.set(pos);
         tempPos.add(vel.x * sinceTick, vel.y * sinceTick);
         batch.draw(Assets.Tex.UNITS[owner.id()].t, tempPos.x - SIZE / 2, tempPos.y - SIZE / 2, SIZE, SIZE);
-    }
-
-    void kill() {
-        owner.removeUnit(this);
     }
 }

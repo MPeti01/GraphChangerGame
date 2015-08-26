@@ -5,8 +5,6 @@ import com.badlogic.gdx.utils.IntMap;
 import tungus.games.graphchanger.game.graph.GraphLoader;
 import tungus.games.graphchanger.game.graph.editing.moves.Move;
 import tungus.games.graphchanger.game.graph.editing.moves.MoveListener;
-import tungus.games.graphchanger.game.players.Player;
-import tungus.games.graphchanger.game.players.UnitCollisionChecker;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,9 +30,7 @@ public class GameSimulator implements MoveListener {
     private int oldestNewMove = 0;
     private float timeSinceTick = 0;
 
-    private final UnitCollisionChecker unitCollider = new UnitCollisionChecker();
-
-    public GameSimulator(FileHandle level, Player player) {
+    public GameSimulator(FileHandle level) {
         GraphLoader loader = new GraphLoader(level);
         queue = new StateQueue(loader, STORED_TICKS);
     }
@@ -71,7 +67,7 @@ public class GameSimulator implements MoveListener {
                     next.applyMove(m);
                 }
             }
-            next.update(TICK_TIME, unitCollider);
+            next.update(TICK_TIME);
         }
         queue.rotate();
         currentTickNum++;
