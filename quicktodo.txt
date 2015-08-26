@@ -1,17 +1,10 @@
-Next up
-=======
-- Look at edge validation stuff
-    - Allow contest edge cuts
-    - Don't allow intersecting BuildingEdges
-
-
 Small things whenever
 =======================
 - Random movement of Units when standing
 - Safer PartialEdge unit collision detection (see TODO)
 
 
-Bigger things kinda next
+Bigger things next up
 ========================
 - Edge contesting
     - Able to turn built edges

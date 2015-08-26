@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Vector2;
 import tungus.games.graphchanger.game.graph.Edge;
 import tungus.games.graphchanger.game.graph.PartialEdge;
 import tungus.games.graphchanger.game.graph.node.Node;
+import tungus.games.graphchanger.game.players.Player;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -31,10 +32,15 @@ class EdgeFinder {
         return intersectingFull;
     }
 
-    public List<PartialEdge> partialEdgesThrough(Vector2 start, Vector2 end) {
+    /**
+     * Only finds PartialEdges started by a given player. This way contested edges can be cut
+     * without problems from trying to cut the other player's half as well.
+     */
+    public List<PartialEdge> partialEdgesThrough(Vector2 start, Vector2 end, Player player) {
         intersectingPartial.clear();
         for (PartialEdge edge : partialEdges) {
-            if (Intersector.intersectSegments(start, end, edge.startNode().pos(), edge.endNode().pos(), intersection)) {
+            if (edge.startNode().player() == player
+                    && Intersector.intersectSegments(start, end, edge.startNode().pos(), edge.endNode().pos(), intersection)) {
                 if (intersection.dst2(end) > 1 && intersection.dst2(start) > 1) {
                     intersectingPartial.add(edge);
                 }

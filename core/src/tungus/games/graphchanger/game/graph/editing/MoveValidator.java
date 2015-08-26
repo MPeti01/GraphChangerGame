@@ -40,6 +40,7 @@ class MoveValidator {
                 && node1 != node2
                 && nodes.nodesThrough(node1.pos(), node2.pos()).isEmpty()
                 && edges.edgesThrough(node1.pos(), node2.pos()).isEmpty()
+                && edges.partialEdgesThrough(node1.pos(), node2.pos(), moveMaker).isEmpty()
                 && !edges.hasEdgeBetween(node1, node2);
     }
 
