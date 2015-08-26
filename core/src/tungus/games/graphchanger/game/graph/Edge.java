@@ -5,13 +5,14 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import tungus.games.graphchanger.DrawUtils;
 import tungus.games.graphchanger.game.graph.node.Node;
+import tungus.games.graphchanger.game.players.Player;
 
 /**
- * An edge in the graph, connecting two {@link tungus.games.graphchanger.game.graph.node.Node Nodes}. <br>
- * Nodes store their neighbors, so this class is for building and rendering.
+ * An edge in the graph, connecting two {@link tungus.games.graphchanger.game.graph.node.Node Nodes}.
  */
-public class Edge {
+public class Edge implements Destination {
 
+    private static final float COLLIDER_RADIUS = 10f;
     private static final Vector2 temp = new Vector2();
     public final Node node1;
     public final Node node2;
@@ -47,5 +48,37 @@ public class Edge {
             return false;
         Edge other = (Edge)o;
         return (other.node1.equals(node1)) && (other.node2.equals(node2));
+    }
+
+    @Override
+    public Vector2 pos() {
+        return v2;
+    }
+
+    @Override
+    public boolean isReachedAt(Vector2 unitPos) {
+        return unitPos.dst2(v2) < COLLIDER_RADIUS * COLLIDER_RADIUS;
+    }
+
+    @Override
+    public Destination nextDestinationFor(Player owner) {
+        return node2;
+    }
+
+    @Override
+    public Destination localCopy(Graph g) {
+        for (Edge e : g.edges) {
+            if (e.equals(this)) {
+                return e;
+            }
+        }
+        // No Edge in that list. Either it was reduced to a partial or removed since last frame.
+        for (PartialEdge e : g.partialEdges) {
+            if (e.startNode().equals(node1) && e.endNode().equals(node2)) {
+                return e;
+            }
+        }
+        // No PartialEdge found, the Edge must have been removed
+        return null;
     }
 }

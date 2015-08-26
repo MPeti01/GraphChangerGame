@@ -76,11 +76,16 @@ public class Node implements Destination {
                 edges.clearOutNeighbors();
             }
             return null;
-        } else if (upgrader.usesUnitPassingFrom(passingPlayer)) {
-            return null;
-        } else {
-            return edges.destinationFromHere(passingPlayer);
         }
+        Destination contestedEdge = edges.contestedEdge();
+        if (contestedEdge != null) {
+            return contestedEdge;
+        }
+        if (upgrader.usesUnitPassingFrom(passingPlayer)) {
+            return null;
+        }
+
+        return edges.destinationFromHere();
     }
 
     public boolean wouldUseUnitFrom(Player p) {
@@ -129,8 +134,12 @@ public class Node implements Destination {
         return edges.inNeighbors;
     }
 
-    public List<Node> primaryNeighbors() {
-        return edges.primaryNeighbors;
+    void clearPrimaryNeighbors() {
+        edges.primaryNeighbors.clear();
+    }
+
+    void addPrimaryNeighbor(Node node) {
+        edges.addPrimaryNeighbor(node);
     }
 
     public void set(Node other) {
@@ -175,5 +184,9 @@ public class Node implements Destination {
      */
     public void reachingWithEdge(Node source, float progress) {
         edges.reachingWithEdge(source, progress);
+    }
+
+    boolean isContesting(Node neighbor) {
+        return edges.isContesting(neighbor);
     }
 }

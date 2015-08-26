@@ -54,10 +54,9 @@ class EdgeFinder {
         this.partialEdges = partialEdges;
     }
 
-    public boolean hasEdgeBetween(Node node1, Node node2) {
+    public boolean edgeAlreadyBuilt(Node node1, Node node2) {
         for (Edge edge : edges) {
-            if (edge.node1.equals(node1) && edge.node2.equals(node2) ||
-                edge.node1.equals(node2) && edge.node2.equals(node1)) {
+            if (edge.node1.equals(node1) && edge.node2.equals(node2)) {
                 return true;
             }
         }

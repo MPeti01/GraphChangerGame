@@ -19,6 +19,7 @@ class EdgeHandler {
 
     public final List<Node> inNeighbors = new LinkedList<Node>();
     public final List<Node> outNeighbors = new LinkedList<Node>();
+    public final List<Edge> outEdges = new LinkedList<Edge>();
     private final Node thisNode;
     private final EdgeBuilder builder;
 
@@ -26,7 +27,7 @@ class EdgeHandler {
     /**
      * Stores the neighboring node(s) with the closest neutral/enemy nodes that way. Empty if none reachable.
      */
-    public final List<Node> primaryNeighbors = new ArrayList<Node>();
+    public final List<Edge> primaryNeighbors = new ArrayList<Edge>();
     private int nextDirectionIndex = 0;
 
     public EdgeHandler(Node node, List<Node> nodes, List<Edge> edges, EdgePricer pricer, List<PartialEdge> partialEdges) {
@@ -56,35 +57,55 @@ class EdgeHandler {
      */
     public void addEdgeTo(Node other) {
         outNeighbors.add(other);
-        allEdgesInGraph.add(new Edge(thisNode, other));
+        Edge e = new Edge(thisNode, other);
+        outEdges.add(e);
+        allEdgesInGraph.add(e);
         other.addEdgeFrom(thisNode);
     }
 
     public void removeEdgeTo(Node other) {
         outNeighbors.remove(other);
         other.removeEdgeFrom(thisNode);
-        allEdgesInGraph.remove(new Edge(thisNode, other));
-
+        removeFromEdgeLists(other);
         builder.stopEdgeTo(other);
     }
+
+    /**
+     * Handles the removal of an Edge instance to a given Node
+     */
+    private void removeFromEdgeLists(Node goal) {
+        Edge toRemove = null;
+        for (Edge e : outEdges) {
+            if (e.node2.equals(goal)) {
+                toRemove = e;
+                break;
+            }
+        }
+        if (toRemove != null) {
+            outEdges.remove(toRemove);
+            allEdgesInGraph.remove(toRemove);
+        }
+    }
+
+
 
     public void removeEdgeFrom(Node other) {
         inNeighbors.remove(other);
     }
 
-    public Destination destinationFromHere(Player p) {
-        PartialEdge toBuild = builder.edgeToBuild();
+    public Destination destinationFromHere() {
+        PartialEdge toBuild = builder.nextToBuild();
         if (toBuild != null) {
             return toBuild;
         } else {
             if (!primaryNeighbors.isEmpty())
                 return nextDirection(primaryNeighbors);
             else
-                return nextDirection(outNeighbors);
+                return nextDirection(outEdges);
         }
     }
 
-    private Node nextDirection(List<Node> list) {
+    private Destination nextDirection(List<? extends Destination> list) {
         if (list.size() == 0)
             return thisNode;
         nextDirectionIndex++;
@@ -99,23 +120,23 @@ class EdgeHandler {
 
     public void set(EdgeHandler other, List<Node> allNodes) {
         nextDirectionIndex = other.nextDirectionIndex;
-
-        Iterator<Node> it = outNeighbors.iterator();
-        while (it.hasNext()) {
-            Node neighbor = it.next();
+        for (int i = outNeighbors.size() - 1; i >= 0; i--) {
+            Node neighbor = outNeighbors.get(i);
             if (!other.outNeighbors.contains(neighbor)) {
-                it.remove();
-                allEdgesInGraph.remove(new Edge(thisNode, neighbor));
+                removeEdgeTo(neighbor);
             }
         }
+
         for (Node n : other.outNeighbors) {
             if (!outNeighbors.contains(n)) {
                 outNeighbors.add(allNodes.get(n.id));
-                allEdgesInGraph.add(new Edge(thisNode, allNodes.get(n.id)));
+                Edge e = new Edge(thisNode, allNodes.get(n.id));
+                outEdges.add(e);
+                allEdgesInGraph.add(e);
             }
         }
 
-        it = inNeighbors.iterator();
+        Iterator<Node> it = inNeighbors.iterator();
         while (it.hasNext()) {
             Node neighbor = it.next();
             if (!other.inNeighbors.contains(neighbor)) {
@@ -132,12 +153,38 @@ class EdgeHandler {
 
     public void clearOutNeighbors() {
         while(!outNeighbors.isEmpty()) {
-            primaryNeighbors.remove(outNeighbors.get(0));
             removeEdgeTo(outNeighbors.get(0));
         }
+        primaryNeighbors.clear();
+        builder.clearEdges();
     }
 
     public void reachingWithEdge(Node source, float progress) {
-        builder.reachingWithEdge(source, progress);
+        if (outNeighbors.contains(source)) {
+            outNeighbors.remove(source);
+            source.removeEdgeFrom(thisNode);
+            removeFromEdgeLists(source);
+            builder.reachingWithEdge(source, progress, true);
+        } else {
+            builder.reachingWithEdge(source, progress, false);
+        }
+
+    }
+
+    public void addPrimaryNeighbor(Node node) {
+        for (Edge e : outEdges) {
+            if (e.node2.equals(node)) {
+                primaryNeighbors.add(e);
+                break;
+            }
+        }
+    }
+
+    public boolean isContesting(Node neighbor) {
+        return outNeighbors.contains(neighbor) || builder.isContesting(neighbor);
+    }
+
+    public PartialEdge contestedEdge() {
+        return builder.nextContested();
     }
 }

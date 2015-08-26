@@ -1,33 +1,16 @@
 Small things whenever
 =======================
+- More HP for Node (esp level 1) when owned by player than when uncaptured
+- Better PartialEdge unit collision detection
 - Random movement of Units when standing
-- Safer PartialEdge unit collision detection (see TODO)
-
-
-Bigger things next up
-========================
-- Edge contesting
-    - Able to turn built edges
-    - 0% edges visible easily somehow
-    - Even if a contest-edge is down to 0%, try to rebuild until cancelled or 100%
-    - Full Edges can exist fine if there's a 0% PartialEdge against them.
-      They are replaced with PartialEdges when they are "decreased"
-- Priorities:
-    - Defend Node
-    - Fight for contested edges
-        - Spread equally!
-    - Upgrade
-    - Build uncontested edges
-        - Sequentially? Meh, their fault maybe?
-        - Only send the number of units actually needed
-
+- Don't let the two games get too much time apart and crash
 
 Kinda mid-long term bigger stuff
 ================================
 - Levelgen
     - Spawn upgraded neutral nodes as well
     - Spawn with prebuilt graph stuff?
-- Don't let the two games get too much time apart and crash
+- EdgeHandler, EdgeBuilder could reaaally do with a big refactor
 - Think of how single player should be handled, where to connect
   the AI to the system, what should happen to the network classes
   and their pretty tight integration as it is atm

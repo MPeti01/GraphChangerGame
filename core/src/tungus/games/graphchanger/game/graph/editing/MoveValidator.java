@@ -27,7 +27,7 @@ class MoveValidator {
             if (edge.node1.player() != moveMaker) return false;
         }
         for (PartialEdge partialEdge : partialToCut) {
-            if (partialEdge.startNode().player() != moveMaker || partialEdge.progress() == 0)
+            if (partialEdge.startNode().player() != moveMaker)
                 return false;
         }
         return true;
@@ -41,7 +41,7 @@ class MoveValidator {
                 && nodes.nodesThrough(node1.pos(), node2.pos()).isEmpty()
                 && edges.edgesThrough(node1.pos(), node2.pos()).isEmpty()
                 && edges.partialEdgesThrough(node1.pos(), node2.pos(), moveMaker).isEmpty()
-                && !edges.hasEdgeBetween(node1, node2);
+                && !edges.edgeAlreadyBuilt(node1, node2);
     }
 
     boolean canUpgrade(Node node) {

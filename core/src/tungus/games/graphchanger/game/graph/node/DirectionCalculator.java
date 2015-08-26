@@ -20,7 +20,7 @@ public class DirectionCalculator {
 
     public void setDirections(List<Node> nodes) {
         for (Node n : nodes) {
-            n.primaryNeighbors().clear();
+            n.clearPrimaryNeighbors();
         }
         int s = nodes.size();
         for (int i = 0; i < s; i++) {
@@ -55,12 +55,12 @@ public class DirectionCalculator {
                 if (neighbor.player() == player) {
                     if (distanceFromGoal[neighbor.id] == -1) {
                         // Newly visited node, add to queue
-                        neighbor.primaryNeighbors().add(node);
+                        neighbor.addPrimaryNeighbor(node);
                         distanceFromGoal[neighbor.id] = distanceFromGoal[node.id] + 1;
                         queue.add(neighbor);
                     } else if (distanceFromGoal[neighbor.id] == distanceFromGoal[node.id] + 1) {
                         // Should send Units this way too
-                        neighbor.primaryNeighbors().add(node);
+                        neighbor.addPrimaryNeighbor(node);
                     }
                 }
             }

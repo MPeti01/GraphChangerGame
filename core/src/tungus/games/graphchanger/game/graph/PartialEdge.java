@@ -16,7 +16,7 @@ public class PartialEdge implements Destination {
         public void onEdgeComplete(PartialEdge built);
     }
 
-    private static final float COLLIDER_RADIUS = 15f;
+    private static final float COLLIDER_RADIUS = 10f;
     private static final Vector2 temp = new Vector2();
 
     public final int totalCost;
@@ -65,7 +65,6 @@ public class PartialEdge implements Destination {
     @Override
     public boolean isReachedAt(Vector2 unitPos) {
         return unitPos.dst2(front) < COLLIDER_RADIUS*COLLIDER_RADIUS;
-        //TODO OR if the Unit is past that if the front jumped back! Rare bug possibility, but should fix
     }
 
     @Override
@@ -129,7 +128,7 @@ public class PartialEdge implements Destination {
         for (Edge e : g.edges) {
             if (e.node1.equals(start) && e.node2.equals(end)) {
                 // The Edge was completed, anyone coming here should go on to its end
-                return g.nodes.get(end.id);
+                return e;
             }
         }
         // No finished Edge found, it must have been removed.
