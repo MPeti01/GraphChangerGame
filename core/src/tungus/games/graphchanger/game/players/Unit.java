@@ -5,6 +5,8 @@ import com.badlogic.gdx.math.Vector2;
 import tungus.games.graphchanger.Assets;
 import tungus.games.graphchanger.game.graph.Destination;
 
+import java.util.Random;
+
 /**
  * A single unit moving independently on the map.
  */
@@ -17,7 +19,9 @@ class Unit {
     private Destination destination;
     final Vector2 pos;
     private final Vector2 vel;
-
+    private final Vector2 idleRandomVel = new Vector2(1, 0);
+    boolean reachedDest = false;
+    private Random rand = new Random(123);
 
     public Unit(Army owner) {
         this.owner = owner;
@@ -29,6 +33,7 @@ class Unit {
     public void setDestination(Destination dest) {
         this.destination = dest;
         vel.set(dest.pos()).sub(pos).nor().scl(SPEED);
+        reachedDest = false;
     }
 
     public Destination getDestination() {
@@ -36,17 +41,29 @@ class Unit {
     }
 
     public boolean update(float delta) {
-        if (destination.isReachedAt(pos)) {
+
+        if (reachedDest || destination.isReachedAt(pos)) {
             Destination next = destination.nextDestinationFor(owner.player());
             if (next == null) {
                 return true;
+            } else if (next == destination) {
+                reachedDest = true;
             } else {
                 setDestination(next);
             }
-        } else {
-            pos.add(vel.x * delta, vel.y * delta);
         }
+        if (reachedDest) {
+            setIdleMovementVel();
+        }
+        pos.add(vel.x * delta, vel.y * delta);
         return false;
+    }
+
+    private void setIdleMovementVel() {
+        rand.setSeed((long) pos.x);
+        //idleRandomVel.rotate((float)rand.nextGaussian()*5);
+        idleRandomVel.rotate(rand.nextFloat() * 360);
+        vel.set(pos).sub(destination.pos()).scl(-1 / 20f).add(idleRandomVel).scl(SPEED);
     }
 
     private static final Vector2 tempPos = new Vector2();

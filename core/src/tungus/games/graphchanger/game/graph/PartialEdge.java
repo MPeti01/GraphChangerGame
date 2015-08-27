@@ -16,7 +16,6 @@ public class PartialEdge implements Destination {
         public void onEdgeComplete(PartialEdge built);
     }
 
-    private static final float COLLIDER_RADIUS = 10f;
     private static final Vector2 temp = new Vector2();
 
     public final int totalCost;
@@ -64,7 +63,10 @@ public class PartialEdge implements Destination {
 
     @Override
     public boolean isReachedAt(Vector2 unitPos) {
-        return unitPos.dst2(front) < COLLIDER_RADIUS*COLLIDER_RADIUS;
+        // Past front, i.e. in the same direction from front that end is from start
+        return (start.pos().x != end.pos().x) ?
+                (start.pos().x < end.pos().x) == (front.x <= unitPos.x) :
+                (start.pos().y < end.pos().y) == (front.y <= unitPos.y);
     }
 
     @Override

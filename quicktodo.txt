@@ -1,7 +1,5 @@
 Small things whenever
 =======================
-- More HP for Node (esp level 1) when owned by player than when uncaptured
-- Better PartialEdge unit collision detection
 - Random movement of Units when standing
 - Don't let the two games get too much time apart and crash
 
@@ -14,6 +12,7 @@ Kinda mid-long term bigger stuff
 - Think of how single player should be handled, where to connect
   the AI to the system, what should happen to the network classes
   and their pretty tight integration as it is atm
+- Figure out Gradle? (http://www.petrikainulainen.net/getting-started-with-gradle/)
 
 
 Reeeally long term reeeeallly big stuff

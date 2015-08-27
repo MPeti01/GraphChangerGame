@@ -9,7 +9,8 @@ class Upgrader {
 
     public static final float[] SPAWN_TIMES = new float[]{3.6f, 1.2f, 0.4f};
     public static final int[] UPGRADE_COSTS = new int[]{0, 16, 40};
-    public static final int[] UNITS_TO_CAP =   new int[]{4,  10,   25};
+    public static final int[] UNITS_TO_CAP_NEUTRAL = new int[]{3, 8, 16};
+    public static final int[] UNITS_TO_CAP_PLAYER = new int[]{6, 16, 32};
 
     private static final float BAR_LENGTH = 50;
     private static final float BAR_WIDTH = 7;
@@ -71,6 +72,6 @@ class Upgrader {
     }
 
     public int unitsToCapture() {
-        return UNITS_TO_CAP[level];
+        return owner == null ? UNITS_TO_CAP_NEUTRAL[level] : UNITS_TO_CAP_PLAYER[level];
     }
 }

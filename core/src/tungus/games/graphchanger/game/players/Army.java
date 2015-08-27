@@ -29,13 +29,14 @@ public class Army {
     }
 
     public void addUnit(Node creator, Destination destination) {
-        addUnit(creator.pos(), destination);
+        addUnit(creator.pos(), destination, false);
     }
 
-    private void addUnit(Vector2 pos, Destination destination) {
+    private void addUnit(Vector2 pos, Destination destination, boolean reached) {
         Unit u = unitPool.obtain();
         u.pos.set(pos);
         u.setDestination(destination);
+        u.reachedDest = reached;
         units.add(u);
     }
 
@@ -67,7 +68,7 @@ public class Army {
             // Make sure to get the Node instance from the Graph handled with this Army
             Destination dest = u.getDestination().localCopy(graph);
             if (dest != null) {
-                addUnit(u.pos, u.getDestination().localCopy(graph));
+                addUnit(u.pos, u.getDestination().localCopy(graph), u.reachedDest);
             } // else a PartialEdge was removed, the units on it die - no need to add them.
 
         }
