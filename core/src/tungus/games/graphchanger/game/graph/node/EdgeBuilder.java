@@ -3,6 +3,7 @@ package tungus.games.graphchanger.game.graph.node;
 import tungus.games.graphchanger.game.graph.EdgePricer;
 import tungus.games.graphchanger.game.graph.PartialEdge;
 
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -80,6 +81,7 @@ class EdgeBuilder implements PartialEdge.EdgeCompleteListener {
                 allPartialEdges.add(newEdge);
             }
         }
+        Collections.sort(edgesToBuild); // Ensure consistent order
     }
 
     public void stopEdgeTo(Node other) {

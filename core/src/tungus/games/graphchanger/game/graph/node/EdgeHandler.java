@@ -6,10 +6,7 @@ import tungus.games.graphchanger.game.graph.EdgePricer;
 import tungus.games.graphchanger.game.graph.PartialEdge;
 import tungus.games.graphchanger.game.players.Player;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Handles the edges at a Node. This includes building/removing them, listing them and giving directions to units.
@@ -148,6 +145,7 @@ class EdgeHandler {
                 inNeighbors.add(allNodes.get(n.id));
             }
         }
+        Collections.sort(outEdges); // Ensure consistent order
         builder.set(other.builder);
     }
 

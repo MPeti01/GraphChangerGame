@@ -10,7 +10,7 @@ import tungus.games.graphchanger.game.players.Player;
 /**
  * An edge in the graph, connecting two {@link tungus.games.graphchanger.game.graph.node.Node Nodes}.
  */
-public class Edge implements Destination {
+public class Edge implements Destination, Comparable<Edge> {
 
     private static final float COLLIDER_RADIUS = 10f;
     private static final Vector2 temp = new Vector2();
@@ -80,5 +80,13 @@ public class Edge implements Destination {
         }
         // No PartialEdge found, the Edge must have been removed
         return null;
+    }
+
+    @Override
+    public int compareTo(Edge other) {
+        if (other.node2.equals(this.node2))
+            return other.node1.id - this.node1.id;
+        else
+            return other.node2.id - this.node2.id;
     }
 }

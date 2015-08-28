@@ -10,20 +10,20 @@ import tungus.games.graphchanger.game.players.Player;
 /**
  * An Edge under construction by an EdgeBuilder.
  */
-public class PartialEdge implements Destination {
+public class PartialEdge implements Destination, Comparable<PartialEdge> {
 
     public static interface EdgeCompleteListener {
+
         public void onEdgeComplete(PartialEdge built);
     }
-
     private static final Vector2 temp = new Vector2();
 
     public final int totalCost;
+
     private final float progressStep;
     private final Node start, end;
     private float progress; // 0 to 1
     private Vector2 front = new Vector2();
-
     private final float angle;
 
     private final EdgeCompleteListener onCompleteListener;
@@ -64,9 +64,10 @@ public class PartialEdge implements Destination {
     @Override
     public boolean isReachedAt(Vector2 unitPos) {
         // Past front, i.e. in the same direction from front that end is from start
-        return (start.pos().x != end.pos().x) ?
-                (start.pos().x < end.pos().x) == (front.x <= unitPos.x) :
-                (start.pos().y < end.pos().y) == (front.y <= unitPos.y);
+        return front.equals(unitPos) ||
+                ((start.pos().x != end.pos().x) ?
+                        (start.pos().x < end.pos().x) == (front.x < unitPos.x) :
+                        (start.pos().y < end.pos().y) == (front.y < unitPos.y));
     }
 
     @Override
@@ -140,7 +141,15 @@ public class PartialEdge implements Destination {
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof PartialEdge)) return false;
-        PartialEdge other = (PartialEdge)o;
+        PartialEdge other = (PartialEdge) o;
         return start.equals(other.start) && end.equals(other.end);
+    }
+
+    @Override
+    public int compareTo(PartialEdge other) {
+        if (other.end.equals(this.end))
+            return other.start.id - this.start.id;
+        else
+            return other.end.id - this.end.id;
     }
 }
