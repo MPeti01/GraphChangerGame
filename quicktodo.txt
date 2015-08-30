@@ -1,9 +1,7 @@
 Up next
 =======
-- Comment GraphLoader and SymmetricEmpty!!
-- Implements seed communication in StartingState
-   ==> Random gen working, yay
-- More generators, choice
+- Comment all Loader classes, GSS classes!!
+- Consider unifying Empty and MixedPos generators
 
 Small things whenever
 =======================

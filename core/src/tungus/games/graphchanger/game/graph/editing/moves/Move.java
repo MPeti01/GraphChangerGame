@@ -57,5 +57,10 @@ public abstract class Move implements NetworkCommunicator.Writable {
                 throw new GdxRuntimeException("Couldn't write Move!");
             }
         }
+
+        @Override
+        public String toString() {
+            return "No move";
+        }
     };
 }

@@ -25,9 +25,11 @@ public class PlayingState extends GameScreenState {
 
     @Override
     public GameScreenState render(SpriteBatch batch, float delta) {
-        batch.begin();
-        screen.gameController.render(delta, batch);
-        batch.end();
+        if (next == null) {
+            batch.begin();
+            screen.gameController.render(delta, batch);
+            batch.end();
+        }
         return goNext ? next : this;
     }
 

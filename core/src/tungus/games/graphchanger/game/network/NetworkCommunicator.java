@@ -51,7 +51,10 @@ public class NetworkCommunicator {
                         readMessage[i] = in.read();
                     } while (readMessage[i++] != DELIM);
                     synchronized (listeners) {
-                        for (NetworkTokenListener l : listeners) {
+                        // Indexed loop so that called methods can swap the listeners in the list (when starting new game)
+                        //noinspection ForLoopReplaceableByForEach
+                        for (int j = 0; j < listeners.size(); j++) {
+                            NetworkTokenListener l = listeners.get(j);
                             if (l.receivedMessage(readMessage)) {
                                 break;
                             }
