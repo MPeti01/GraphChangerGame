@@ -2,7 +2,7 @@ package tungus.games.graphchanger.game.gamestate;
 
 import tungus.games.graphchanger.game.graph.EdgePricer;
 import tungus.games.graphchanger.game.graph.Graph;
-import tungus.games.graphchanger.game.graph.GraphLoader;
+import tungus.games.graphchanger.game.graph.load.GraphLoader;
 import tungus.games.graphchanger.game.players.Army;
 import tungus.games.graphchanger.game.players.Player;
 

@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import tungus.games.graphchanger.BaseScreen;
 import tungus.games.graphchanger.GraphChanger;
+import tungus.games.graphchanger.game.graph.load.GraphLoader;
 import tungus.games.graphchanger.game.network.NetworkCommunicator;
 import tungus.games.graphchanger.game.players.Player;
 import tungus.games.graphchanger.input.BasicTouchWrapper;
@@ -93,13 +94,13 @@ public class GameScreen extends BaseScreen {
         currentState = next;
     }
 
-    public void newGame() {
+    public void newGame(GraphLoader loader) {
         if (gameController != null) {
             comm.removeListener(1);
             userInput.removeProcessor(1);
         }
 
-        gameController = new GameController(player, Gdx.files.internal("levels/random1.lvl"), comm);
+        gameController = new GameController(player, loader, comm);
 
         BasicTouchWrapper inputToGame = new BasicTouchWrapper(gameController.getTouchListener());
         inputToGame.setCamera(cam);

@@ -1,6 +1,5 @@
 package tungus.games.graphchanger.game.gamescreen;
 
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import tungus.games.graphchanger.game.gamestate.GameSimulator;
 import tungus.games.graphchanger.game.gamestate.GameState;
@@ -9,6 +8,7 @@ import tungus.games.graphchanger.game.graph.editing.GraphEditingUI;
 import tungus.games.graphchanger.game.graph.editing.InputInterpreter;
 import tungus.games.graphchanger.game.graph.editing.moves.MoveListener;
 import tungus.games.graphchanger.game.graph.editing.moves.MoveListenerMultiplexer;
+import tungus.games.graphchanger.game.graph.load.GraphLoader;
 import tungus.games.graphchanger.game.network.Connection;
 import tungus.games.graphchanger.game.network.NetworkCommunicator;
 import tungus.games.graphchanger.game.players.Player;
@@ -24,8 +24,8 @@ class GameController {
     private final GraphEditingUI editUI = new GraphEditingUI();
     private final GraphRenderer graphRenderer = new GraphRenderer();
 
-    public GameController(Player player, FileHandle level, NetworkCommunicator comm) {
-        simulator = new GameSimulator(level);
+    public GameController(Player player, GraphLoader loader, NetworkCommunicator comm) {
+        simulator = new GameSimulator(loader);
         MoveListener moveListener = simulator;
         if (comm != null) {
             connection = new Connection(comm);

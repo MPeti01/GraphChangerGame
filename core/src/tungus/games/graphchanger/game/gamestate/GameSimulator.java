@@ -1,10 +1,9 @@
 package tungus.games.graphchanger.game.gamestate;
 
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.IntMap;
-import tungus.games.graphchanger.game.graph.GraphLoader;
 import tungus.games.graphchanger.game.graph.editing.moves.Move;
 import tungus.games.graphchanger.game.graph.editing.moves.MoveListener;
+import tungus.games.graphchanger.game.graph.load.GraphLoader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,8 +29,7 @@ public class GameSimulator implements MoveListener {
     private int oldestNewMove = 0;
     private float timeSinceTick = 0;
 
-    public GameSimulator(FileHandle level) {
-        GraphLoader loader = new GraphLoader(level);
+    public GameSimulator(GraphLoader loader) {
         queue = new StateQueue(loader, STORED_TICKS);
     }
 

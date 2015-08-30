@@ -1,27 +1,30 @@
-package tungus.games.graphchanger.game.graph;
+package tungus.games.graphchanger.game.graph.load;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector2;
+import tungus.games.graphchanger.game.graph.Edge;
+import tungus.games.graphchanger.game.graph.EdgePricer;
+import tungus.games.graphchanger.game.graph.PartialEdge;
 import tungus.games.graphchanger.game.graph.node.Node;
 import tungus.games.graphchanger.game.players.Player;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Locale;
+import java.util.Scanner;
 
 /**
- * Loads the {@link tungus.games.graphchanger.game.graph.node.Node Nodes} and {@link Edge Edges} for a {@link Graph} from a file.
+ * Loads the {@link tungus.games.graphchanger.game.graph.node.Node Nodes} and {@link tungus.games.graphchanger.game.graph.Edge Edges} for a {@link tungus.games.graphchanger.game.graph.Graph} from a file.
  */
-public class GraphLoader {
+public class FileLoader extends GraphLoader {
 
     private final FileHandle file;
-    public List<Node> nodes;
-    public List<Edge> edges;
-    public List<PartialEdge> partialEdges;
 
-
-    public GraphLoader(FileHandle file) {
+    public FileLoader(FileHandle file) {
         this.file = file;
     }
 
+    @Override
     public void load(EdgePricer pricer) {
         nodes = new ArrayList<Node>();
         edges = new LinkedList<Edge>();
@@ -35,16 +38,5 @@ public class GraphLoader {
             else
                 nodes.add(new Node(Player.values()[p-1], new Vector2(sc.nextFloat(), sc.nextFloat()), nodes.size(), nodes, edges, pricer, partialEdges));
         }
-    }
-
-    public void duplicate(EdgePricer pricer) {
-        List<Node> newNodes = new ArrayList<Node>();
-        List<Edge> newEdges = new ArrayList<Edge>();
-        partialEdges = new LinkedList<PartialEdge>();
-        for (Node n : nodes) {
-            newNodes.add(new Node(n, newNodes, newEdges, pricer, partialEdges));
-        }
-        nodes = newNodes;
-        edges = newEdges;
     }
 }

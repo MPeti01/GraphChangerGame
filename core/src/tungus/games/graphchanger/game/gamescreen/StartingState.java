@@ -2,6 +2,7 @@ package tungus.games.graphchanger.game.gamescreen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import tungus.games.graphchanger.game.graph.load.FileLoader;
 
 public class StartingState extends GameScreenState {
 
@@ -12,7 +13,7 @@ public class StartingState extends GameScreenState {
     @Override
     public void onEnter() {
         Gdx.app.log("LIFECYCLE", "Starting state entered");
-        screen.newGame();
+        screen.newGame(new FileLoader(Gdx.files.internal("levels/random1.lvl")));
     }
 
     @Override
