@@ -22,18 +22,11 @@ class StateQueue {
     public StateQueue(GraphLoader loader, int size) {
         this.size = size;
         queue = new GameState[this.size];
-
-        EdgePricer pricer = new EdgePricer();
-        loader.load(pricer);
-
+        loader.load();
         for (int i = 0; i < size; i++)
         {
-            if (i != 0) { // Create new objects to avoid Node/Edge/List instance sharing between States
-                pricer = new EdgePricer();
-                loader.duplicate(pricer);
-            }
-
-            Graph g = new Graph(loader.nodes, loader.edges, loader.partialEdges);
+            EdgePricer pricer = new EdgePricer();
+            Graph g = loader.createGraph(pricer);
             Army a1 = new Army(Player.P1);
             Army a2 = new Army(Player.P2);
             queue[i] = new GameState(g, pricer, a1, a2);

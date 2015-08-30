@@ -3,7 +3,6 @@ package tungus.games.graphchanger.game.graph.load;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector2;
 import tungus.games.graphchanger.game.graph.Edge;
-import tungus.games.graphchanger.game.graph.EdgePricer;
 import tungus.games.graphchanger.game.graph.PartialEdge;
 import tungus.games.graphchanger.game.graph.node.Node;
 import tungus.games.graphchanger.game.players.Player;
@@ -25,7 +24,7 @@ public class FileLoader extends GraphLoader {
     }
 
     @Override
-    public void load(EdgePricer pricer) {
+    public void load() {
         nodes = new ArrayList<Node>();
         edges = new LinkedList<Edge>();
         partialEdges = new LinkedList<PartialEdge>();
@@ -34,9 +33,9 @@ public class FileLoader extends GraphLoader {
         while (sc.hasNext()) {
             int p = sc.nextInt();
             if (p == 0)
-                nodes.add(new Node(new Vector2(sc.nextFloat(), sc.nextFloat()), nodes.size(), nodes, edges, pricer, partialEdges));
+                newNode(new Vector2(sc.nextFloat(), sc.nextFloat()));
             else
-                nodes.add(new Node(Player.values()[p-1], new Vector2(sc.nextFloat(), sc.nextFloat()), nodes.size(), nodes, edges, pricer, partialEdges));
+                newNode(new Vector2(sc.nextFloat(), sc.nextFloat()), Player.values()[p - 1]);
         }
     }
 }

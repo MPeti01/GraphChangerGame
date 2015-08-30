@@ -1,3 +1,10 @@
+Up next
+=======
+- Comment GraphLoader and SymmetricEmpty!!
+- Implements seed communication in StartingState
+   ==> Random gen working, yay
+- More generators, choice
+
 Small things whenever
 =======================
 - Random movement of Units when standing

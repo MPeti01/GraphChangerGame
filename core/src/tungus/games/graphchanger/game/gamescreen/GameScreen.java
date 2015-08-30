@@ -17,6 +17,9 @@ import java.io.OutputStream;
 
 public class GameScreen extends BaseScreen {
 
+    public static final float GAME_WIDTH = 480;
+    public static final float GAME_HEIGHT = 800;
+
     private final SpriteBatch batch;
     private final Camera cam;
     private final InputMultiplexer userInput;
@@ -34,7 +37,7 @@ public class GameScreen extends BaseScreen {
 
     public GameScreen(Game game, Player player, InputStream in, OutputStream out) {
         super(game);
-        cam = new OrthographicCamera(480, 800);
+        cam = new OrthographicCamera(GAME_WIDTH, GAME_HEIGHT);
         cam.position.set(cam.viewportWidth / 2, cam.viewportHeight / 2, 0);
         cam.update();
         batch = new SpriteBatch();

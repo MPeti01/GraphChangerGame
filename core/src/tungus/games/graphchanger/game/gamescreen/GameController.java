@@ -18,6 +18,7 @@ import tungus.games.graphchanger.input.BasicTouchListener;
  * Coordinates the game's components (network, simulation, rendering, later AI?), dictating when everything should happen.
  */
 class GameController {
+
     private final GameSimulator simulator;
     private final Connection connection;
     private final InputInterpreter gameInput;
