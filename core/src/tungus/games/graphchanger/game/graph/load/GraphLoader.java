@@ -12,12 +12,20 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * Creates a Graph. This abstract class provides methods to make creating Nodes/Edges
+ * and creating many separate Graph instances easier. Subclasses actually fill the Node
+ * and Edge lists.
+ */
 public abstract class GraphLoader {
 
     public List<Node> nodes = new ArrayList<Node>();
     public List<Edge> edges = new LinkedList<Edge>();
     public List<PartialEdge> partialEdges = new LinkedList<PartialEdge>();
 
+    /**
+     * Loads or creates the data needed for the Graph.
+     */
     public abstract void load();
 
     protected void newNode(Vector2 pos) {
@@ -25,9 +33,15 @@ public abstract class GraphLoader {
     }
 
     protected void newNode(Vector2 pos, Player player) {
+        /* The null EdgePricer is okay, because we duplicate the Nodes with an existing
+        EdgePricer before creating a Graph from the lists anyway. */
         nodes.add(new Node(player, pos, nodes.size(), nodes, edges, null, partialEdges));
     }
 
+    /**
+     * Creates new Lists, Nodes and Edges so that separate Graph instances will not
+     * reference the same compositing objects.
+     */
     private void duplicate(EdgePricer pricer) {
         List<Node> newNodes = new ArrayList<Node>();
         List<Edge> newEdges = new LinkedList<Edge>();
@@ -43,6 +57,7 @@ public abstract class GraphLoader {
     }
 
     public Graph createGraph(EdgePricer pricer) {
+        if (nodes.isEmpty()) throw new IllegalStateException("Graph not loaded yet!");
         duplicate(pricer);
         return new Graph(nodes, edges, partialEdges);
     }

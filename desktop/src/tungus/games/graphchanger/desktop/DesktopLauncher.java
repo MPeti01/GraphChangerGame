@@ -30,6 +30,20 @@ public class DesktopLauncher implements ActionListener{
     JButton jb = new JButton("Start");
     JTextField jtf_port = new JTextField("12345", 4);
     JTextField jtf_host = new JTextField(readFile(), 10);
+
+    public DesktopLauncher() {
+        jb.addActionListener(this);
+        jf.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        jf.setLayout(new FlowLayout());
+        jf.setBounds(100, 100, 500, 90);
+        jf.add(new JLabel("Leave host empty to create server"));
+        jf.add(jtf_host);
+        jf.add(jtf_port);
+        jf.add(jb);
+        jf.setVisible(true);
+        GraphChanger.mpScreen = NetMPScreen.class;
+    }
+
     private String readFile() {
         try {
             BufferedReader reader = new BufferedReader(new FileReader("lastconnection.txt"));
@@ -51,18 +65,6 @@ public class DesktopLauncher implements ActionListener{
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-    }
-
-    public DesktopLauncher(){
-        jb.addActionListener(this);
-        jf.setLayout(new FlowLayout());
-        jf.setBounds(100,100,500,90);
-        jf.add(new JLabel("Leave host empty to create server"));
-        jf.add(jtf_host);
-        jf.add(jtf_port);
-        jf.add(jb);
-        jf.setVisible(true);
-        GraphChanger.mpScreen = NetMPScreen.class;
     }
 
     public static void main(String[] arg) {

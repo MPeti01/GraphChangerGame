@@ -22,10 +22,25 @@ public class GameScreen extends BaseScreen {
 
     private final SpriteBatch batch;
     private final Camera cam;
+
+    /**
+     * The main InputProcessor for this Screen. Set up to delegate
+     * firstly to the current GameScreenState (for UI and game flow control),
+     * secondly to the active GameController (for game input).
+     */
     private final InputMultiplexer userInput;
 
+    /**
+     * Which player this client plays as
+     */
     private final Player player;
 
+    /**
+     * Used for communicating with the remote client if there is one.
+     * Set up to offer incoming messages
+     * firstly to the current GameScreenState (for UI and game flow control),
+     * secondly to the active GameController (for game input).
+     */
     final NetworkCommunicator comm;
 
     GameController gameController;
@@ -86,7 +101,11 @@ public class GameScreen extends BaseScreen {
         comm.dispose();
     }
 
-    public void setState(GameScreenState next) {
+    /**
+     * Transistions to the given GameScreenState.
+     * Binds the user and network inputs to this state from the previous one.
+     */
+    private void setState(GameScreenState next) {
         comm.removeListener(currentState);
         userInput.removeProcessor(currentState);
 
@@ -97,6 +116,10 @@ public class GameScreen extends BaseScreen {
         currentState = next;
     }
 
+    /**
+     * Creates a new GameController that uses the given GraphLoader for its initial setup.
+     * Binds the user and network inputs to this instance from the previous one.
+     */
     public void newGame(GraphLoader loader) {
         if (gameController != null) {
             comm.removeListener(1);

@@ -5,6 +5,10 @@ import tungus.games.graphchanger.game.players.Player;
 
 import java.util.Random;
 
+/**
+ * Generates pairs of symmetrical Nodes. All Nodes are owned by the players at the start,
+ * each player owning one Node of all pairs.
+ */
 public class MixedPositionGenerator extends SymmetricGenerator {
 
     private static final int DEFAULT_NODE_COUNT = 30;
@@ -22,9 +26,6 @@ public class MixedPositionGenerator extends SymmetricGenerator {
 
     @Override
     public void load() {
-        float splitRatio = 0.1f + rand.nextFloat() * 0.2f;
-        newNode(new Vector2(MARGIN + splitRatio * WIDTH, MARGIN + splitRatio * HEIGHT), Player.P1);
-        newNode(new Vector2(MARGIN + (1 - splitRatio) * WIDTH, MARGIN + (1 - splitRatio) * HEIGHT), Player.P2);
         while (nodes.size() < nodeCount) {
             Vector2 pos1 = new Vector2();
             Vector2 pos2 = new Vector2();

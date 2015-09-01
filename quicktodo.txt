@@ -1,7 +1,7 @@
 Up next
 =======
-- Comment all Loader classes, GSS classes!!
-- Consider unifying Empty and MixedPos generators
+- Stop depending on identical times
+    - Then comment StartingState as well!
 
 Small things whenever
 =======================

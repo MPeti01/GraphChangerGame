@@ -6,6 +6,10 @@ import tungus.games.graphchanger.game.graph.node.Node;
 
 import java.util.Random;
 
+/**
+ * A Graph generator for easily creating symmetrical pairs of Nodes at a
+ * reasonable distance from each other.
+ */
 abstract class SymmetricGenerator extends GraphLoader {
     protected static final float MARGIN = 30;
     protected static final float WIDTH = GameScreen.GAME_WIDTH - 2 * MARGIN;

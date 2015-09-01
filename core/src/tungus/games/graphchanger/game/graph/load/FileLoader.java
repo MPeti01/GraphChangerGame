@@ -13,7 +13,7 @@ import java.util.Locale;
 import java.util.Scanner;
 
 /**
- * Loads the {@link tungus.games.graphchanger.game.graph.node.Node Nodes} and {@link tungus.games.graphchanger.game.graph.Edge Edges} for a {@link tungus.games.graphchanger.game.graph.Graph} from a file.
+ * GraphLoader implementation that loads from a file.
  */
 public class FileLoader extends GraphLoader {
 

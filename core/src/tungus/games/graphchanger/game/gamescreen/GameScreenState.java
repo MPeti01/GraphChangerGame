@@ -14,12 +14,14 @@ public abstract class GameScreenState extends InputAdapter implements NetworkTok
         this.screen = screen;
     }
 
+    /**
+     * Called before this state is set as the current one.
+     */
     public void onEnter() {
     }
 
     /**
      * Update and render the screen.
-     *
      * @return What the next State should be
      */
     public abstract GameScreenState render(SpriteBatch batch, float delta);
