@@ -9,24 +9,57 @@ import tungus.games.graphchanger.game.graph.load.FileLoader;
 import tungus.games.graphchanger.game.graph.load.MixedPositionGenerator;
 import tungus.games.graphchanger.game.network.SimpleMessage;
 
+/**
+ * Active state before starting the game. Responsible for choosing the game parameters, communicating these
+ * and starting the game at the same time on both clients.
+ */
 public class StartingState extends GameScreenState {
 
-    private static final long BM_TWO_BYTES = (long) Math.pow(2, 16) - 1;
+    /*
+       The method for starting the game is as follows:
+       The initiating client (where isInitiator == true) takes user input. It detects when the user chose
+       to start, and sets the seed for generators to the last two bytes of the current time (millis) and
+       the mode number to whatever the user has chosen.
+
+       It sends this information to the non-initiating client (where isInitiator == false). The non-initiating
+       client sets up the game by these parameters, sets the starting time to WAIT_TIME_MILLIS ms from this
+       moment, then sends a confirmation message to the initiating client.
+
+       The initiating client assumes that the other client received the start information halfway between
+       this moment and when it was originally sent (i.e. the two messages took equal time to deliver).
+       From this, it calculates when the other client is going to start the game and sets its own start
+       time to the same.
+     */
+
     private static final long BM_ONE_BYTE = (long) Math.pow(2, 8) - 1;
 
     private static final long WAIT_TIME_MILLIS = 1500;
 
-    private static final int LOAD_FILE_KEY = Keys.NUM_0;
-    private static final int RANDOM_EMPTY_KEY = Keys.NUM_1;
-    private static final int RANDOM_MIXED_KEY = Keys.NUM_2;
-
+    /**
+     * Whether this client gets to choose the game setup options. Should always be true for exactly
+     * one of two connected clients.
+     */
     private final boolean isInitiator;
-    private long startTime;
+    private long gameStartTime; // When the game should be started
+    private long startInputTime;// When the user initiated the game start. Only used if (isInitiator == true)
+    /**
+     * Identifier determining how the map should be created.
+     */
+    private int modeNumber;
 
-    public StartingState(GameScreen screen, boolean initor) {
+    private static final int MODE_LOAD_FILE = Keys.NUM_0;
+    private static final int MODE_RANDOM_EMPTY = Keys.NUM_1;
+    private static final int MODE_RANDOM_MIXED = Keys.NUM_2;
+
+    /**
+     * The seed used for map generation if randomness is needed.
+     */
+    private short seed;
+
+    public StartingState(GameScreen screen, boolean initiator) {
         super(screen);
-        isInitiator = initor;
-        startTime = Long.MAX_VALUE;
+        isInitiator = initiator;
+        gameStartTime = startInputTime = Long.MAX_VALUE;
     }
 
     @Override
@@ -37,7 +70,7 @@ public class StartingState extends GameScreenState {
 
     @Override
     public GameScreenState render(SpriteBatch batch, float delta) {
-        if (TimeUtils.millis() >= startTime) {
+        if (TimeUtils.millis() >= gameStartTime) {
             Gdx.app.log("LIFECYCLE", "Exiting starting state");
             return new PlayingState(screen);
         } else {
@@ -47,31 +80,41 @@ public class StartingState extends GameScreenState {
 
     @Override
     public boolean receivedMessage(int[] m) {
-        if (!isInitiator && startTime == Long.MAX_VALUE) {
+        if (!isInitiator && gameStartTime == Long.MAX_VALUE) {
+            // The initiating client wants to start and sent us the game parameters
             Gdx.app.log("LIFECYCLE", "Received game start message, initiating");
-            // Received lower two bits of starting time, combine that with the current
-            int timeReceived = m[2] << 8 | m[1];
-            startTime = (TimeUtils.millis() & ~BM_TWO_BYTES) | timeReceived;
+            modeNumber = m[0];
+            seed = (short) (m[2] << 8 | m[1]);
+            initGame();
 
-            // If there happened to be a rollover past the two bytes in these seconds, these bitoperations
-            // will have decreased the time. In that case, just add binary 0001_0000_0000.
-            if (startTime < TimeUtils.millis())
-                startTime += (long) Math.pow(2, 16);
+            gameStartTime = TimeUtils.millis() + WAIT_TIME_MILLIS;
+            Gdx.app.log("LIFECYCLE", "Starting at " + gameStartTime + " (currently " + TimeUtils.millis() + ")");
 
-            initGame(m[0]); // The mode code
-        }
-        return false;
+            // Send confirmation message
+            screen.comm.write(new SimpleMessage(0, 0, 0));
+            return true;
+        } else if (isInitiator && startInputTime != Long.MAX_VALUE) {
+            // Confirmation message received from non-initiating client, calculate start time
+            gameStartTime = (TimeUtils.millis() + startInputTime) / 2 + WAIT_TIME_MILLIS;
+            Gdx.app.log("LIFECYCLE", "Received game start confirmation, starting at " + gameStartTime
+                    + " (currently " + TimeUtils.millis() + ")");
+            return true;
+        } else
+            return false;
     }
 
     @Override
     public boolean keyDown(int keyCode) {
         if (isInitiator) {
             switch (keyCode) {
-                case RANDOM_MIXED_KEY:
-                case RANDOM_EMPTY_KEY:
-                    Gdx.app.log("LIFECYCLE", "Received game start key input, initiating");
-                    sendStartMessage(keyCode);
-                    initGame(keyCode);
+                case MODE_RANDOM_MIXED:
+                case MODE_RANDOM_EMPTY:
+                    Gdx.app.log("LIFECYCLE", "Received game start key input, notifying remote and initiating");
+                    startInputTime = TimeUtils.millis();
+                    modeNumber = keyCode;
+                    seed = (short) TimeUtils.millis();
+                    sendStartMessage();
+                    initGame();
                     return true;
                 default:
                     return false;
@@ -80,27 +123,41 @@ public class StartingState extends GameScreenState {
             return false;
     }
 
-    private void sendStartMessage(int keyCode) {
-        startTime = TimeUtils.millis() + WAIT_TIME_MILLIS;
-        // Send the most informative, lower 2 bytes. The remote client can figure out the rest.
-        // The two bytes must be sent as separate variables, because OutputStream can only send bytes.
-        byte lowest = (byte) (startTime & BM_ONE_BYTE);
-        byte second = (byte) ((startTime >> 8) & BM_ONE_BYTE);
-        screen.comm.write(new SimpleMessage(keyCode, lowest, second));
+    @Override
+    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        if (screenY > Gdx.graphics.getHeight() / 2) {
+            if (screenX > Gdx.graphics.getWidth() / 2) {
+                keyDown(MODE_RANDOM_MIXED);
+            } else {
+                keyDown(MODE_RANDOM_EMPTY);
+            }
+            return true;
+        } else {
+            return false;
+        }
     }
 
-    private void initGame(int keyCode) {
-        Gdx.app.log("LIFECYCLE", "Initiating with start time (seed) " + startTime);
-        switch (keyCode) {
-            case RANDOM_EMPTY_KEY:
-                screen.newGame(new EmptyGenerator((int) startTime));
+    private void sendStartMessage() {
+        // The two bytes must be sent as separate variables, because OutputStream can only send bytes.
+        byte lowest = (byte) (seed & BM_ONE_BYTE);
+        byte second = (byte) ((seed >> 8) & BM_ONE_BYTE);
+        screen.comm.write(new SimpleMessage(modeNumber, lowest, second));
+    }
+
+    private void initGame() {
+        Gdx.app.log("LIFECYCLE", "Setting up game with seed " + seed);
+        switch (modeNumber) {
+            case MODE_RANDOM_EMPTY:
+                screen.newGame(new EmptyGenerator(seed));
                 break;
-            case RANDOM_MIXED_KEY:
-                screen.newGame(new MixedPositionGenerator((int) startTime));
+            case MODE_RANDOM_MIXED:
+                screen.newGame(new MixedPositionGenerator(seed));
                 break;
-            case LOAD_FILE_KEY:
+            case MODE_LOAD_FILE:
                 screen.newGame(new FileLoader(Gdx.files.internal("levels/random1.lvl")));
                 break;
+            default:
+                throw new IllegalArgumentException("Unknown mode number " + modeNumber);
         }
     }
 
