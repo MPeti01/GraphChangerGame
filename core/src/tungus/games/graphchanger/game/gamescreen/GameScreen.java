@@ -1,6 +1,7 @@
 package tungus.games.graphchanger.game.gamescreen;
 
 import com.badlogic.gdx.*;
+import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -28,7 +29,7 @@ public class GameScreen extends BaseScreen {
      * firstly to the current GameScreenState (for UI and game flow control),
      * secondly to the active GameController (for game input).
      */
-    private final InputMultiplexer userInput;
+    private /*final*/ InputMultiplexer userInput;
 
     /**
      * Which player this client plays as
@@ -41,7 +42,7 @@ public class GameScreen extends BaseScreen {
      * firstly to the current GameScreenState (for UI and game flow control),
      * secondly to the active GameController (for game input).
      */
-    final NetworkCommunicator comm;
+    /*final*/ NetworkCommunicator comm;
 
     GameController gameController;
     private GameScreenState currentState;
@@ -58,18 +59,21 @@ public class GameScreen extends BaseScreen {
         batch = new SpriteBatch();
         batch.setProjectionMatrix(cam.combined);
 
+
         this.player = player;
         mp = (in != null);
 
-        comm = new NetworkCommunicator(in, out);
-        userInput = new InputMultiplexer();
-        Gdx.input.setInputProcessor(userInput);
+        if (!(Gdx.app.getType() == ApplicationType.Android && !mp)) {
+            comm = new NetworkCommunicator(in, out);
+            userInput = new InputMultiplexer();
+            Gdx.input.setInputProcessor(userInput);
 
-        currentState = new StartingState(this, player == Player.P1);
-        comm.addListener(currentState);
-        userInput.addProcessor(currentState);
+            currentState = new StartingState(this, player == Player.P1);
+            comm.addListener(currentState);
+            userInput.addProcessor(currentState);
 
-        currentState.onEnter();
+            currentState.onEnter();
+        }
     }
     private final boolean mp;
     private float time = 0;
