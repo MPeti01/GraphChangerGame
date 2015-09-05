@@ -11,6 +11,7 @@ import java.util.List;
  * Finds nodes in specific positions (or with a given ID).
  */
 class NodeFinder {
+    private static final float NODE_TOUCH_RADIUS = 35f;
     private List<Node> nodes = null;
     private final List<Node> intersecting = new LinkedList<Node>();
 
@@ -27,7 +28,7 @@ class NodeFinder {
 
     public Node nodeAt(Vector2 pos) {
         for (Node n : nodes) {
-            if (pos.dst2(n.pos()) < Node.RADIUS * Node.RADIUS) {
+            if (pos.dst2(n.pos()) < NODE_TOUCH_RADIUS * NODE_TOUCH_RADIUS) {
                 return n;
             }
         }

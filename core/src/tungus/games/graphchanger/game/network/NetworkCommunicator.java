@@ -23,24 +23,25 @@ public class NetworkCommunicator {
          * @return Whether the listener consumed the event or it can be offered to other listeners as well.
          */
         public boolean receivedMessage(int[] m);
-    }
 
+    }
     public static interface Writable {
 
         public void writeTo(OutputStream out) throws IOException;
-    }
 
+    }
     public static final int DELIM = 255;
 
     private static final int MAX_TOKEN_LENGTH = 100;
 
     private final InputStream in;
+
     private final OutputStream out;
-
     private final int[] readMessage = new int[MAX_TOKEN_LENGTH];
-    private final List<NetworkTokenListener> listeners = new LinkedList<NetworkTokenListener>();
 
+    private final List<NetworkTokenListener> listeners = new LinkedList<NetworkTokenListener>();
     private volatile boolean connected = true;
+
     private final Runnable reader = new Runnable() {
         @Override
         public void run() {
@@ -69,7 +70,6 @@ public class NetworkCommunicator {
             Gdx.app.log("CONNECTION", "Reader thread stopped");
         }
     };
-
     public NetworkCommunicator(InputStream in, OutputStream out) {
         this.in = in;
         this.out = out;
@@ -124,6 +124,10 @@ public class NetworkCommunicator {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public boolean isConnected() {
+        return connected;
     }
 
     public void dispose() {

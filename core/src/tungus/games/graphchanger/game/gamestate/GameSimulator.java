@@ -1,9 +1,13 @@
 package tungus.games.graphchanger.game.gamestate;
 
 import com.badlogic.gdx.utils.IntMap;
+import tungus.games.graphchanger.game.graph.EdgePricer;
+import tungus.games.graphchanger.game.graph.Graph;
 import tungus.games.graphchanger.game.graph.editing.moves.Move;
 import tungus.games.graphchanger.game.graph.editing.moves.MoveListener;
 import tungus.games.graphchanger.game.graph.load.GraphLoader;
+import tungus.games.graphchanger.game.players.Army;
+import tungus.games.graphchanger.game.players.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,23 +18,25 @@ import java.util.List;
  * resimulating a few ticks if a move happened some ticks earlier than the current one.
  */
 public class GameSimulator implements MoveListener {
-    private static final float TICK_TIME = 0.05f; // 20 ticks per sec
-    private static final float DELAY_TOLERANCE = 3f; // TODO Eventually move to some connection oriented class
-    private static final int STORED_TICKS = (int)Math.ceil(DELAY_TOLERANCE / TICK_TIME);
+    public static final float TICK_TIME = 0.05f; // 20 ticks per sec
 
-    private final StateQueue queue;
+    private final GameState gameState;
 
     /**
-     * Moves made after each frame
+     * Moves made after each frame. Only ever contains currentTickNum and currentTickNum+1 keys.
      */
-    private final IntMap<List<Move>> movesEachTick = new IntMap<List<Move>>(STORED_TICKS *2);
+    private final IntMap<List<Move>> movesEachTick = new IntMap<List<Move>>(2);
 
     private int currentTickNum = 0;
-    private int oldestNewMove = 0;
     private float timeSinceTick = 0;
 
     public GameSimulator(GraphLoader loader) {
-        queue = new StateQueue(loader, STORED_TICKS);
+        loader.load();
+        EdgePricer pricer = new EdgePricer();
+        Graph g = loader.createGraph(pricer);
+        Army a1 = new Army(Player.P1);
+        Army a2 = new Army(Player.P2);
+        gameState = new GameState(g, pricer, a1, a2);
     }
 
     public void addMove(Move m) {
@@ -38,7 +44,7 @@ public class GameSimulator implements MoveListener {
     }
 
     public void addMove(Move m, int tickNum) {
-        if (tickNum <= currentTickNum - STORED_TICKS) {
+        if (tickNum < currentTickNum) {
             throw new IllegalArgumentException("Already dropped tick " + tickNum + ", can't add move");
         }
         List<Move> list = movesEachTick.get(tickNum);
@@ -47,39 +53,29 @@ public class GameSimulator implements MoveListener {
             movesEachTick.put(tickNum, list);
         }
         list.add(m);
-        oldestNewMove = Math.min(oldestNewMove, tickNum);
     }
 
     private void tick() {
-        // Iterate from oldest frame with a new move added to the latest frame
-        for (int tickNum = oldestNewMove; tickNum <= currentTickNum; tickNum++)
-        {
-            // Get the frame in question, and the one following it
-            GameState old = queue.atDepth(currentTickNum-tickNum);
-            GameState next = queue.atDepth(currentTickNum-tickNum-1);
-
-            next.set(old);
-            List<Move> movesToApply = movesEachTick.get(tickNum);
-            if (movesToApply != null) {
-                for (Move m : movesToApply) {
-                    next.applyMove(m);
-                }
+        List<Move> movesToApply = movesEachTick.get(currentTickNum);
+        if (movesToApply != null) {
+            for (Move m : movesToApply) {
+                gameState.applyMove(m);
             }
-            next.update(TICK_TIME);
         }
-        queue.rotate();
+        gameState.update(TICK_TIME);
+        movesEachTick.remove(currentTickNum);
         currentTickNum++;
-        movesEachTick.remove(currentTickNum - STORED_TICKS);
-        oldestNewMove = currentTickNum;
+    }
+
+    public void timePassed(float delta) {
+        timeSinceTick += delta;
     }
 
     /**
-     * Notes a given amount of time passed, and simulates a tick if the last one was more than TICK_TIME ago.
-     * @param delta The time since the method was last called.
+     * Simulates tick(s) if the last one was more than TICK_TIME ago.
      * @return <code>true</code> if a tick was simulated
      */
-    public boolean update(float delta) {
-        timeSinceTick += delta;
+    public boolean update() {
         if (timeSinceTick >= TICK_TIME) {
             tick();
             timeSinceTick -= TICK_TIME;
@@ -92,8 +88,7 @@ public class GameSimulator implements MoveListener {
         return timeSinceTick;
     }
 
-    public GameState latestState() {
-        return queue.atDepth(0);
+    public GameState state() {
+        return gameState;
     }
-
 }

@@ -6,7 +6,9 @@ import tungus.games.graphchanger.game.graph.EdgePricer;
 import tungus.games.graphchanger.game.graph.PartialEdge;
 import tungus.games.graphchanger.game.players.Player;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Handles the edges at a Node. This includes building/removing them, listing them and giving directions to units.
@@ -27,10 +29,10 @@ class EdgeHandler {
     public final List<Edge> primaryNeighbors = new ArrayList<Edge>();
     private int nextDirectionIndex = 0;
 
-    public EdgeHandler(Node node, List<Node> nodes, List<Edge> edges, EdgePricer pricer, List<PartialEdge> partialEdges) {
+    public EdgeHandler(Node node, List<Edge> edges, EdgePricer pricer, List<PartialEdge> partialEdges) {
         allEdgesInGraph = edges;
         thisNode = node;
-        builder = new EdgeBuilder(node, pricer, partialEdges, nodes);
+        builder = new EdgeBuilder(node, pricer, partialEdges);
     }
 
     /**
@@ -52,12 +54,13 @@ class EdgeHandler {
      * Instantly creates an Edge between thisNode and the given other Node.
      * Includes adding the Edge to the list an notifying the other Node to add an inNeighbor.
      */
-    public void addEdgeTo(Node other) {
+    public Edge addEdgeTo(Node other) {
         outNeighbors.add(other);
         Edge e = new Edge(thisNode, other);
         outEdges.add(e);
         allEdgesInGraph.add(e);
         other.addEdgeFrom(thisNode);
+        return e;
     }
 
     public void removeEdgeTo(Node other) {
@@ -79,6 +82,7 @@ class EdgeHandler {
             }
         }
         if (toRemove != null) {
+            toRemove.cut();
             outEdges.remove(toRemove);
             allEdgesInGraph.remove(toRemove);
         }
@@ -113,40 +117,6 @@ class EdgeHandler {
 
     public boolean wouldUseUnitFrom(Player p) {
         return p == thisNode.player() && builder.isBuilding();
-    }
-
-    public void set(EdgeHandler other, List<Node> allNodes) {
-        nextDirectionIndex = other.nextDirectionIndex;
-        for (int i = outNeighbors.size() - 1; i >= 0; i--) {
-            Node neighbor = outNeighbors.get(i);
-            if (!other.outNeighbors.contains(neighbor)) {
-                removeEdgeTo(neighbor);
-            }
-        }
-
-        for (Node n : other.outNeighbors) {
-            if (!outNeighbors.contains(n)) {
-                outNeighbors.add(allNodes.get(n.id));
-                Edge e = new Edge(thisNode, allNodes.get(n.id));
-                outEdges.add(e);
-                allEdgesInGraph.add(e);
-            }
-        }
-
-        Iterator<Node> it = inNeighbors.iterator();
-        while (it.hasNext()) {
-            Node neighbor = it.next();
-            if (!other.inNeighbors.contains(neighbor)) {
-                it.remove();
-            }
-        }
-        for (Node n : other.inNeighbors) {
-            if (!inNeighbors.contains(n)) {
-                inNeighbors.add(allNodes.get(n.id));
-            }
-        }
-        Collections.sort(outEdges); // Ensure consistent order
-        builder.set(other.builder);
     }
 
     public void clearOutNeighbors() {

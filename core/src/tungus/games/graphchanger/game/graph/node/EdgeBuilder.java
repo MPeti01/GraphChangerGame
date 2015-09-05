@@ -1,9 +1,9 @@
 package tungus.games.graphchanger.game.graph.node;
 
+import tungus.games.graphchanger.game.graph.Edge;
 import tungus.games.graphchanger.game.graph.EdgePricer;
 import tungus.games.graphchanger.game.graph.PartialEdge;
 
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -16,18 +16,16 @@ class EdgeBuilder implements PartialEdge.EdgeCompleteListener {
     private final EdgePricer pricer;
 
     private final List<PartialEdge> allPartialEdges;
-    private final List<Node> allNodes;
     private final Node thisNode;
 
     private List<PartialEdge> edgesToBuild = new LinkedList<PartialEdge>();
 
     private int nextDestinationIndex = 0;
 
-    public EdgeBuilder(Node thisNode, EdgePricer pricer, List<PartialEdge> partialEdges, List<Node> nodes) {
+    public EdgeBuilder(Node thisNode, EdgePricer pricer, List<PartialEdge> partialEdges) {
         this.pricer = pricer;
         this.thisNode = thisNode;
         allPartialEdges = partialEdges;
-        allNodes = nodes;
     }
 
     public void startEdgeTo(Node goal) {
@@ -54,41 +52,12 @@ class EdgeBuilder implements PartialEdge.EdgeCompleteListener {
         return !edgesToBuild.isEmpty();
     }
 
-    public void set(EdgeBuilder other) {
-        nextDestinationIndex = other.nextDestinationIndex;
-        for (Iterator<PartialEdge> it = edgesToBuild.iterator(); it.hasNext();) {
-            PartialEdge edgeHere = it.next();
-            boolean found = false;
-            for (PartialEdge edgeThere : other.edgesToBuild) {
-                if (edgeHere.equals(edgeThere)) {
-                    edgeHere.set(edgeThere);
-                    found = true;
-                    break;
-                }
-            }
-            if (!found) {
-                it.remove();
-                allPartialEdges.remove(edgeHere);
-            }
-        }
-        if (edgesToBuild.size() == other.edgesToBuild.size()) return;
-        for (PartialEdge edgeThere : other.edgesToBuild) {
-            if (!edgesToBuild.contains(edgeThere)) {
-                Node start = allNodes.get(edgeThere.startNode().id);
-                Node end = allNodes.get(edgeThere.endNode().id);
-                PartialEdge newEdge = new PartialEdge(start, end, edgeThere.totalCost, edgeThere.progress(), this);
-                edgesToBuild.add(newEdge);
-                allPartialEdges.add(newEdge);
-            }
-        }
-        Collections.sort(edgesToBuild); // Ensure consistent order
-    }
-
     public void stopEdgeTo(Node other) {
         Iterator<PartialEdge> it = edgesToBuild.iterator();
         while (it.hasNext()) {
             PartialEdge e = it.next();
             if (e.endNode() == other) {
+                e.cut();
                 allPartialEdges.remove(e);
                 it.remove();
                 break;
@@ -100,7 +69,8 @@ class EdgeBuilder implements PartialEdge.EdgeCompleteListener {
     public void onEdgeComplete(PartialEdge built) {
         allPartialEdges.remove(built);
         edgesToBuild.remove(built);
-        thisNode.addEdgeTo(built.endNode());
+        Edge finished = thisNode.addEdgeTo(built.endNode());
+        built.finishAs(finished);
     }
 
     public void reachingWithEdge(Node source, float progress, boolean removedFullEdge) {
@@ -120,6 +90,7 @@ class EdgeBuilder implements PartialEdge.EdgeCompleteListener {
     public void clearEdges() {
         while (!edgesToBuild.isEmpty()) {
             PartialEdge e = edgesToBuild.get(0);
+            e.cut();
             allPartialEdges.remove(e);
             edgesToBuild.remove(0);
         }

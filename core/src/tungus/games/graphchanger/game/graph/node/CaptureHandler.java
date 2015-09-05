@@ -64,12 +64,6 @@ class CaptureHandler {
         return captureProgress > 0;
     }
 
-    public void set(CaptureHandler other) {
-        owner = other.owner;
-        attacker = other.attacker;
-        captureProgress = other.captureProgress;
-    }
-
     public void renderBar(SpriteBatch batch) {
         bar.setColor(attacker == null ? Color.WHITE : attacker.mainColor,
                 owner == null ? Color.WHITE : owner.mainColor);

@@ -65,12 +65,6 @@ class Upgrader {
         }
     }
 
-    public void set(Upgrader other) {
-        level = other.level;
-        owner = other.owner;
-        unitsNeeded = other.unitsNeeded;
-    }
-
     public int unitsToCapture() {
         return owner == null ? UNITS_TO_CAP_NEUTRAL[level] : UNITS_TO_CAP_PLAYER[level];
     }

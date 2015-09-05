@@ -22,6 +22,8 @@ public class Edge implements Destination, Comparable<Edge> {
     public final float length;
     public final float angle;
 
+    private boolean cut = false;
+
     public Edge(Node n1, Node n2) {
         node1 = n1;
         node2 = n2;
@@ -40,6 +42,10 @@ public class Edge implements Destination, Comparable<Edge> {
         temp.set(25f, 0).rotate(angle).add(v1).add(v2).scl(0.5f);
         DrawUtils.drawLine(batch, temp, 10f, 25f, angle + 135f);
         DrawUtils.drawLine(batch, temp, 10f, 25f, angle - 135f);
+    }
+
+    public void cut() {
+        cut = true;
     }
 
     @Override
@@ -61,25 +67,13 @@ public class Edge implements Destination, Comparable<Edge> {
     }
 
     @Override
-    public Destination nextDestinationFor(Player owner) {
+    public Destination nextDestinationForArrived(Player owner) {
         return node2;
     }
 
     @Override
-    public Destination localCopy(Graph g) {
-        for (Edge e : g.edges) {
-            if (e.equals(this)) {
-                return e;
-            }
-        }
-        // No Edge in that list. Either it was reduced to a partial or removed since last frame.
-        for (PartialEdge e : g.partialEdges) {
-            if (e.startNode().equals(node1) && e.endNode().equals(node2)) {
-                return e;
-            }
-        }
-        // No PartialEdge found, the Edge must have been removed
-        return null;
+    public Destination remoteDestinationRedirect(Player owner) {
+        return cut ? null : this;
     }
 
     @Override

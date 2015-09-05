@@ -32,18 +32,26 @@ class Unit {
 
     public void setDestination(Destination dest) {
         this.destination = dest;
-        vel.set(dest.pos()).sub(pos).nor().scl(SPEED);
         reachedDest = false;
     }
 
-    public Destination getDestination() {
-        return destination;
-    }
-
     public boolean update(float delta) {
+        // Change the destination if needed
+        Destination redirect = destination.remoteDestinationRedirect(owner.player());
+        if (redirect == null) {
+            return true;
+        } else if (redirect != destination) {
+            setDestination(redirect);
+        }
+
+        if (reachedDest) {
+            setIdleMovementVel();
+        } else {
+            vel.set(destination.pos()).sub(pos).nor().scl(SPEED);
+        }
 
         if (reachedDest || destination.isReachedAt(pos)) {
-            Destination next = destination.nextDestinationFor(owner.player());
+            Destination next = destination.nextDestinationForArrived(owner.player());
             if (next == null) {
                 return true;
             } else if (next == destination) {
@@ -52,16 +60,13 @@ class Unit {
                 setDestination(next);
             }
         }
-        if (reachedDest) {
-            setIdleMovementVel();
-        }
+
         pos.add(vel.x * delta, vel.y * delta);
         return false;
     }
 
     private void setIdleMovementVel() {
         rand.setSeed((long) pos.x);
-        //idleRandomVel.rotate((float)rand.nextGaussian()*5);
         idleRandomVel.rotate(rand.nextFloat() * 360);
         vel.set(pos).sub(destination.pos()).scl(-1 / 20f).add(idleRandomVel).scl(SPEED);
     }

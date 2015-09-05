@@ -48,6 +48,11 @@ public class InputInterpreter implements BasicTouchListener {
         validator = new MoveValidator(nodeFinder, edgeFinder, moveMaker);
     }
 
+    /**
+     * Enables or disables the editor accepting user input
+     *
+     * @param inp true to enable, false to disable
+     */
     public void takeUserInput(boolean inp) {
         inputBlocked = !inp;
     }

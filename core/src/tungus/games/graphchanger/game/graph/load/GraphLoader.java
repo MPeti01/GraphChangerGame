@@ -35,7 +35,7 @@ public abstract class GraphLoader {
     protected void newNode(Vector2 pos, Player player) {
         /* The null EdgePricer is okay, because we duplicate the Nodes with an existing
         EdgePricer before creating a Graph from the lists anyway. */
-        nodes.add(new Node(player, pos, nodes.size(), nodes, edges, null, partialEdges));
+        nodes.add(new Node(player, pos, nodes.size(), edges, null, partialEdges));
     }
 
     /**
@@ -47,7 +47,7 @@ public abstract class GraphLoader {
         List<Edge> newEdges = new LinkedList<Edge>();
         partialEdges = new LinkedList<PartialEdge>();
         for (Node n : nodes) {
-            newNodes.add(new Node(n, newNodes, newEdges, pricer, partialEdges));
+            newNodes.add(new Node(n, newEdges, pricer, partialEdges));
         }
         for (Edge e : edges) {
             newEdges.add(new Edge(newNodes.get(e.node1.id), newNodes.get(e.node2.id)));

@@ -3,7 +3,10 @@ package tungus.games.graphchanger.game.graph.node;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import tungus.games.graphchanger.Assets;
-import tungus.games.graphchanger.game.graph.*;
+import tungus.games.graphchanger.game.graph.Destination;
+import tungus.games.graphchanger.game.graph.Edge;
+import tungus.games.graphchanger.game.graph.EdgePricer;
+import tungus.games.graphchanger.game.graph.PartialEdge;
 import tungus.games.graphchanger.game.players.Army;
 import tungus.games.graphchanger.game.players.Player;
 
@@ -17,8 +20,6 @@ public class Node implements Destination {
 
     public static final float RADIUS = 21.5f;
 
-    private final List<Node> allNodes;
-
     private final Vector2 pos;
     private final CaptureHandler captureHandler;
     private final Upgrader upgrader;
@@ -27,32 +28,30 @@ public class Node implements Destination {
 
     public final int id;
 
-    public Node(Player owner, Vector2 pos, int id, List<Node> allNodes,
+    public Node(Player owner, Vector2 pos, int id,
                 List<Edge> allEdges, EdgePricer pricer, List<PartialEdge> partialEdges) {
         this.pos = pos;
         this.id = id;
-        this.allNodes = allNodes;
-
         upgrader = new Upgrader(owner, pos);
         spawnCheck = new UnitSpawnController(upgrader);
         captureHandler = new CaptureHandler(owner, pos, upgrader);
-        edges = new EdgeHandler(this, allNodes, allEdges, pricer, partialEdges);
+        edges = new EdgeHandler(this, allEdges, pricer, partialEdges);
     }
 
-    public Node(Vector2 pos, int id, List<Node> allNodes,
+    public Node(Vector2 pos, int id,
                 List<Edge> allEdges, EdgePricer pricer, List<PartialEdge> partialEdges) {
-        this(null, pos, id, allNodes, allEdges, pricer, partialEdges);
+        this(null, pos, id, allEdges, pricer, partialEdges);
     }
 
-    public Node(Node n, List<Node> allNodes, List<Edge> allEdges, EdgePricer pricer, List<PartialEdge> partialEdges) {
-        this(n.player(), n.pos, n.id, allNodes, allEdges, pricer, partialEdges);
+    public Node(Node n, List<Edge> allEdges, EdgePricer pricer, List<PartialEdge> partialEdges) {
+        this(n.player(), n.pos, n.id, allEdges, pricer, partialEdges);
     }
 
     public void update(float delta, Army... armies) {
         if (captureHandler.owner() != null) {
             spawnCheck.update(delta);
             if (spawnCheck.shouldSpawn()) {
-                Destination dest = nextDestinationFor(captureHandler.owner());
+                Destination dest = nextDestinationForArrived(captureHandler.owner());
                 if (dest != null) { // Unit not consumed on this node
                     armies[captureHandler.owner().ordinal()].addUnit(this, dest);
                 }
@@ -70,7 +69,7 @@ public class Node implements Destination {
      * @param passingPlayer The owner of the unit
      * @return The next destination for the unit if this Node cannot consume it, null if it can and did.
      */
-    public Destination nextDestinationFor(Player passingPlayer) {
+    public Destination nextDestinationForArrived(Player passingPlayer) {
         if (captureHandler.usesUnitPassingFrom(passingPlayer)) {
             if (captureHandler.justCaptured()) {
                 edges.clearOutNeighbors();
@@ -86,6 +85,11 @@ public class Node implements Destination {
         }
 
         return edges.destinationFromHere();
+    }
+
+    @Override
+    public Destination remoteDestinationRedirect(Player owner) {
+        return this;
     }
 
     public boolean wouldUseUnitFrom(Player p) {
@@ -106,8 +110,8 @@ public class Node implements Destination {
     /**
      * Instantly adds an Edge connecting it to the given Node
      */
-    void addEdgeTo(Node other) {
-        edges.addEdgeTo(other);
+    Edge addEdgeTo(Node other) {
+        return edges.addEdgeTo(other);
     }
 
     void addEdgeFrom(Node other) {
@@ -140,18 +144,6 @@ public class Node implements Destination {
 
     void addPrimaryNeighbor(Node node) {
         edges.addPrimaryNeighbor(node);
-    }
-
-    public void set(Node other) {
-        spawnCheck.set(other.spawnCheck);
-        captureHandler.set(other.captureHandler);
-        upgrader.set(other.upgrader);
-        edges.set(other.edges, allNodes);
-    }
-
-    @Override
-    public Destination localCopy(Graph g) {
-        return g.nodes.get(id);
     }
 
     public void render(SpriteBatch batch, boolean isSelected) {

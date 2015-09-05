@@ -24,10 +24,12 @@ public interface Destination {
      * @param owner The owner of the unit
      * @return The next destination for the unit if this Destination cannot consume it, null if it can and did.
      */
-    public Destination nextDestinationFor(Player owner);
+    public Destination nextDestinationForArrived(Player owner);
 
     /**
-     * Given a Graph instance from a different GameState frame, returns the Destination corresponding to itself.
+     * Asks whether a unit's destination should be changed, if the unit has not yet reached this one.
+     * @param owner The owner of the unit
+     * @return this if no change is needed, null if the unit should be removed, a different Destination otherwise
      */
-    public Destination localCopy(Graph g);
+    public Destination remoteDestinationRedirect(Player owner);
 }

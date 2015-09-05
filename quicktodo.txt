@@ -1,11 +1,10 @@
 Up next
 =======
-?
+- Implement restarting on phone
 
 Small things whenever
 =======================
 - Random movement of Units when standing
-- Don't let the two games get too much time apart and crash
 - More commenting using stats plugin to notice 0% files.. :)
 
 Kinda mid-long term bigger stuff

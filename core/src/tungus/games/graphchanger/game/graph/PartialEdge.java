@@ -15,16 +15,20 @@ public class PartialEdge implements Destination, Comparable<PartialEdge> {
     public static interface EdgeCompleteListener {
 
         public void onEdgeComplete(PartialEdge built);
+
     }
     private static final Vector2 temp = new Vector2();
-
     public final int totalCost;
 
     private final float progressStep;
+
     private final Node start, end;
     private float progress; // 0 to 1
     private Vector2 front = new Vector2();
     private final float angle;
+
+    private boolean cut = false;
+    private Edge finishedEdge = null;
 
     private final EdgeCompleteListener onCompleteListener;
 
@@ -57,10 +61,6 @@ public class PartialEdge implements Destination, Comparable<PartialEdge> {
         return end;
     }
 
-    public float progress() {
-        return progress;
-    }
-
     @Override
     public boolean isReachedAt(Vector2 unitPos) {
         // Past front, i.e. in the same direction from front that end is from start
@@ -71,13 +71,23 @@ public class PartialEdge implements Destination, Comparable<PartialEdge> {
     }
 
     @Override
-    public Destination nextDestinationFor(Player owner) {
+    public Destination nextDestinationForArrived(Player owner) {
         if (progress == 1) {
             return end;
         } else {
             unitArrived();
             return null;
         }
+    }
+
+    @Override
+    public Destination remoteDestinationRedirect(Player owner) {
+        if (cut)
+            return null;
+        else if (finishedEdge != null)
+            return finishedEdge;
+        else
+            return this;
     }
 
     public void unitArrived() {
@@ -98,6 +108,14 @@ public class PartialEdge implements Destination, Comparable<PartialEdge> {
         updateFront();
     }
 
+    public void finishAs(Edge finished) {
+        finishedEdge = finished;
+    }
+
+    public void cut() {
+        cut = true;
+    }
+
     public void renderBack(SpriteBatch batch) {
         batch.setColor(start.player().backColor);
         DrawUtils.drawLine(batch, start.pos(), end.pos(), 20f);
@@ -113,29 +131,6 @@ public class PartialEdge implements Destination, Comparable<PartialEdge> {
         temp.set(25f, 0).rotate(angle).add(start.pos()).add(front).scl(0.5f);
         DrawUtils.drawLine(batch, temp, 10f, 25f, angle + 135f);
         DrawUtils.drawLine(batch, temp, 10f, 25f, angle - 135f);
-    }
-
-    public void set(PartialEdge other) {
-        progress = other.progress;
-        updateFront();
-    }
-
-    @Override
-    public Destination localCopy(Graph g) {
-        for (PartialEdge e : g.partialEdges) {
-            if (this.equals(e)) {
-                return e;
-            }
-        }
-        // No PartialEdge in the list. Either completed or canceled since last frame. Check if there's a finished Edge
-        for (Edge e : g.edges) {
-            if (e.node1.equals(start) && e.node2.equals(end)) {
-                // The Edge was completed, anyone coming here should go on to its end
-                return e;
-            }
-        }
-        // No finished Edge found, it must have been removed.
-        return null;
     }
 
     @Override

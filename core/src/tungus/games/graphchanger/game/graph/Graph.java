@@ -31,13 +31,6 @@ public class Graph {
         }
     }
 
-    public void set(Graph other) {
-        // Edges are set by Nodes when they find missing / additional neighbors
-        for (int i = 0; i < nodes.size(); i++) {
-            nodes.get(i).set(other.nodes.get(i));
-        }
-    }
-
     public void addEdge(int n1, int n2) {
         nodes.get(n1).buildEdgeTo(nodes.get(n2));
     }
