@@ -26,6 +26,7 @@ public class PartialEdge implements Destination, Comparable<PartialEdge> {
     private float progress; // 0 to 1
     private Vector2 front = new Vector2();
     private final float angle;
+    private final float fullLength;
 
     private boolean cut = false;
     private Edge finishedEdge = null;
@@ -40,6 +41,7 @@ public class PartialEdge implements Destination, Comparable<PartialEdge> {
         this.end = end;
         onCompleteListener = listener;
         angle = temp.set(end.pos()).sub(start.pos()).angle();
+        fullLength = start.pos().dst(end.pos());
         updateFront();
     }
 
@@ -118,14 +120,14 @@ public class PartialEdge implements Destination, Comparable<PartialEdge> {
 
     public void renderBack(SpriteBatch batch) {
         batch.setColor(start.player().backColor);
-        DrawUtils.drawLine(batch, start.pos(), end.pos(), 20f);
+        DrawUtils.drawLine(batch, start.pos(), 20f, fullLength, angle);
     }
 
     public void renderFront(SpriteBatch batch) {
         Color c = start.player().edgeColor;
         batch.setColor(c.r, c.g, c.b, batch.getColor().a);
         // Draw the edge
-        DrawUtils.drawLine(batch, start.pos(), front, 10f);
+        DrawUtils.drawLine(batch, start.pos(), 10f, fullLength * progress, angle);
 
         // Draw the two short lines for the arrow
         temp.set(25f, 0).rotate(angle).add(start.pos()).add(front).scl(0.5f);

@@ -1,5 +1,6 @@
 package tungus.games.graphchanger.game.gamestate;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.IntMap;
 import tungus.games.graphchanger.game.graph.EdgePricer;
 import tungus.games.graphchanger.game.graph.Graph;
@@ -18,7 +19,7 @@ import java.util.List;
  * resimulating a few ticks if a move happened some ticks earlier than the current one.
  */
 public class GameSimulator implements MoveListener {
-    public static final float TICK_TIME = 0.05f; // 20 ticks per sec
+    public static final float TICK_TIME = 0.1f; // 20 ticks per sec
 
     private final GameState gameState;
 
@@ -60,6 +61,7 @@ public class GameSimulator implements MoveListener {
         if (movesToApply != null) {
             for (Move m : movesToApply) {
                 gameState.applyMove(m);
+                Gdx.app.log("MOVES", "Applied move [" + m.toString() + "] to state " + currentTickNum);
             }
         }
         gameState.update(TICK_TIME);
