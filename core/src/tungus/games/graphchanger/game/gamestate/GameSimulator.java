@@ -19,7 +19,7 @@ import java.util.List;
  * resimulating a few ticks if a move happened some ticks earlier than the current one.
  */
 public class GameSimulator implements MoveListener {
-    public static final float TICK_TIME = 0.1f; // 20 ticks per sec
+    public static final float TICK_TIME = 0.07f; // 20 ticks per sec
 
     private final GameState gameState;
 
