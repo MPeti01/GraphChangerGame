@@ -87,7 +87,7 @@ public class PartialEdge implements Destination, Comparable<PartialEdge> {
         if (cut)
             return null;
         else if (finishedEdge != null)
-            return finishedEdge;
+            return finishedEdge.remoteDestinationRedirect(owner);
         else
             return this;
     }

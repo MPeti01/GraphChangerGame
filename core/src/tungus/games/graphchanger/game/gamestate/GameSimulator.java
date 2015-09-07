@@ -41,7 +41,8 @@ public class GameSimulator implements MoveListener {
     }
 
     public void addMove(Move m) {
-        addMove(m, currentTickNum);
+        // The Move can be sent after the next simulation step. So we should only apply it in that step too.
+        addMove(m, currentTickNum + 1);
     }
 
     public void addMove(Move m, int tickNum) {

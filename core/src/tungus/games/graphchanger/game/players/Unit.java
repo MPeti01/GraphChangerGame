@@ -66,6 +66,7 @@ class Unit {
                 reachedDest = true;
             } else {
                 setDestination(next);
+                return false; // Don't update the position in this tick, because we might go past the destination
             }
         }
 

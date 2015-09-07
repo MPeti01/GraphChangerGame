@@ -1,13 +1,11 @@
-Up next
+Next up
 =======
-- Implement restarting on phone
+- Fix bug: Units removed from finished PartialEdge
+- Fix bug: Self contest
 
 Small things whenever
 =======================
 - Random movement of Units when standing
-- Fix bug: Units removed from finished PartialEdge
-- Fix bug: Dest pos updating failing? Units flying out..
-- Fix bug: Self contest
 - More commenting using stats plugin to notice 0% files.. :)
 
 Kinda mid-long term bigger stuff
