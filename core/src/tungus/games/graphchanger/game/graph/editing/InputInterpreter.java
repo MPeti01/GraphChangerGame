@@ -98,7 +98,7 @@ public class InputInterpreter implements BasicTouchListener {
             moveListener.addMove(new AddEdgeMove(startNodeID, endNodeID));
         }
         else if (state == EditingState.REMOVE) {
-            List<Edge> edgesToCut = edgeFinder.edgesThrough(touchStart, touchEnd);
+            List<Edge> edgesToCut = edgeFinder.edgesThrough(touchStart, touchEnd, moveMaker);
             List<PartialEdge> partialToCut = edgeFinder.partialEdgesThrough(touchStart, touchEnd, moveMaker);
             if (!(edgesToCut.isEmpty() && partialToCut.isEmpty()) && validator.canCut(edgesToCut, partialToCut)) {
                 moveListener.addMove(new RemoveEdgeMove(edgesToCut, partialToCut));
@@ -135,7 +135,7 @@ public class InputInterpreter implements BasicTouchListener {
 
                 break;
             case REMOVE:
-                List<Edge> fullToCut = edgeFinder.edgesThrough(touchStart, touchEnd);
+                List<Edge> fullToCut = edgeFinder.edgesThrough(touchStart, touchEnd, moveMaker);
                 List<PartialEdge> partialToCut = edgeFinder.partialEdgesThrough(touchStart, touchEnd, moveMaker);
                 ui.cut(fullToCut, partialToCut, validator.canCut(fullToCut, partialToCut), touchStart, touchEnd);
                 break;

@@ -33,11 +33,12 @@ class EdgeBuilder implements PartialEdge.EdgeCompleteListener {
         pricer.edgeBuilt(thisNode.player());
     }
 
-    private void createPartialEdge(Node goal, float progress) {
+    private PartialEdge createPartialEdge(Node goal, float progress) {
         int price = pricer.totalPrice(thisNode, goal);
         PartialEdge newEdge = new PartialEdge(thisNode, goal, price, progress, this);
         edgesToBuild.add(newEdge);
         allPartialEdges.add(newEdge);
+        return newEdge;
     }
 
     public PartialEdge nextToBuild() {
@@ -73,18 +74,18 @@ class EdgeBuilder implements PartialEdge.EdgeCompleteListener {
         built.finishAs(finished);
     }
 
-    public void reachingWithEdge(Node source, float progress, boolean removedFullEdge) {
+    public PartialEdge reachingWithEdge(Node source, float progress, boolean removedFullEdge) {
         if (removedFullEdge) {
-            createPartialEdge(source, 1 - progress);
+            return createPartialEdge(source, 1 - progress);
         } else {
             for (PartialEdge edge : edgesToBuild) {
                 if (edge.endNode() == source) {
                     edge.boundProgress(1 - progress);
-                    break;
+                    return edge;
                 }
             }
+            return null;
         }
-
     }
 
     public void clearEdges() {

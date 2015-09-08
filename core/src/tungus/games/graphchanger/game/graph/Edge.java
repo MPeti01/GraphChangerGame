@@ -22,7 +22,14 @@ public class Edge implements Destination, Comparable<Edge> {
     public final float length;
     public final float angle;
 
+    /**
+     * Whether the Edge was removed (by the owner's cut or the opponent's countering Edge)
+     */
     private boolean cut = false;
+    /**
+     * The PartialEdge this Edge became if it was contested by an opponent. null while the Edge still exists.
+     */
+    private PartialEdge partialReplacer = null;
 
     public Edge(Node n1, Node n2) {
         node1 = n1;
@@ -42,6 +49,11 @@ public class Edge implements Destination, Comparable<Edge> {
         temp.set(25f, 0).rotate(angle).add(v1).add(v2).scl(0.5f);
         DrawUtils.drawLine(batch, temp, 10f, 25f, angle + 135f);
         DrawUtils.drawLine(batch, temp, 10f, 25f, angle - 135f);
+    }
+
+    public void contestedAs(PartialEdge partial) {
+        cut();
+        partialReplacer = partial;
     }
 
     public void cut() {
@@ -73,7 +85,13 @@ public class Edge implements Destination, Comparable<Edge> {
 
     @Override
     public Destination remoteDestinationRedirect(Player owner) {
-        return cut ? null : this;
+        if (!cut) {
+            return this;
+        } else if (partialReplacer == null) {
+            return null;
+        } else {
+            return partialReplacer.remoteDestinationRedirect(owner);
+        }
     }
 
     @Override

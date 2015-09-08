@@ -71,9 +71,9 @@ class EdgeHandler {
     }
 
     /**
-     * Handles the removal of an Edge instance to a given Node
+     * Handles the removal of an Edge instance to a given Node and returns it
      */
-    private void removeFromEdgeLists(Node goal) {
+    private Edge removeFromEdgeLists(Node goal) {
         Edge toRemove = null;
         for (Edge e : outEdges) {
             if (e.node2.equals(goal)) {
@@ -85,6 +85,9 @@ class EdgeHandler {
             toRemove.cut();
             outEdges.remove(toRemove);
             allEdgesInGraph.remove(toRemove);
+            return toRemove;
+        } else {
+            return null;
         }
     }
 
@@ -131,8 +134,10 @@ class EdgeHandler {
         if (outNeighbors.contains(source)) {
             outNeighbors.remove(source);
             source.removeEdgeFrom(thisNode);
-            removeFromEdgeLists(source);
-            builder.reachingWithEdge(source, progress, true);
+            PartialEdge replacer = builder.reachingWithEdge(source, progress, true);
+            Edge removed = removeFromEdgeLists(source);
+            removed.contestedAs(replacer);
+
         } else {
             builder.reachingWithEdge(source, progress, false);
         }

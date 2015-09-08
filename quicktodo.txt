@@ -1,7 +1,6 @@
 Next up
 =======
-- Fix bug: Units removed from finished PartialEdge
-- Fix bug: Self contest
+- ?
 
 Small things whenever
 =======================
