@@ -95,6 +95,23 @@ public class Edge implements Destination, Comparable<Edge> {
     }
 
     @Override
+    public Destination localCopy(Graph g) {
+        for (Edge e : g.edges) {
+            if (e.equals(this)) {
+                return e;
+            }
+        }
+        // No Edge in that list. Either it was reduced to a partial or removed since last frame.
+        for (PartialEdge e : g.partialEdges) {
+            if (e.startNode().equals(node1) && e.endNode().equals(node2)) {
+                return e;
+            }
+        }
+        // No PartialEdge found, the Edge must have been removed
+        return null;
+    }
+
+    @Override
     public int compareTo(Edge other) {
         if (other.node2.equals(this.node2))
             return other.node1.id - this.node1.id;

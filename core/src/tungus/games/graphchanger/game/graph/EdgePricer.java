@@ -32,4 +32,8 @@ public class EdgePricer {
     public void edgeBuilt(Player p) {
         edgesByPlayers[p.ordinal()]++;
     }
+
+    public void set(EdgePricer other) {
+        System.arraycopy(other.edgesByPlayers, 0, edgesByPlayers, 0, edgesByPlayers.length);
+    }
 }

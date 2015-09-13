@@ -17,20 +17,20 @@ public class PartialEdge implements Destination, Comparable<PartialEdge> {
         public void onEdgeComplete(PartialEdge built);
 
     }
+
     private static final Vector2 temp = new Vector2();
     public final int totalCost;
-
     private final float progressStep;
 
     private final Node start, end;
+
     private float progress; // 0 to 1
     private Vector2 front = new Vector2();
     private final float angle;
     private final float fullLength;
-
     private boolean cut = false;
-    private Edge finishedEdge = null;
 
+    private Edge finishedEdge = null;
     private final EdgeCompleteListener onCompleteListener;
 
     public PartialEdge(Node start, Node end, int cost, float progress, EdgeCompleteListener listener) {
@@ -92,6 +92,28 @@ public class PartialEdge implements Destination, Comparable<PartialEdge> {
             return this;
     }
 
+    @Override
+    public Destination localCopy(Graph g) {
+        for (PartialEdge e : g.partialEdges) {
+            if (this.equals(e)) {
+                return e;
+            }
+        }
+        // No PartialEdge in the list. Either completed or canceled since last frame. Check if there's a finished Edge
+        for (Edge e : g.edges) {
+            if (e.node1.equals(start) && e.node2.equals(end)) {
+                // The Edge was completed, anyone coming here should go on to its end
+                return e;
+            }
+        }
+        // No finished Edge found, it must have been removed.
+        return null;
+    }
+
+    public float progress() {
+        return progress;
+    }
+
     public void unitArrived() {
         progress += progressStep;
         if (progress > 0.9999f) {
@@ -148,5 +170,10 @@ public class PartialEdge implements Destination, Comparable<PartialEdge> {
             return other.start.id - this.start.id;
         else
             return other.end.id - this.end.id;
+    }
+
+    public void set(PartialEdge other) {
+        progress = other.progress;
+        updateFront();
     }
 }

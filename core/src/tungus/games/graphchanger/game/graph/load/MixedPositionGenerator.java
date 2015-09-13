@@ -30,8 +30,8 @@ public class MixedPositionGenerator extends SymmetricGenerator {
             Vector2 pos1 = new Vector2();
             Vector2 pos2 = new Vector2();
             positionPair(pos1, pos2);
-            newNode(pos1, Player.P1);
-            newNode(pos2, Player.P2);
+            newNode(pos1, Player.P1, 0);
+            newNode(pos2, Player.P2, 0);
         }
     }
 }

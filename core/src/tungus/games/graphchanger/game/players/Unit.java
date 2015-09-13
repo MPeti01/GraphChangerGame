@@ -41,6 +41,10 @@ class Unit {
         lastDestPos.set(dest.pos());
     }
 
+    public Destination getDestination() {
+        return destination;
+    }
+
     public boolean update(float delta) {
         // Change the destination if needed
         Destination redirect = destination.remoteDestinationRedirect(player);

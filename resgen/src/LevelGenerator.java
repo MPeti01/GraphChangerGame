@@ -12,20 +12,36 @@ public class LevelGenerator {
 
     private static class NodeData {
         Vector2 pos;
-        int player;
-        public NodeData(int player, float x, float y) {
+        int player, level;
+
+        public NodeData(int player, float x, float y, int level) {
             this.pos = new Vector2(x, y);
             this.player = player;
+            this.level = level;
         }
         @Override
         public String toString() {
-            return player + " " + pos.x + " " + pos.y;
+            return player + " " + pos.x + " " + pos.y + " " + level;
         }
     }
 
+    private static class EdgeData {
+        int n1, n2;
+
+        public EdgeData(int n1, int n2) {
+            this.n1 = n1;
+            this.n2 = n2;
+        }
+
+        @Override
+        public String toString() {
+            return n1 + " " + n2;
+        }
+    }
     private final PrintWriter out;
     private final Random rand;
     private final List<NodeData> nodes = new LinkedList<NodeData>();
+    private final List<EdgeData> edges = new LinkedList<EdgeData>();
 
     public LevelGenerator(String file, Random rand) {
         this.rand = rand;
@@ -50,8 +66,8 @@ public class LevelGenerator {
      * @param split The ratio of the split. E.g. if 0.4, the nodes will be near the middle, close to each other.
      */
     public void addStartNodes(float minX, float maxX, float minY, float maxY, float split) {
-        nodes.add(new NodeData(1, minX + split * (maxX - minX), minY + split * (maxY - minY)));
-        nodes.add(new NodeData(2, maxX - split * (maxX - minX), maxY - split * (maxY - minY)));
+        nodes.add(new NodeData(1, minX + split * (maxX - minX), minY + split * (maxY - minY), 0));
+        nodes.add(new NodeData(2, maxX - split * (maxX - minX), maxY - split * (maxY - minY), 0));
     }
 
     /**
@@ -86,17 +102,36 @@ public class LevelGenerator {
             if (!allOk) {
                 continue;
             }
-            nodes.add(new NodeData(0, p1.x, p1.y));
-            nodes.add(new NodeData(0, p2.x, p2.y));
+            nodes.add(new NodeData(0, p1.x, p1.y, 0));
+            nodes.add(new NodeData(0, p2.x, p2.y, 0));
             nodeCount -= 2;
             System.out.println(nodeCount + " nodes left");
         }
     }
 
     public void write() {
+        out.println(nodes.size());
         for (NodeData node : nodes) {
             out.println(node.toString());
         }
+        out.println(edges.size());
+        for (EdgeData edge : edges) {
+            out.println(edge.toString());
+        }
         out.close();
+    }
+
+    public void genPerfTest() {
+        int nodeCount = 40;
+        for (int i = 0; i < nodeCount / 2; i++) {
+            nodes.add(new NodeData(1, 40 + (i % 5) * 100, 40 + (i / 5) * 100, 2));
+        }
+        for (int i = 0; i < nodeCount / 2; i++) {
+            nodes.add(new NodeData(2, 440 - (i % 5) * 100, 760 - (i / 5) * 100, 2));
+        }
+        for (int i = 0; i < nodeCount / 2 - 1; i++) {
+            edges.add(new EdgeData(i, i + 1));
+            edges.add(new EdgeData(i + nodeCount / 2, i + nodeCount / 2 + 1));
+        }
     }
 }

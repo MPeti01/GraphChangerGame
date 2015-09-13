@@ -16,15 +16,16 @@ class Upgrader {
     private static final float BAR_WIDTH = 7;
     private static final float BAR_DIST_BELOW = 25;
 
-    public int level = 0;
+    public int level;
     private int unitsNeeded = 0;
     private final BarDrawer bar;
     private Player owner;
 
-    public Upgrader(Player o, Vector2 pos) {
+    public Upgrader(Player o, Vector2 pos, int level) {
         owner = o;
         bar = new BarDrawer(pos.cpy().add(-BAR_LENGTH/2, -BAR_DIST_BELOW), BAR_LENGTH, BAR_WIDTH);
         bar.setColor(Color.GREEN, Color.WHITE);
+        this.level = level;
     }
 
     public void setOwner(Player p) {
@@ -67,5 +68,11 @@ class Upgrader {
 
     public int unitsToCapture() {
         return owner == null ? UNITS_TO_CAP_NEUTRAL[level] : UNITS_TO_CAP_PLAYER[level];
+    }
+
+    public void set(Upgrader other) {
+        level = other.level;
+        owner = other.owner;
+        unitsNeeded = other.unitsNeeded;
     }
 }

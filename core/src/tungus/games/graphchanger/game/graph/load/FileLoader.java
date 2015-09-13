@@ -30,12 +30,17 @@ public class FileLoader extends GraphLoader {
         partialEdges = new LinkedList<PartialEdge>();
         Scanner sc = new Scanner(file.read());
         sc.useLocale(Locale.US);
-        while (sc.hasNext()) {
+        int nodeCount = sc.nextInt();
+        for (int i = 0; i < nodeCount; i++) {
             int p = sc.nextInt();
             if (p == 0)
-                newNode(new Vector2(sc.nextFloat(), sc.nextFloat()));
+                newNode(new Vector2(sc.nextFloat(), sc.nextFloat()), null, sc.nextInt());
             else
-                newNode(new Vector2(sc.nextFloat(), sc.nextFloat()), Player.values()[p - 1]);
+                newNode(new Vector2(sc.nextFloat(), sc.nextFloat()), Player.values()[p - 1], sc.nextInt());
+        }
+        int edgeCount = sc.nextInt();
+        for (int i = 0; i < edgeCount; i++) {
+            addEdge(sc.nextInt(), sc.nextInt());
         }
     }
 }

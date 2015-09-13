@@ -32,4 +32,6 @@ public interface Destination {
      * @return this if no change is needed, null if the unit should be removed, a different Destination otherwise
      */
     public Destination remoteDestinationRedirect(Player owner);
+
+    Destination localCopy(Graph graph);
 }

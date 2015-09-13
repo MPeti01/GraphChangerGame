@@ -69,4 +69,10 @@ class CaptureHandler {
                 owner == null ? Color.WHITE : owner.mainColor);
         bar.draw(batch, (float)captureProgress/upgrader.unitsToCapture());
     }
+
+    public void set(CaptureHandler other) {
+        owner = other.owner;
+        attacker = other.attacker;
+        captureProgress = other.captureProgress;
+    }
 }

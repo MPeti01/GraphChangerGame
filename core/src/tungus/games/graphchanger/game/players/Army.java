@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Pool;
 import tungus.games.graphchanger.game.graph.Destination;
+import tungus.games.graphchanger.game.graph.Graph;
 import tungus.games.graphchanger.game.graph.node.Node;
 
 import java.util.Iterator;
@@ -60,5 +61,20 @@ public class Army {
 
     public int id() {
         return player.ordinal();
+    }
+
+    public void set(Army other, Graph graph) {
+        for (Unit u : units) {
+            unitPool.free(u);
+        }
+        units.clear();
+        for (Unit u : other.units) {
+            // Make sure to get the Node instance from the Graph handled with this Army
+            Destination dest = u.getDestination().localCopy(graph);
+            if (dest != null) {
+                addUnit(u.pos, u.getDestination().localCopy(graph), u.reachedDest);
+            } // else a PartialEdge was removed, the units on it die - no need to add them.
+
+        }
     }
 }

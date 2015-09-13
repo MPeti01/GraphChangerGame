@@ -4,6 +4,7 @@ import tungus.games.graphchanger.game.graph.Edge;
 import tungus.games.graphchanger.game.graph.EdgePricer;
 import tungus.games.graphchanger.game.graph.PartialEdge;
 
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -16,15 +17,17 @@ class EdgeBuilder implements PartialEdge.EdgeCompleteListener {
     private final EdgePricer pricer;
 
     private final List<PartialEdge> allPartialEdges;
+    private final List<Node> allNodes;
     private final Node thisNode;
 
     private List<PartialEdge> edgesToBuild = new LinkedList<PartialEdge>();
 
     private int nextDestinationIndex = 0;
 
-    public EdgeBuilder(Node thisNode, EdgePricer pricer, List<PartialEdge> partialEdges) {
+    public EdgeBuilder(Node thisNode, EdgePricer pricer, List<Node> allNodes, List<PartialEdge> partialEdges) {
         this.pricer = pricer;
         this.thisNode = thisNode;
+        this.allNodes = allNodes;
         allPartialEdges = partialEdges;
     }
 
@@ -117,5 +120,35 @@ class EdgeBuilder implements PartialEdge.EdgeCompleteListener {
             i = (i + 1) % s;
         } while (i != nextDestinationIndex);
         return null;
+    }
+
+    public void set(EdgeBuilder other) {
+        nextDestinationIndex = other.nextDestinationIndex;
+        for (Iterator<PartialEdge> it = edgesToBuild.iterator(); it.hasNext(); ) {
+            PartialEdge edgeHere = it.next();
+            boolean found = false;
+            for (PartialEdge edgeThere : other.edgesToBuild) {
+                if (edgeHere.equals(edgeThere)) {
+                    edgeHere.set(edgeThere);
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                it.remove();
+                allPartialEdges.remove(edgeHere);
+            }
+        }
+        if (edgesToBuild.size() == other.edgesToBuild.size()) return;
+        for (PartialEdge edgeThere : other.edgesToBuild) {
+            if (!edgesToBuild.contains(edgeThere)) {
+                Node start = allNodes.get(edgeThere.startNode().id);
+                Node end = allNodes.get(edgeThere.endNode().id);
+                PartialEdge newEdge = new PartialEdge(start, end, edgeThere.totalCost, edgeThere.progress(), this);
+                edgesToBuild.add(newEdge);
+                allPartialEdges.add(newEdge);
+            }
+        }
+        Collections.sort(edgesToBuild); // Ensure consistent order
     }
 }

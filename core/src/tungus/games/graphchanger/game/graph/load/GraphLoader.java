@@ -28,15 +28,27 @@ public abstract class GraphLoader {
      */
     public abstract void load();
 
-    protected void newNode(Vector2 pos) {
-        newNode(pos, null);
+    protected Node newNode(Vector2 pos) {
+        return newNode(pos, null, 0);
     }
 
-    protected void newNode(Vector2 pos, Player player) {
+    protected Node newNode(Vector2 pos, Player player, int level) {
         /* The null EdgePricer is okay, because we duplicate the Nodes with an existing
         EdgePricer before creating a Graph from the lists anyway. */
-        nodes.add(new Node(player, pos, nodes.size(), edges, null, partialEdges));
+        Node n = new Node(player, pos, level, nodes.size(), nodes, edges, null, partialEdges);
+        nodes.add(n);
+        return n;
     }
+
+    protected void addEdge(Node n1, Node n2) {
+        edges.add(new Edge(n1, n2));
+        n1.addEdgeTo(n2);
+    }
+
+    protected void addEdge(int id1, int id2) {
+        addEdge(nodes.get(id1), nodes.get(id2));
+    }
+
 
     /**
      * Creates new Lists, Nodes and Edges so that separate Graph instances will not
@@ -46,8 +58,11 @@ public abstract class GraphLoader {
         List<Node> newNodes = new ArrayList<Node>();
         List<Edge> newEdges = new LinkedList<Edge>();
         partialEdges = new LinkedList<PartialEdge>();
-        for (Node n : nodes) {
-            newNodes.add(new Node(n, newEdges, pricer, partialEdges));
+        for (Node n : nodes) { // Create the new Nodes
+            newNodes.add(new Node(n, newNodes, newEdges, pricer, partialEdges));
+        }
+        for (int i = 0; i < nodes.size(); i++) { // Set up the same connections
+            newNodes.get(i).set(nodes.get(i));
         }
         for (Edge e : edges) {
             newEdges.add(new Edge(newNodes.get(e.node1.id), newNodes.get(e.node2.id)));

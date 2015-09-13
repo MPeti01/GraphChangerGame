@@ -26,4 +26,9 @@ class UnitSpawnController {
             return false;
         }
     }
+
+    public void set(UnitSpawnController other) {
+        time = other.time;
+        lastSpawn = other.lastSpawn;
+    }
 }

@@ -39,4 +39,11 @@ public class Graph {
         nodes.get(n1).removeEdgeTo(nodes.get(n2));
     }
 
+    public void set(Graph other) {
+        // Edges are set by Nodes when they find missing / additional neighbors
+        for (int i = 0; i < nodes.size(); i++) {
+            nodes.get(i).set(other.nodes.get(i));
+        }
+    }
+
 }

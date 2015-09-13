@@ -36,4 +36,11 @@ public class GameState {
         p1.renderUnits(batch, sinceTick);
         p2.renderUnits(batch, sinceTick);
     }
+
+    public void set(GameState other) {
+        this.graph.set(other.graph);
+        this.edgePricer.set(other.edgePricer);
+        this.p1.set(other.p1, this.graph);
+        this.p2.set(other.p2, this.graph);
+    }
 }

@@ -48,6 +48,7 @@ public class StartingState extends GameScreenState {
     private int modeNumber;
 
     private static final int MODE_LOAD_FILE = Keys.NUM_0;
+    private static final int MODE_PERF_TEST = Keys.NUM_9;
     private static final int MODE_RANDOM_EMPTY = Keys.NUM_1;
     private static final int MODE_RANDOM_MIXED = Keys.NUM_2;
 
@@ -109,6 +110,8 @@ public class StartingState extends GameScreenState {
             switch (keyCode) {
                 case MODE_RANDOM_MIXED:
                 case MODE_RANDOM_EMPTY:
+                case MODE_LOAD_FILE:
+                case MODE_PERF_TEST:
                     Gdx.app.log("LIFECYCLE", "Received game start key input, notifying remote and initiating");
                     startInputTime = TimeUtils.millis();
                     modeNumber = keyCode;
@@ -155,6 +158,9 @@ public class StartingState extends GameScreenState {
                 break;
             case MODE_LOAD_FILE:
                 screen.newGame(new FileLoader(Gdx.files.internal("levels/random1.lvl")));
+                break;
+            case MODE_PERF_TEST:
+                screen.newGame(new FileLoader(Gdx.files.internal("levels/perftest.lvl")));
                 break;
             default:
                 throw new IllegalArgumentException("Unknown mode number " + modeNumber);

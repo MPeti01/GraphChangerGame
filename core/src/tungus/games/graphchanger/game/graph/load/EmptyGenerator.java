@@ -26,8 +26,8 @@ public class EmptyGenerator extends SymmetricGenerator {
     @Override
     public void load() {
         float splitRatio = 0.1f + rand.nextFloat() * 0.2f;
-        newNode(new Vector2(MARGIN + splitRatio * WIDTH, MARGIN + splitRatio * HEIGHT), Player.P1);
-        newNode(new Vector2(MARGIN + (1 - splitRatio) * WIDTH, MARGIN + (1 - splitRatio) * HEIGHT), Player.P2);
+        newNode(new Vector2(MARGIN + splitRatio * WIDTH, MARGIN + splitRatio * HEIGHT), Player.P1, 0);
+        newNode(new Vector2(MARGIN + (1 - splitRatio) * WIDTH, MARGIN + (1 - splitRatio) * HEIGHT), Player.P2, 0);
         while (nodes.size() < nodeCount) {
             Vector2 pos1 = new Vector2();
             Vector2 pos2 = new Vector2();

@@ -7,6 +7,7 @@ import com.badlogic.gdx.tools.texturepacker.TexturePacker;
 public class Main {
     public static void main(String[] args) {
         genRandomLevel("android/assets/levels/random1.lvl");
+        genPerfTest();
         genTextures();
     }
 
@@ -15,6 +16,12 @@ public class Main {
         generator.addStartNodes(30, 450, 30, 770, 0.1f);
         generator.genRandomNodes(30, 30, 450, 30, 770, 80f);
         generator.write();
+    }
+
+    public static void genPerfTest() {
+        LevelGenerator perfTest = new LevelGenerator("android/assets/levels/perftest.lvl");
+        perfTest.genPerfTest();
+        perfTest.write();
     }
 
     public static void genTextures() {
