@@ -1,7 +1,8 @@
-package tungus.games.graphchanger;
+package tungus.games.graphchanger.drawutils;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import tungus.games.graphchanger.Assets;
 
 /**
  * Routines related to rendering

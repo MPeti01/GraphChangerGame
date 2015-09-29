@@ -31,6 +31,7 @@ public class GraphChanger extends Game {
 	@Override
 	public void create () {
 		Assets.load();
+        //setScreen(new GraphicTestScreen(this));
         if (Gdx.app.getType() != Application.ApplicationType.Android && mpScreen != null) {
             try {
                 if (IP != null) {

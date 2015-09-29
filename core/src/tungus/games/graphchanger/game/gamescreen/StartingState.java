@@ -134,10 +134,14 @@ public class StartingState extends GameScreenState {
             } else {
                 keyDown(MODE_RANDOM_EMPTY);
             }
-            return true;
         } else {
-            return false;
+            if (screenX > Gdx.graphics.getWidth() / 2) {
+                keyDown(MODE_PERF_TEST);
+            } else {
+                keyDown(MODE_LOAD_FILE);
+            }
         }
+        return true;
     }
 
     private void sendStartMessage() {

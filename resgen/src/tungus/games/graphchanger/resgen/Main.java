@@ -1,3 +1,5 @@
+package tungus.games.graphchanger.resgen;
+
 import com.badlogic.gdx.tools.texturepacker.TexturePacker;
 
 /**

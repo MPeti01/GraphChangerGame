@@ -2,10 +2,10 @@ package tungus.games.graphchanger.game.graph.node;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
-import tungus.games.graphchanger.Assets;
 import tungus.games.graphchanger.game.graph.*;
 import tungus.games.graphchanger.game.players.Army;
 import tungus.games.graphchanger.game.players.Player;
+import tungus.games.graphchanger.game.render.NodeEffect;
 
 import java.util.List;
 
@@ -27,6 +27,8 @@ public class Node implements Destination {
 
     public final int id;
 
+    private final NodeEffect effect;
+
     public Node(Player owner, Vector2 pos, int level, int id,
                 List<Node> allNodes, List<Edge> allEdges, EdgePricer pricer, List<PartialEdge> partialEdges) {
         this.pos = pos;
@@ -36,6 +38,11 @@ public class Node implements Destination {
         captureHandler = new CaptureHandler(owner, pos, upgrader);
         edges = new EdgeHandler(this, allEdges, pricer, allNodes, partialEdges);
         this.allNodes = allNodes;
+        effect = new NodeEffect();
+        effect.setPosition(pos.x, pos.y);
+        if (owner != null) {
+            effect.setColorForPlayer(owner);
+        }
     }
 
     public Node(Vector2 pos, int id,
@@ -73,6 +80,7 @@ public class Node implements Destination {
         if (captureHandler.usesUnitPassingFrom(passingPlayer)) {
             if (captureHandler.justCaptured()) {
                 edges.clearOutNeighbors();
+                effect.setColorForPlayer(player());
             }
             return null;
         }
@@ -151,12 +159,13 @@ public class Node implements Destination {
         edges.addPrimaryNeighbor(node);
     }
 
-    public void render(SpriteBatch batch, boolean isSelected) {
-        Assets.Tex tex = (player() == null ? Assets.Tex.NODE0 : Assets.Tex.NODES[player().ordinal()][upgrader.level]);
+    public void render(SpriteBatch batch, boolean isSelected, float delta) {
+        /*Assets.Tex tex = (player() == null ? Assets.Tex.NODE0 : Assets.Tex.NODES[player().ordinal()][upgrader.level]);
         if (isSelected) {
             tex = Assets.Tex.NODE_SELECTED;
         }
-        batch.draw(tex.t, pos.x - Node.RADIUS, pos.y - Node.RADIUS, 2*Node.RADIUS, 2*Node.RADIUS);
+        batch.draw(tex.t, pos.x - Node.RADIUS, pos.y - Node.RADIUS, 2*Node.RADIUS, 2*Node.RADIUS);*/
+        effect.draw(batch, delta);
         if (captureHandler.isUnderAttack())
             captureHandler.renderBar(batch);
         if (upgrader.upgrading()) {

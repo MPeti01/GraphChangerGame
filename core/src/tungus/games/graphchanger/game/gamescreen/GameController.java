@@ -40,9 +40,9 @@ class GameController {
     }
 
     public void render(float delta, SpriteBatch batch) {
-        delta = correctDelta(delta, batch);
-        update(delta);
-        draw(batch);
+        float updaterDelta = correctDelta(delta, batch);
+        update(updaterDelta);
+        draw(batch, delta);
     }
 
     /**
@@ -76,14 +76,14 @@ class GameController {
         }
     }
 
-    private void draw(SpriteBatch batch) {
+    private void draw(SpriteBatch batch, float delta) {
         GameState current = simulator.state();
         gameInput.setGameState(current);
         gameInput.updateUI(editUI);
 
-        graphRenderer.renderEdges(current.graph.edges, current.graph.partialEdges, editUI, batch);
+        graphRenderer.renderEdges(current.graph.edges, current.graph.partialEdges, editUI, batch, delta);
         editUI.renderBehindNodes(batch);
-        graphRenderer.renderNodes(current.graph.nodes, editUI, batch);
+        graphRenderer.renderNodes(current.graph.nodes, editUI, batch, delta);
         editUI.renderOnTop(batch);
         current.renderArmies(batch, simulator.timeSinceTick());
     }

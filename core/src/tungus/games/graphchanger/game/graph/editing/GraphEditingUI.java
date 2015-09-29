@@ -3,7 +3,7 @@ package tungus.games.graphchanger.game.graph.editing;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import tungus.games.graphchanger.Assets;
-import tungus.games.graphchanger.DrawUtils;
+import tungus.games.graphchanger.drawutils.DrawUtils;
 import tungus.games.graphchanger.game.graph.Edge;
 import tungus.games.graphchanger.game.graph.Graph;
 import tungus.games.graphchanger.game.graph.PartialEdge;

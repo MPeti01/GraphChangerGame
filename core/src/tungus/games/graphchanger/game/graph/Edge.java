@@ -1,11 +1,10 @@
 package tungus.games.graphchanger.game.graph;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
-import tungus.games.graphchanger.DrawUtils;
 import tungus.games.graphchanger.game.graph.node.Node;
 import tungus.games.graphchanger.game.players.Player;
+import tungus.games.graphchanger.game.render.EdgeEffect;
 
 /**
  * An edge in the graph, connecting two {@link tungus.games.graphchanger.game.graph.node.Node Nodes}.
@@ -21,6 +20,8 @@ public class Edge implements Destination, Comparable<Edge> {
     public final Vector2 v2;
     public final float length;
     public final float angle;
+
+    private final EdgeEffect effect;
 
     /**
      * Whether the Edge was removed (by the owner's cut or the opponent's countering Edge)
@@ -38,17 +39,19 @@ public class Edge implements Destination, Comparable<Edge> {
         v2 = n2.pos();
         angle = temp.set(v2).sub(v1).angle();
         length = v1.dst(v2);
+        effect = new EdgeEffect(node1.player(), v1, angle, length, 1f);
     }
 
-    public void render(SpriteBatch batch) {
-        Color c = node1.player().edgeColor;
+    public void render(SpriteBatch batch, float delta) {
+        /*Color c = node1.player().edgeColor;
         batch.setColor(c.r, c.g, c.b, batch.getColor().a);
         DrawUtils.drawLine(batch, v1, 10f, length, angle);
 
         // Draw the two short lines for the arrow
         temp.set(25f, 0).rotate(angle).add(v1).add(v2).scl(0.5f);
         DrawUtils.drawLine(batch, temp, 10f, 25f, angle + 135f);
-        DrawUtils.drawLine(batch, temp, 10f, 25f, angle - 135f);
+        DrawUtils.drawLine(batch, temp, 10f, 25f, angle - 135f);*/
+        effect.draw(batch, delta);
     }
 
     public void contestedAs(PartialEdge partial) {

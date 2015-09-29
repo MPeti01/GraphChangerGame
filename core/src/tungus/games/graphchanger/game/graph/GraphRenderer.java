@@ -12,7 +12,8 @@ import java.util.List;
  */
 public class GraphRenderer {
 
-    public void renderEdges(List<Edge> edges, List<PartialEdge> partialEdges, GraphEditingUI editor, SpriteBatch batch) {
+    public void renderEdges(List<Edge> edges, List<PartialEdge> partialEdges, GraphEditingUI editor,
+                            SpriteBatch batch, float delta) {
         batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE);
         for (PartialEdge edge : partialEdges) {
             edge.renderBack(batch);
@@ -24,7 +25,7 @@ public class GraphRenderer {
             if (editor.isBeingCut(edge)) {
                 batch.setColor(1, 1, 1, 0.5f);
             }
-            edge.render(batch);
+            edge.render(batch, delta);
             batch.setColor(1, 1, 1, 1);
         }
         for (PartialEdge edge : partialEdges) {
@@ -36,9 +37,9 @@ public class GraphRenderer {
         }
     }
 
-    public void renderNodes(List<Node> nodes, GraphEditingUI editor, SpriteBatch batch) {
+    public void renderNodes(List<Node> nodes, GraphEditingUI editor, SpriteBatch batch, float delta) {
         for (Node node : nodes) {
-            node.render(batch, editor.isSelected(node));
+            node.render(batch, editor.isSelected(node), delta);
         }
     }
 }

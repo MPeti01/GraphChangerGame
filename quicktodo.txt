@@ -1,11 +1,21 @@
 Next up
 =======
-- ?
+- Gradle
+    - Handle modded jar with care
+    - Figure out when to run what and how
+- Graphics!
+    - Optimize -> WTFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+    - Once everything is additive, sort out blend func cleaning (Incl remove from GS)
+    - Sanitize tex sizes
+    - REFACTOR stuff (remove comments, ugly EdgeEff const, etc)
+
 
 Small things whenever
 =======================
 - Random movement of Units when standing
+- Better snapping
 - More commenting using stats plugin to notice 0% files.. :)
+- Make starting local MP easier with .bat?
 
 Kinda mid-long term bigger stuff
 ================================
@@ -21,6 +31,5 @@ Kinda mid-long term bigger stuff
 
 Reeeally long term reeeeallly big stuff
 =======================================
-- Graphics
 - Menu + UI
 - AI

@@ -13,7 +13,7 @@ import java.util.Random;
  */
 class Unit {
 
-    private static final float SIZE = 8f;
+    private static final float SIZE = 20f;
     public static float SPEED = 50f;
 
     private final Player player;

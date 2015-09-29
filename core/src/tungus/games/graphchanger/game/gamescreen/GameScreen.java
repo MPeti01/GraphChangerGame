@@ -56,9 +56,9 @@ public class GameScreen extends BaseScreen {
         cam = new OrthographicCamera(GAME_WIDTH, GAME_HEIGHT);
         cam.position.set(cam.viewportWidth / 2, cam.viewportHeight / 2, 0);
         cam.update();
-        batch = new SpriteBatch();
+        batch = new SpriteBatch(5460);
         batch.setProjectionMatrix(cam.combined);
-
+        batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE); // TODO TEMP
 
         this.player = player;
         mp = (in != null);
