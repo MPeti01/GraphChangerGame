@@ -29,6 +29,9 @@ public class Assets {
         private static void load() {
             for (Tex tex : values()) {
                 tex.t = atlas.findRegion(tex.filename);
+                if (tex.t == null) {
+                    throw new RuntimeException("Texture not found: " + tex.filename);
+                }
             }
         }
     }

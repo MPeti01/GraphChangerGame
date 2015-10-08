@@ -2,6 +2,7 @@ package tungus.games.graphchanger.game.gamescreen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
 import tungus.games.graphchanger.Assets.Tex;
 import tungus.games.graphchanger.game.gamestate.GameSimulator;
 import tungus.games.graphchanger.game.gamestate.GameState;
@@ -51,7 +52,7 @@ class GameController {
      * Also receives the SpriteBatch to render warning graphics when lagging.
      */
     private float correctDelta(float delta, SpriteBatch batch) {
-        delta = Math.min(delta, 0.1f);
+        delta = MathUtils.clamp(delta, 0.001f, 0.1f);
         if (simulator.timeSinceTick() > 2 * GameSimulator.TICK_TIME) {
             delta = 0;
             Gdx.app.log("PERF", "Lagging, can't update fast enough! Slowing sim");
