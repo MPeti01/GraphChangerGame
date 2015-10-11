@@ -58,7 +58,6 @@ public class GameScreen extends BaseScreen {
         cam.update();
         batch = new SpriteBatch(5460);
         batch.setProjectionMatrix(cam.combined);
-        batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE); // TODO TEMP
 
         this.player = player;
         mp = (in != null);

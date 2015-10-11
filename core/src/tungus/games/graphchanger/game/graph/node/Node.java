@@ -38,11 +38,7 @@ public class Node implements Destination {
         captureHandler = new CaptureHandler(owner, pos, upgrader);
         edges = new EdgeHandler(this, allEdges, pricer, allNodes, partialEdges);
         this.allNodes = allNodes;
-        effect = new NodeEffect();
-        effect.setPosition(pos.x, pos.y);
-        if (owner != null) {
-            effect.setColorForPlayer(owner);
-        }
+        effect = new NodeEffect(pos, owner);
     }
 
     public Node(Vector2 pos, int id,

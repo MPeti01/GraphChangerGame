@@ -1,6 +1,7 @@
 package tungus.games.graphchanger.game.gamescreen;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import tungus.games.graphchanger.Assets.Tex;
@@ -56,8 +57,8 @@ class GameController {
         if (simulator.timeSinceTick() > 2 * GameSimulator.TICK_TIME) {
             delta = 0;
             Gdx.app.log("PERF", "Lagging, can't update fast enough! Slowing sim");
-            batch.setColor(1, 1, 1, 0.3f);
-            batch.draw(Tex.NODE20.t, -1000, -1000, 4000, 4000);
+            batch.setColor(1, 0, 0, 0.3f);
+            batch.draw(Tex.LINE.t, -1000, -1000, 4000, 4000);
             batch.setColor(1, 1, 1, 1);
         }
         return delta;
@@ -82,11 +83,13 @@ class GameController {
         gameInput.setGameState(current);
         gameInput.updateUI(editUI);
 
+        batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE);
         graphRenderer.renderEdges(current.graph.edges, current.graph.partialEdges, editUI, batch, delta);
         editUI.renderBehindNodes(batch);
         graphRenderer.renderNodes(current.graph.nodes, editUI, batch, delta);
         editUI.renderOnTop(batch);
         current.renderArmies(batch, simulator.timeSinceTick());
+        batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
     }
 
     public BasicTouchListener getTouchListener() {

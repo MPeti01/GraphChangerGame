@@ -43,14 +43,6 @@ public class Edge implements Destination, Comparable<Edge> {
     }
 
     public void render(SpriteBatch batch, float delta) {
-        /*Color c = node1.player().edgeColor;
-        batch.setColor(c.r, c.g, c.b, batch.getColor().a);
-        DrawUtils.drawLine(batch, v1, 10f, length, angle);
-
-        // Draw the two short lines for the arrow
-        temp.set(25f, 0).rotate(angle).add(v1).add(v2).scl(0.5f);
-        DrawUtils.drawLine(batch, temp, 10f, 25f, angle + 135f);
-        DrawUtils.drawLine(batch, temp, 10f, 25f, angle - 135f);*/
         effect.draw(batch, delta);
     }
 

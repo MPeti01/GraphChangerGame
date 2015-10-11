@@ -41,7 +41,6 @@ public abstract class GraphLoader {
     }
 
     protected void addEdge(Node n1, Node n2) {
-        edges.add(new Edge(n1, n2));
         n1.addEdgeTo(n2);
     }
 
@@ -63,9 +62,6 @@ public abstract class GraphLoader {
         }
         for (int i = 0; i < nodes.size(); i++) { // Set up the same connections
             newNodes.get(i).set(nodes.get(i));
-        }
-        for (Edge e : edges) {
-            newEdges.add(new Edge(newNodes.get(e.node1.id), newNodes.get(e.node2.id)));
         }
         nodes = newNodes;
         edges = newEdges;

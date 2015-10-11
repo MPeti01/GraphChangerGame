@@ -1,5 +1,6 @@
 package tungus.games.graphchanger.game.gamestate;
 
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import tungus.games.graphchanger.game.graph.EdgePricer;
 import tungus.games.graphchanger.game.graph.Graph;
@@ -33,6 +34,7 @@ public class GameState {
     }
 
     public void renderArmies(SpriteBatch batch, float sinceTick) {
+        batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE);
         p1.renderUnits(batch, sinceTick);
         p2.renderUnits(batch, sinceTick);
     }

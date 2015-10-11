@@ -19,8 +19,6 @@ public class GraphRenderer {
             edge.renderBack(batch);
             batch.setColor(1, 1, 1, 1);
         }
-        batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-
         for (Edge edge : edges) {
             if (editor.isBeingCut(edge)) {
                 batch.setColor(1, 1, 1, 0.5f);
@@ -38,6 +36,7 @@ public class GraphRenderer {
     }
 
     public void renderNodes(List<Node> nodes, GraphEditingUI editor, SpriteBatch batch, float delta) {
+        batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE);
         for (Node node : nodes) {
             node.render(batch, editor.isSelected(node), delta);
         }

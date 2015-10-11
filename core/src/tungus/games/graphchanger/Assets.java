@@ -14,9 +14,8 @@ import java.io.IOException;
 public class Assets {
 
     public static enum Tex {
-        NODE0, NODE10, NODE20, NODE11, NODE21, NODE12, NODE22, NODE_SELECTED, LINE, UNIT1, UNIT2;
+        LINE, UNIT1, UNIT2;
 
-        public static final Tex[][] NODES = new Tex[][]{{NODE10, NODE11, NODE12}, {NODE20, NODE21, NODE22}};
         public static final Tex[] UNITS = new Tex[]{UNIT1, UNIT2};
 
         private final String filename;

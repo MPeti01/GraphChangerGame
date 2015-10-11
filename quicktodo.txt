@@ -1,13 +1,6 @@
 Next up
 =======
-- Gradle
-    - Handle modded jar with care
-    - Figure out when to run what and how
-- Graphics!
-    - Optimize -> WTFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-    - Once everything is additive, sort out blend func cleaning (Incl remove from GS)
-    - Sanitize tex sizes
-    - REFACTOR stuff (remove comments, ugly EdgeEff const, etc)
+- Implement missing graphics: upgrading, building edges
 
 
 Small things whenever
