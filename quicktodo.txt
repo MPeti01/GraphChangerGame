@@ -6,7 +6,6 @@ Next up
 Small things whenever
 =======================
 - Random movement of Units when standing
-- Better snapping
 - More commenting using stats plugin to notice 0% files.. :)
 - Make starting local MP easier with .bat?
 
@@ -19,7 +18,6 @@ Kinda mid-long term bigger stuff
 - Think of how single player should be handled, where to connect
   the AI to the system, what should happen to the network classes
   and their pretty tight integration as it is atm
-- Figure out Gradle? (http://www.petrikainulainen.net/getting-started-with-gradle/)
 
 
 Reeeally long term reeeeallly big stuff

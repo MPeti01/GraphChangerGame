@@ -22,6 +22,9 @@ import java.util.List;
  */
 public class InputInterpreter implements BasicTouchListener {
 
+    private static final float EDGE_START_SNAP_RADIUS = 35f;
+    private static final float EDGE_END_SNAP_RADIUS = 50f;
+
     public static enum EditingState {IDLE, ADD, REMOVE}
     private EditingState state = EditingState.IDLE;
     private final MoveListener moveListener;
@@ -62,7 +65,7 @@ public class InputInterpreter implements BasicTouchListener {
         if (inputBlocked) return;
         touchStart.set(touch);
         touchEnd.set(touch);
-        Node start = nodeFinder.nodeAt(touch);
+        Node start = nodeFinder.nodeAt(touch, EDGE_START_SNAP_RADIUS);
         if (start != null && validator.canStartEdgeFrom(start)) {
             startNodeID = start.id;
             state = EditingState.ADD;
@@ -79,7 +82,7 @@ public class InputInterpreter implements BasicTouchListener {
         touchEnd.set(touch);
         if (state == EditingState.ADD) {
             // Check for end node to snap to
-            Node end = nodeFinder.nodeAt(touch);
+            Node end = nodeFinder.nodeAt(touch, EDGE_END_SNAP_RADIUS);
             if (end != null) {
                 endNodeID = end.id;
                 touchEnd.set(end.pos());
@@ -112,7 +115,7 @@ public class InputInterpreter implements BasicTouchListener {
     @Override
     public void doubleTap(Vector2 touch) {
         if (inputBlocked) return;
-        Node node = nodeFinder.nodeAt(touch);
+        Node node = nodeFinder.nodeAt(touch, EDGE_START_SNAP_RADIUS);
         if (node != null && validator.canUpgrade(node)) {
             moveListener.addMove(new UpgradeNodeMove(node.id));
         }

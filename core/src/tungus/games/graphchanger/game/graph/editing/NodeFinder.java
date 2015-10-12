@@ -11,7 +11,6 @@ import java.util.List;
  * Finds nodes in specific positions (or with a given ID).
  */
 class NodeFinder {
-    private static final float NODE_TOUCH_RADIUS = 35f;
     private List<Node> nodes = null;
     private final List<Node> intersecting = new LinkedList<Node>();
 
@@ -26,13 +25,21 @@ class NodeFinder {
         return intersecting;
     }
 
-    public Node nodeAt(Vector2 pos) {
+    /**
+     * Gets the Node closest to a given position and at most the given distance from it. <br/>
+     * Returns null if no Node exists in the radius.
+     */
+    public Node nodeAt(Vector2 pos, float r) {
+        float min = r*r;
+        Node closest = null;
         for (Node n : nodes) {
-            if (pos.dst2(n.pos()) < NODE_TOUCH_RADIUS * NODE_TOUCH_RADIUS) {
-                return n;
+            float d2 = pos.dst2(n.pos());
+            if (d2 < min) {
+                min = d2;
+                closest = n;
             }
         }
-        return null;
+        return closest;
     }
 
     public Node withID(int id) {
