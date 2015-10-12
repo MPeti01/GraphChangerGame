@@ -30,7 +30,7 @@ public class GraphRenderer {
             if (editor.isBeingCut(edge)) {
                 batch.setColor(1, 1, 1, 0.5f);
             }
-            edge.renderFront(batch);
+            edge.renderFront(batch, delta);
             batch.setColor(1, 1, 1, 1);
         }
     }

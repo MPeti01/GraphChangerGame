@@ -54,7 +54,7 @@ class EdgeHandler {
      */
     public Edge addEdgeTo(Node other) {
         outNeighbors.add(other);
-        Edge e = new Edge(thisNode, other);
+        Edge e = new Edge(thisNode, other, null);
         outEdges.add(e);
         allEdgesInGraph.add(e);
         other.addEdgeFrom(thisNode);
@@ -171,7 +171,7 @@ class EdgeHandler {
         for (Node n : other.outNeighbors) {
             if (!outNeighbors.contains(n)) {
                 outNeighbors.add(allNodes.get(n.id));
-                Edge e = new Edge(thisNode, allNodes.get(n.id));
+                Edge e = new Edge(thisNode, allNodes.get(n.id), null);
                 outEdges.add(e);
                 allEdgesInGraph.add(e);
             }

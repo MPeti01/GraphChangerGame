@@ -14,7 +14,7 @@ import java.io.IOException;
 public class Assets {
 
     public static enum Tex {
-        LINE, UNIT1, UNIT2;
+        LINE, SPOT, UNIT1, UNIT2;
 
         public static final Tex[] UNITS = new Tex[]{UNIT1, UNIT2};
 

@@ -21,7 +21,7 @@ public class Edge implements Destination, Comparable<Edge> {
     public final float length;
     public final float angle;
 
-    private final EdgeEffect effect;
+    private EdgeEffect effect;
 
     /**
      * Whether the Edge was removed (by the owner's cut or the opponent's countering Edge)
@@ -32,14 +32,25 @@ public class Edge implements Destination, Comparable<Edge> {
      */
     private PartialEdge partialReplacer = null;
 
-    public Edge(Node n1, Node n2) {
+    public Edge(Node n1, Node n2, EdgeEffect effect) {
         node1 = n1;
         node2 = n2;
         v1 = n1.pos();
         v2 = n2.pos();
         angle = temp.set(v2).sub(v1).angle();
         length = v1.dst(v2);
-        effect = new EdgeEffect(node1.player(), v1, angle, length, 1f);
+        this.effect = effect;
+    }
+
+    public void setEffect(EdgeEffect effect) {
+        this.effect = effect;
+    }
+
+    public void createEffect() {
+        this.effect = new EdgeEffect(node1.player(), v1, angle, length, 1f);
+        for (int i = 0; i < 50; i++) {
+            effect.update(0.1f);
+        }
     }
 
     public void render(SpriteBatch batch, float delta) {

@@ -1,11 +1,12 @@
 package tungus.games.graphchanger.game.graph;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import tungus.games.graphchanger.Assets.Tex;
 import tungus.games.graphchanger.drawutils.DrawUtils;
 import tungus.games.graphchanger.game.graph.node.Node;
 import tungus.games.graphchanger.game.players.Player;
+import tungus.games.graphchanger.game.render.EdgeEffect;
 
 /**
  * An Edge under construction by an EdgeBuilder.
@@ -13,25 +14,26 @@ import tungus.games.graphchanger.game.players.Player;
 public class PartialEdge implements Destination, Comparable<PartialEdge> {
 
     public static interface EdgeCompleteListener {
-
         public void onEdgeComplete(PartialEdge built);
-
     }
 
     private static final Vector2 temp = new Vector2();
+
     public final int totalCost;
+
     private final float progressStep;
-
     private final Node start, end;
-
     private float progress; // 0 to 1
+
     private Vector2 front = new Vector2();
+
     private final float angle;
     private final float fullLength;
     private boolean cut = false;
-
     private Edge finishedEdge = null;
     private final EdgeCompleteListener onCompleteListener;
+
+    private EdgeEffect effect;
 
     public PartialEdge(Node start, Node end, int cost, float progress, EdgeCompleteListener listener) {
         this.progress = progress;
@@ -42,12 +44,14 @@ public class PartialEdge implements Destination, Comparable<PartialEdge> {
         onCompleteListener = listener;
         angle = temp.set(end.pos()).sub(start.pos()).angle();
         fullLength = start.pos().dst(end.pos());
+        effect = new EdgeEffect(start.player(), start.pos(), angle, fullLength, 0f);
         updateFront();
     }
 
     private void updateFront() {
         // Linearly interpolate from start to end by progress
         front.set(end.pos()).sub(start.pos()).scl(progress).add(start.pos());
+        effect.setProgress(progress);
     }
 
     @Override
@@ -61,6 +65,10 @@ public class PartialEdge implements Destination, Comparable<PartialEdge> {
 
     public Node endNode() {
         return end;
+    }
+
+    public EdgeEffect getEffect() {
+        return effect;
     }
 
     @Override
@@ -142,19 +150,11 @@ public class PartialEdge implements Destination, Comparable<PartialEdge> {
 
     public void renderBack(SpriteBatch batch) {
         batch.setColor(start.player().backColor);
-        DrawUtils.drawLine(batch, start.pos(), 20f, fullLength, angle);
+        DrawUtils.drawLine(batch, Tex.SPOT.t, start.pos(), 20f, fullLength, angle);
     }
 
-    public void renderFront(SpriteBatch batch) {
-        Color c = start.player().edgeColor;
-        batch.setColor(c.r, c.g, c.b, batch.getColor().a);
-        // Draw the edge
-        DrawUtils.drawLine(batch, start.pos(), 10f, fullLength * progress, angle);
-
-        // Draw the two short lines for the arrow
-        temp.set(25f, 0).rotate(angle).add(start.pos()).add(front).scl(0.5f);
-        DrawUtils.drawLine(batch, temp, 10f, 25f, angle + 135f);
-        DrawUtils.drawLine(batch, temp, 10f, 25f, angle - 135f);
+    public void renderFront(SpriteBatch batch, float delta) {
+        effect.draw(batch, delta);
     }
 
     @Override

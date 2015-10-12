@@ -41,7 +41,8 @@ public abstract class GraphLoader {
     }
 
     protected void addEdge(Node n1, Node n2) {
-        n1.addEdgeTo(n2);
+        Edge e = n1.addEdgeTo(n2);
+        e.createEffect();
     }
 
     protected void addEdge(int id1, int id2) {
@@ -62,6 +63,9 @@ public abstract class GraphLoader {
         }
         for (int i = 0; i < nodes.size(); i++) { // Set up the same connections
             newNodes.get(i).set(nodes.get(i));
+        }
+        for (Edge e : newEdges) { // Edges just created by Node setting, except for effects
+            e.createEffect();
         }
         nodes = newNodes;
         edges = newEdges;

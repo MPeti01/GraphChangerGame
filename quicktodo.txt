@@ -1,13 +1,16 @@
 Next up
 =======
-- Implement missing graphics: upgrading, building edges
-
+- ?
 
 Small things whenever
 =======================
 - Random movement of Units when standing
 - More commenting using stats plugin to notice 0% files.. :)
 - Make starting local MP easier with .bat?
+- Missing graphics
+    - Node upgrading
+    - Long edges "falling apart"
+    - Unit consume fadeout
 
 Kinda mid-long term bigger stuff
 ================================

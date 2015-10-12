@@ -74,6 +74,7 @@ class EdgeBuilder implements PartialEdge.EdgeCompleteListener {
         allPartialEdges.remove(built);
         edgesToBuild.remove(built);
         Edge finished = thisNode.addEdgeTo(built.endNode());
+        finished.setEffect(built.getEffect());
         built.finishAs(finished);
     }
 
