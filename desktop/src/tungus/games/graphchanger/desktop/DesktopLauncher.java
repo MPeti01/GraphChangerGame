@@ -16,13 +16,8 @@ public class DesktopLauncher implements ActionListener{
     @Override
     public void actionPerformed(ActionEvent ev){
         jf.setVisible(false);
-        LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-        config.width = 480;
-        config.height = 800;
         writeFile(jtf_host.getText());
-        NetMPScreen.IP = jtf_host.getText();
-        NetMPScreen.port = Integer.valueOf(jtf_port.getText());
-        new LwjglApplication(new GraphChanger(), config);
+        startGame(jtf_host.getText(), jtf_port.getText());
     }
 
     JFrame jf = new JFrame("Graph Changer");
@@ -41,7 +36,6 @@ public class DesktopLauncher implements ActionListener{
         jf.add(jtf_port);
         jf.add(jb);
         jf.setVisible(true);
-        GraphChanger.mpScreen = NetMPScreen.class;
     }
 
     private String readFile() {
@@ -67,7 +61,25 @@ public class DesktopLauncher implements ActionListener{
         }
     }
 
+    private static void startGame() {
+        LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+        config.width = 480;
+        config.height = 800;
+        GraphChanger.mpScreen = NetMPScreen.class;
+        new LwjglApplication(new GraphChanger(), config);
+    }
+
+    private static void startGame(String IP, String port) {
+        NetMPScreen.IP = IP;
+        NetMPScreen.port = Integer.valueOf(port);
+        startGame();
+    }
+
     public static void main(String[] arg) {
-        new DesktopLauncher();
+        if (arg.length == 0)
+            new DesktopLauncher();
+        else {
+            startGame(arg[0], arg[1]);
+        }
     }
 }

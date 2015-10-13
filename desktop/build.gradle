@@ -21,6 +21,7 @@ jar {
     from files(project.assetsDir);
 
     destinationDir = new File("runnable/")
+    archiveName = "desktop.jar"
 
     manifest {
         attributes 'Main-Class': project.mainClassName
