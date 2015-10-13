@@ -11,13 +11,22 @@ import tungus.games.graphchanger.game.players.Player;
  */
 public class EdgeEffect extends ParticleEffect {
 
+    private static final float REFERENCE_LENGTH = 180f;
     private final float maxLength;
 
     public EdgeEffect(Player p, Vector2 start, float angle, float len, float progress) {
         super();
         maxLength = len;
 
-        DistanceParticleEmitter emitter = new DistanceParticleEmitter((DistanceParticleEmitter) Assets.edgeEmitter);
+        DistanceParticleEmitter emitter = new DistanceParticleEmitter((DistanceParticleEmitter) Assets.edgeEmitter) {
+            {
+                float[] transparencyTiming = super.getTransparency().getTimeline();
+                transparencyTiming[1] /= (maxLength / REFERENCE_LENGTH);
+                transparencyTiming[2] = 1 - transparencyTiming[1];
+                float[] angleTiming = super.getAngle().getTimeline();
+                angleTiming[1] /= (maxLength / REFERENCE_LENGTH);
+            }
+        };
         emitter.getTint().setColors(new float[]{p.edgeColor.r, p.edgeColor.g, p.edgeColor.b});
         emitter.setDistance(len * progress);
         emitter.getAngle().setLow(angle);

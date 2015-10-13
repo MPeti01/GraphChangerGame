@@ -9,7 +9,6 @@ Small things whenever
 - Make starting local MP easier with .bat?
 - Missing graphics
     - Node upgrading
-    - Long edges "falling apart"
     - Unit consume fadeout
 
 Kinda mid-long term bigger stuff
