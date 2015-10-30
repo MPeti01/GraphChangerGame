@@ -19,9 +19,33 @@ public class DistanceParticleEmitter extends ParticleEmitter {
         goalDistance = dist;
     }
 
+    public DistanceParticleEmitter(FileHandle file) throws IOException {
+        super(new BufferedReader(new InputStreamReader(file.read())));
+        calcDefaultGoalDistance();
+    }
+
+    public DistanceParticleEmitter(ParticleEmitter normalEmitter, float dist) {
+        super(normalEmitter);
+        goalDistance = dist;
+    }
+
+    public DistanceParticleEmitter(ParticleEmitter normalEmitter) {
+        super(normalEmitter);
+        calcDefaultGoalDistance();
+    }
+
     public DistanceParticleEmitter(DistanceParticleEmitter other) {
         super(other);
         goalDistance = other.goalDistance;
+    }
+
+    /**
+     * Sets the goal to the distance an average speed particle would reach with the average life given
+     * in the emitter properties.
+     */
+    private void calcDefaultGoalDistance() {
+        goalDistance =  (getVelocity().getHighMin() + getVelocity().getHighMax()) / 2 *
+                        (getLife().getHighMin() + getLife().getHighMax()) / 2 / 1000f;
     }
 
     @Override
@@ -29,7 +53,7 @@ public class DistanceParticleEmitter extends ParticleEmitter {
         super.activateParticle(i);
         if (particles[i].velocity != 0 || particles[i].velocityDiff != 0) {
             particles[i].currentLife = particles[i].life =
-                    (int)(goalDistance / (particles[i].velocity + particles[i].velocityDiff) * 1000);
+                    (int)(goalDistance / Math.abs(particles[i].velocity + particles[i].velocityDiff) * 1000);
         }
     }
 

@@ -85,6 +85,8 @@ public class Node implements Destination {
             return contestedEdge;
         }
         if (upgrader.usesUnitPassingFrom(passingPlayer)) {
+            if (!upgrader.justUpgraded())
+                effect.scaleEffect(Upgrader.EFFECT_SIZE_MULTIPLIER);
             return null;
         }
 
@@ -162,11 +164,8 @@ public class Node implements Destination {
         }
         batch.draw(tex.t, pos.x - Node.RADIUS, pos.y - Node.RADIUS, 2*Node.RADIUS, 2*Node.RADIUS);*/
         effect.draw(batch, delta);
-        if (captureHandler.isUnderAttack())
-            captureHandler.renderBar(batch);
-        if (upgrader.upgrading()) {
-            upgrader.render(batch);
-        }
+        captureHandler.render(batch);
+        upgrader.render(batch, delta);
     }
 
     @Override

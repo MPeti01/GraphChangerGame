@@ -12,14 +12,18 @@ class Upgrader {
     public static final int[] UNITS_TO_CAP_NEUTRAL = new int[]{3, 8, 16};
     public static final int[] UNITS_TO_CAP_PLAYER = new int[]{8, 20, 50};
 
+    public static final float EFFECT_SIZE_MULTIPLIER = 1.6f;
+
     private static final float BAR_LENGTH = 50;
     private static final float BAR_WIDTH = 7;
     private static final float BAR_DIST_BELOW = 25;
 
     public int level;
     private int unitsNeeded = 0;
-    private final BarDrawer bar;
     private Player owner;
+
+    private final BarDrawer bar;
+    private boolean justUpgraded = false;
 
     public Upgrader(Player o, Vector2 pos, int level) {
         owner = o;
@@ -42,6 +46,7 @@ class Upgrader {
             unitsNeeded--;
             if (unitsNeeded == 0) {
                 level++;
+                justUpgraded = true;
             }
             return true;
         }
@@ -60,7 +65,7 @@ class Upgrader {
         return unitsNeeded > 0;
     }
 
-    public void render(SpriteBatch batch) {
+    public void render(SpriteBatch batch, float delta) {
         if (unitsNeeded > 0) {
             bar.draw(batch, 1 - (float)unitsNeeded / UPGRADE_COSTS[level+1]);
         }
@@ -74,5 +79,13 @@ class Upgrader {
         level = other.level;
         owner = other.owner;
         unitsNeeded = other.unitsNeeded;
+    }
+
+    public boolean justUpgraded() {
+        if (justUpgraded) {
+            justUpgraded = false;
+            return true;
+        } else
+            return false;
     }
 }

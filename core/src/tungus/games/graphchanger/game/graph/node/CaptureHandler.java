@@ -64,10 +64,12 @@ class CaptureHandler {
         return captureProgress > 0;
     }
 
-    public void renderBar(SpriteBatch batch) {
-        bar.setColor(attacker == null ? Color.WHITE : attacker.mainColor,
-                owner == null ? Color.WHITE : owner.mainColor);
-        bar.draw(batch, (float)captureProgress/upgrader.unitsToCapture());
+    public void render(SpriteBatch batch) {
+        if (isUnderAttack()) {
+            bar.setColor(attacker == null ? Color.WHITE : attacker.mainColor,
+                    owner == null ? Color.WHITE : owner.mainColor);
+            bar.draw(batch, (float) captureProgress / upgrader.unitsToCapture());
+        }
     }
 
     public void set(CaptureHandler other) {
