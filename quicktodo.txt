@@ -4,15 +4,13 @@ Next up
 
 Small things whenever
 =======================
-- Random movement of Units when standing
 - More commenting using stats plugin to notice 0% files.. :)
-- Make starting local MP easier with .bat?
-- Missing graphics
-    - Node upgrading
-    - Unit consume fadeout
 
 Kinda mid-long term bigger stuff
 ================================
+- Unit rendering stuff
+    - Fade in and out
+    - Group + count
 - Levelgen
     - Spawn upgraded neutral nodes as well
     - Spawn with prebuilt graph stuff?
