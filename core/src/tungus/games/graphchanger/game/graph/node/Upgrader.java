@@ -42,6 +42,7 @@ class Upgrader {
     }
 
     public boolean usesUnitPassingFrom(Player p) {
+        justUpgraded = false;
         if (wouldUseUnitFrom(p)) {
             unitsNeeded--;
             if (unitsNeeded == 0) {

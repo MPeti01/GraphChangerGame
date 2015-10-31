@@ -27,6 +27,9 @@ public class DirectionCalculator {
             distanceFromGoal[i] = -1;
         }
         setDirections(nodes, Player.P1);
+        for (int i = 0; i < s; i++) {
+            distanceFromGoal[i] = -1;
+        }
         setDirections(nodes, Player.P2);
     }
 

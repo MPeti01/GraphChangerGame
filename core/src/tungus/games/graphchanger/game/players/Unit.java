@@ -55,7 +55,9 @@ class Unit {
         }
 
         if (reachedDest) {
-            setIdleMovementVel();
+            //setIdleMovementVel();
+            pos.set(destination.pos());
+            vel.set(0,0);
         } else if (destination.pos().x != lastDestPos.x || destination.pos().y != lastDestPos.y) {
             // Float equality is fine here, because we set lastDestPos from this value
             vel.set(destination.pos()).sub(pos).nor().scl(SPEED);

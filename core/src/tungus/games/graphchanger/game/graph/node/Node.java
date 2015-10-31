@@ -38,7 +38,7 @@ public class Node implements Destination {
         captureHandler = new CaptureHandler(owner, pos, upgrader);
         edges = new EdgeHandler(this, allEdges, pricer, allNodes, partialEdges);
         this.allNodes = allNodes;
-        effect = new NodeEffect(pos, owner);
+        effect = new NodeEffect(pos, owner, level);
     }
 
     public Node(Vector2 pos, int id,
@@ -85,8 +85,8 @@ public class Node implements Destination {
             return contestedEdge;
         }
         if (upgrader.usesUnitPassingFrom(passingPlayer)) {
-            if (!upgrader.justUpgraded())
-                effect.scaleEffect(Upgrader.EFFECT_SIZE_MULTIPLIER);
+            if (upgrader.justUpgraded())
+                effect.incrementLevel();
             return null;
         }
 

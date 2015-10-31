@@ -38,12 +38,12 @@ public class Assets {
     public static TextureAtlas atlas;
     public static BitmapFont font;
 
-    public static ParticleEffectPool node;
-
-    // A member of a special subclass. Can't use ParticleEffect as usual because it would create
+    // A member of a special subclass. Can't clone ParticleEffects as usual because it would create
     // ordinary ParticleEmitters.
     public static ParticleEmitter edgeEmitter;
 
+    // Needs DistanceParticleEmitters, so each emitter should be copied separately
+    public static ParticleEffect node;
 
     public static void load() {
         atlas = new TextureAtlas(Gdx.files.internal("textures/game.atlas"));
@@ -60,10 +60,8 @@ public class Assets {
     }
 
     private static void loadParticles() {
-        ParticleEffect nodeEffect = new ParticleEffect();
-        nodeEffect.load(Gdx.files.internal("particles/node"), Assets.atlas);
-        node = new ParticleEffectPool(nodeEffect, 40, 100);
-
+        node = new ParticleEffect();
+        node.load(Gdx.files.internal("particles/node"), Assets.atlas);
         try {
             edgeEmitter = new DistanceParticleEmitter(Gdx.files.internal("particles/edge"), 300);
             // Create an Effect just to load the damn Sprite.

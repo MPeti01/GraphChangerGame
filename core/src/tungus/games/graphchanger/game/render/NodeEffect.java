@@ -5,14 +5,25 @@ import com.badlogic.gdx.graphics.g2d.ParticleEmitter;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import tungus.games.graphchanger.Assets;
+import tungus.games.graphchanger.drawutils.DistanceParticleEmitter;
 import tungus.games.graphchanger.game.players.Player;
 
 /**
  * Extended ParticleEffect for rendering Nodes.
  */
 public class NodeEffect extends ParticleEffect {
-    public NodeEffect(Vector2 pos, Player player) {
-        super(Assets.node.obtain());
+
+    /**
+     * Emitter count for each level
+     */
+    private static final int[] EMITTER_COUNT = new int[]{3, 4, 5};
+    private int level;
+
+    public NodeEffect(Vector2 pos, Player player, int level) {
+        super();
+        for (int i = 0; i < EMITTER_COUNT[level]; i++) {
+            getEmitters().add(new DistanceParticleEmitter(Assets.node.getEmitters().get(i)));
+        }
         setPosition(pos.x, pos.y);
         setColorForPlayer(player);
         // Don't take time for fading in. Effects slightly fade every 10s, don't have that in sync.
@@ -31,5 +42,16 @@ public class NodeEffect extends ParticleEffect {
         for (ParticleEmitter e : getEmitters()) {
             e.getTint().setColors(color);
         }
+    }
+
+    public void incrementLevel() {
+        for (int i = EMITTER_COUNT[level]; i < EMITTER_COUNT[level+1]; i++) {
+            ParticleEmitter newEmitter = new DistanceParticleEmitter(Assets.node.getEmitters().get(i));
+            ParticleEmitter ref = getEmitters().get(0);
+            newEmitter.setPosition(ref.getX(), ref.getY());
+            newEmitter.getTint().setColors(ref.getTint().getColors());
+            getEmitters().add(newEmitter);
+        }
+        level++;
     }
 }
