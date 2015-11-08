@@ -5,7 +5,6 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.input.GestureDetector.GestureAdapter;
-import tungus.games.graphchanger.game.network.SimpleMessage;
 
 /**
  * A State used when the game is unpaused, in progress.
@@ -99,7 +98,7 @@ public class PlayingState extends GameScreenState {
      */
     private void initiateRestart() {
         next = new StartingState(screen, true);
-        screen.comm.write(new SimpleMessage(RESTART_CODE));
+        screen.comm.write(RESTART_CODE);
         screen.gameController.takeUserInput(false);
         Gdx.app.log("LIFECYCLE", "Restart requested");
     }
@@ -110,7 +109,7 @@ public class PlayingState extends GameScreenState {
      */
     private void confirmRestart() {
         next = new StartingState(screen, false);
-        screen.comm.write(new SimpleMessage(RESTART_CODE));
+        screen.comm.write(RESTART_CODE);
         screen.gameController.takeUserInput(false);
     }
 

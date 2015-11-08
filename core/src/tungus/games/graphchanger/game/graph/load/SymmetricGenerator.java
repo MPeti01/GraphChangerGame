@@ -26,22 +26,21 @@ abstract class SymmetricGenerator extends GraphLoader {
     }
 
     protected void positionPair(Vector2 pos1, Vector2 pos2) {
-        while (true) {
+        boolean allOK = false;
+        while (!allOK) {
             pos1.set(rand.nextFloat() * WIDTH, rand.nextFloat() * HEIGHT);
             pos2.set(topRight).sub(pos1);
             pos1.add(bottomLeft);
             if (pos1.dst2(pos2) < MIN_DIST * MIN_DIST) {
                 continue;
             }
-            boolean allOK = true;
+            allOK = true;
             for (Node n : nodes) {
                 if (n.pos().dst2(pos1) < MIN_DIST * MIN_DIST || n.pos().dst2(pos2) < MIN_DIST * MIN_DIST) {
                     allOK = false;
                     break;
                 }
             }
-            if (allOK)
-                return;
         }
     }
 }

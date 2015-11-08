@@ -7,7 +7,6 @@ import com.badlogic.gdx.utils.TimeUtils;
 import tungus.games.graphchanger.game.graph.load.EmptyGenerator;
 import tungus.games.graphchanger.game.graph.load.FileLoader;
 import tungus.games.graphchanger.game.graph.load.MixedPositionGenerator;
-import tungus.games.graphchanger.game.network.SimpleMessage;
 
 /**
  * Active state before starting the game. Responsible for choosing the game parameters, communicating these
@@ -92,7 +91,7 @@ public class StartingState extends GameScreenState {
             Gdx.app.log("LIFECYCLE", "Starting at " + gameStartTime + " (currently " + TimeUtils.millis() + ")");
 
             // Send confirmation message
-            screen.comm.write(new SimpleMessage(0, 0, 0));
+            screen.comm.write(0, 0, 0);
             return true;
         } else if (isInitiator && startInputTime != Long.MAX_VALUE) {
             // Confirmation message received from non-initiating client, calculate start time
@@ -148,7 +147,7 @@ public class StartingState extends GameScreenState {
         // The two bytes must be sent as separate variables, because OutputStream can only send bytes.
         byte lowest = (byte) (seed & BM_ONE_BYTE);
         byte second = (byte) ((seed >> 8) & BM_ONE_BYTE);
-        screen.comm.write(new SimpleMessage(modeNumber, lowest, second));
+        screen.comm.write(modeNumber, lowest, second);
     }
 
     private void initGame() {

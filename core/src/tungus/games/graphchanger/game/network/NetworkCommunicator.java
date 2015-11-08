@@ -62,7 +62,7 @@ public class NetworkCommunicator {
                         }
                     }
                 } catch (IOException e) {
-                    Gdx.app.log("CONNECTION", "Failed to send, aborting connection");
+                    Gdx.app.log("CONNECTION", "Failed to read, aborting connection");
                     e.printStackTrace();
                     abortConnection();
                 }
@@ -106,6 +106,20 @@ public class NetworkCommunicator {
         if (!connected) return;
         try {
             toSend.writeTo(out);
+            out.write(DELIM);
+        } catch (IOException e) {
+            Gdx.app.log("CONNECTION", "Failed to send, aborting connection");
+            e.printStackTrace();
+            abortConnection();
+        }
+    }
+
+    public synchronized void write(int... data) {
+        if (!connected) return;
+        try {
+            for (int x : data) {
+                out.write(x);
+            }
             out.write(DELIM);
         } catch (IOException e) {
             Gdx.app.log("CONNECTION", "Failed to send, aborting connection");
