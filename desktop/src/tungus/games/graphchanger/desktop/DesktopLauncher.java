@@ -65,7 +65,7 @@ public class DesktopLauncher implements ActionListener{
         LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
         config.width = 480;
         config.height = 800;
-        GraphChanger.mpScreen = NetMPScreen.class;
+        GraphChanger.mpConnectScreen = NetMPScreen.class;
         new LwjglApplication(new GraphChanger(), config);
     }
 

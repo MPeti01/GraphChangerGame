@@ -12,42 +12,45 @@ import com.badlogic.gdx.input.GestureDetector.GestureAdapter;
 public class PlayingState extends GameScreenState {
 
     /**
-     * The next state we are transistioning to. Kept as null until transistion begins.
+     * true when a restart was initiated
      */
-    private GameScreenState next = null;
+    private volatile boolean restarting = false;
     /**
-     * Whether the next state can be entered right now or we are waiting for the remote client
-     * (when next != null)
+     * Whether the restart can be done right now or we are waiting for the remote client
      */
     private boolean goNext = false;
 
     public PlayingState(GameScreen screen) {
         super(screen);
-
     }
 
     @Override
     public void onEnter() {
         Gdx.app.log("LIFECYCLE", "Playing state entered");
+        screen.comm.setDetailedLogging(false);
         screen.gameController.takeUserInput(true);
     }
 
     @Override
     public GameScreenState render(SpriteBatch batch, float delta) {
-        if (next == null) {
-            // Not in the progress of transistioning to a new State.
+        if (!restarting) {
+            // Not in the progress of transitioning to a new State.
             batch.begin();
-            screen.gameController.render(delta, batch);
+            screen.gameController.update(delta);
+            screen.gameController.render(batch, delta);
             batch.end();
         }
-        return goNext ? next : this;
+        if (goNext) {
+            screen.backToSetup();
+        }
+        return this;
     }
 
     @Override
     public boolean keyDown(int keyCode) {
         if (keyCode == Keys.R) {
             // Restart
-            if (next == null) {
+            if (!restarting) {
                 // Restarting didn't begin yet -> initiate.
                 initiateRestart();
             }
@@ -58,11 +61,11 @@ public class PlayingState extends GameScreenState {
     @Override
     public boolean receivedMessage(int[] m) {
         if (m[0] == RESTART_CODE) {
-            if (next == null) {
+            if (!restarting) {
                 // Restarting didn't begin yet, so the remote client initiated it.
                 confirmRestart();
             }
-            Gdx.app.log("LIFECYCLE", "Restarting");
+            Gdx.app.log("FLOW", "Restarting the game, transitioning to setup screen");
             // Either way, the remote client is ready to go as well, so enter the new state.
             goNext = true;
             return true;
@@ -74,7 +77,7 @@ public class PlayingState extends GameScreenState {
         @Override
         public boolean tap(float x, float y, int count, int button) {
             if (count >= 3 && x < Gdx.graphics.getWidth() / 10 && y < Gdx.graphics.getHeight() / 10
-                    && next == null) {
+                    && !restarting) {
                 initiateRestart();
                 return true;
             } else
@@ -97,10 +100,15 @@ public class PlayingState extends GameScreenState {
      * Does not actually restart before receiving confirmation from the remote.
      */
     private void initiateRestart() {
-        next = new StartingState(screen, true);
-        screen.comm.write(RESTART_CODE);
+        restarting = true;
+        if (screen.comm.isConnected()) {
+            screen.comm.write(RESTART_CODE);
+        } else {
+            goNext = true;
+        }
+
         screen.gameController.takeUserInput(false);
-        Gdx.app.log("LIFECYCLE", "Restart requested");
+        Gdx.app.log("FLOW", "Restart requested");
     }
 
     /**
@@ -108,7 +116,7 @@ public class PlayingState extends GameScreenState {
      * confirms the restart action to the remote client.
      */
     private void confirmRestart() {
-        next = new StartingState(screen, false);
+        restarting = true;
         screen.comm.write(RESTART_CODE);
         screen.gameController.takeUserInput(false);
     }

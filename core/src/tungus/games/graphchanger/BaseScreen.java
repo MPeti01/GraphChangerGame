@@ -37,7 +37,7 @@ public abstract class BaseScreen implements Screen {
 
     @Override
     public void hide() {
-        dispose();
+
     }
 
     @Override

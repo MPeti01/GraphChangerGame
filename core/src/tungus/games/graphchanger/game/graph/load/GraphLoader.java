@@ -19,6 +19,10 @@ import java.util.List;
  */
 public abstract class GraphLoader {
 
+    public static enum Mode {
+        LOAD_FILE, PERF_TEST, RANDOM_EMPTY, RANDOM_MIXED
+    }
+
     public List<Node> nodes = new ArrayList<Node>();
     public List<Edge> edges = new LinkedList<Edge>();
     public List<PartialEdge> partialEdges = new LinkedList<PartialEdge>();

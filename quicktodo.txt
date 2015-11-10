@@ -1,16 +1,5 @@
 Next up
 =======
-- Implement pregame states and transitions
-    - Create simple SPSS
-    - Extract MPSS from current StartingState
-        - MPCS should create NC, MPSS can use that
-        - Choose the levels, create loader
-    - GameScreen modifications
-        - No SS; create GC in ctor
-        - Switch to MPSyncPhase if MP
-        - Then (or if SP, right away) CountdownPhase
-        - Then PLAY!
-
 - Create place for AI
     - Connection (some better name would be nice?) as interface
         - AIConnection to mediate between game and AI core or whatever

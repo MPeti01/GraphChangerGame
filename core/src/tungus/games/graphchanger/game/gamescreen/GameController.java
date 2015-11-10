@@ -32,19 +32,13 @@ class GameController {
     public GameController(Player player, GraphLoader loader, NetworkCommunicator comm) {
         simulator = new GameSimulator(loader);
         MoveListener moveListener = simulator;
-        if (comm != null) {
+        if (comm.isConnected()) {
             connection = new Connection(comm);
             moveListener = new MoveListenerMultiplexer(connection, moveListener);
         } else {
             connection = null;
         }
         gameInput = new InputInterpreter(moveListener, player);
-    }
-
-    public void render(float delta, SpriteBatch batch) {
-        float updaterDelta = correctDelta(delta, batch);
-        update(updaterDelta);
-        draw(batch, delta);
     }
 
     /**
@@ -64,7 +58,7 @@ class GameController {
         return delta;
     }
 
-    private void update(float delta) {
+    public void update(float delta) {
         simulator.timePassed(delta);
         if (connection != null) {
             connection.processReceived(simulator);
@@ -78,7 +72,8 @@ class GameController {
         }
     }
 
-    private void draw(SpriteBatch batch, float delta) {
+    public void render(SpriteBatch batch, float delta) {
+        delta = correctDelta(delta, batch);
         GameState current = simulator.state();
         gameInput.setGameState(current);
         gameInput.updateUI(editUI);
@@ -98,7 +93,6 @@ class GameController {
 
     /**
      * Enables or disables the game accepting user input
-     *
      * @param inp true to enable, false to disable
      */
     public void takeUserInput(boolean inp) {

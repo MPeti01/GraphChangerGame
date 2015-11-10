@@ -10,7 +10,7 @@ public class AndroidLauncher extends AndroidApplication {
 	@Override
 	protected void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-        GraphChanger.mpScreen = BluetoothConnectScreen.class;
+        GraphChanger.mpConnectScreen = BluetoothConnectScreen.class;
         BluetoothConnector.app = this;
         BTListUI.loc = getResources().getConfiguration().locale;
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();

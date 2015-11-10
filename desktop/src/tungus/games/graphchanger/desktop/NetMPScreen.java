@@ -9,8 +9,9 @@ import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.net.SocketHints;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import tungus.games.graphchanger.BaseScreen;
-import tungus.games.graphchanger.game.gamescreen.GameScreen;
+import tungus.games.graphchanger.game.network.NetworkCommunicator;
 import tungus.games.graphchanger.game.players.Player;
+import tungus.games.graphchanger.menu.MultiPlayerSetup;
 
 public class NetMPScreen extends BaseScreen {
 	
@@ -19,8 +20,9 @@ public class NetMPScreen extends BaseScreen {
 
 	public NetMPScreen(Game game) {
 		super(game);
+        Gdx.app.log("SCREEN", "Entered internet MP connect screen");
 		if(IP.equals("")) {
-            Gdx.app.log("MODE", "LISTEN");
+            Gdx.app.log("SCREEN", "Mode: listen");
             new Thread() {
                 @Override
                 public void run() {
@@ -40,7 +42,7 @@ public class NetMPScreen extends BaseScreen {
                 }
             }.start();
         } else {
-            Gdx.app.log("MODE", "CONNECT");
+            Gdx.app.log("SCREEN", "Mode: connect");
             new Thread() {
                 @Override
                 public void run() {
@@ -50,7 +52,7 @@ public class NetMPScreen extends BaseScreen {
                             player = Player.P2;
                             connected = true;
                         } catch (GdxRuntimeException e) {
-                            Gdx.app.log("Net MP", "Failed to connect to " + IP + ". Retrying...");
+                            Gdx.app.log("NETWORK", "Failed to connect to " + IP + ". Retrying...");
                         }
                     }
                 }
@@ -65,7 +67,8 @@ public class NetMPScreen extends BaseScreen {
 	@Override
 	public void render(float deltaTime) {
         if (connected) {
-            game.setScreen(new GameScreen(game, player, connection.getInputStream(), connection.getOutputStream()));
+            NetworkCommunicator comm = new NetworkCommunicator(connection.getInputStream(), connection.getOutputStream());
+            game.setScreen(new MultiPlayerSetup(game, comm, player));
         }
 	}
 

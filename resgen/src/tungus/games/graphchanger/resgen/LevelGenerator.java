@@ -135,5 +135,6 @@ public class LevelGenerator {
             edges.add(new EdgeData(i, i + 1));
             edges.add(new EdgeData(i + nodeCount / 2, i + nodeCount / 2 + 1));
         }
+        edges.add(new EdgeData(nodeCount/ 2 - 1, nodeCount - 1));
     }
 }

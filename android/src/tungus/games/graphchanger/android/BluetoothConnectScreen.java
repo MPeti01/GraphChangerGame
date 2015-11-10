@@ -9,8 +9,9 @@ import tungus.games.graphchanger.BaseScreen;
 import tungus.games.graphchanger.android.BluetoothConnector.Client;
 import tungus.games.graphchanger.android.BluetoothConnector.ClientState;
 import tungus.games.graphchanger.android.BluetoothConnector.Server;
-import tungus.games.graphchanger.game.gamescreen.GameScreen;
+import tungus.games.graphchanger.game.network.NetworkCommunicator;
 import tungus.games.graphchanger.game.players.Player;
+import tungus.games.graphchanger.menu.MultiPlayerSetup;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -40,6 +41,7 @@ public class BluetoothConnectScreen extends BaseScreen {
 	
 	public BluetoothConnectScreen(Game game) {
 		super(game);
+        Gdx.app.log("SCREEN", "Entered Bluetooth MP connect screen");
 		BluetoothConnector.INSTANCE.enable();
 		server = BluetoothConnector.INSTANCE.server;
 		client = BluetoothConnector.INSTANCE.client;
@@ -73,7 +75,8 @@ public class BluetoothConnectScreen extends BaseScreen {
 			}
 			break;
 		case CONNECTED:
-			game.setScreen(new GameScreen(game, Player.P1, BluetoothConnector.INSTANCE.in, BluetoothConnector.INSTANCE.out));
+            NetworkCommunicator comm = new NetworkCommunicator(BluetoothConnector.INSTANCE.in, BluetoothConnector.INSTANCE.out);
+			game.setScreen(new MultiPlayerSetup(game, comm, Player.P1));
 			break;
 		default:
 			break;
@@ -87,13 +90,13 @@ public class BluetoothConnectScreen extends BaseScreen {
 			break;
 		case ENABLED:
 			if (!clientReady) {
-				Gdx.app.log("Bluetooth", "Starting discovery...");
 				client.enableDiscovery();
 				clientReady = true;				
 			}
 			break;
 		case CONNECTED:
-            game.setScreen(new GameScreen(game, Player.P2, BluetoothConnector.INSTANCE.in, BluetoothConnector.INSTANCE.out));
+            NetworkCommunicator comm = new NetworkCommunicator(BluetoothConnector.INSTANCE.in, BluetoothConnector.INSTANCE.out);
+            game.setScreen(new MultiPlayerSetup(game, comm, Player.P2));
 			break;
 		case DISCOVERING:
 			client.listDevices(devices);

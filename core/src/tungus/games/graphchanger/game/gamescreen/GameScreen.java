@@ -7,14 +7,14 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.utils.TimeUtils;
 import tungus.games.graphchanger.BaseScreen;
 import tungus.games.graphchanger.game.graph.load.GraphLoader;
 import tungus.games.graphchanger.game.network.NetworkCommunicator;
 import tungus.games.graphchanger.game.players.Player;
 import tungus.games.graphchanger.input.BasicTouchWrapper;
-
-import java.io.InputStream;
-import java.io.OutputStream;
+import tungus.games.graphchanger.menu.MultiPlayerSetup;
+import tungus.games.graphchanger.menu.SinglePlayerSetup;
 
 public class GameScreen extends BaseScreen {
 
@@ -47,25 +47,37 @@ public class GameScreen extends BaseScreen {
     GameController gameController;
     private GameScreenState currentState;
 
-    // TODO Handle this (SP) properly
-    public GameScreen(Game game) {
-        this(game, Player.P1, null, null);
+    public GameScreen(Game game, GraphLoader loader) {
+        this(game, loader, NetworkCommunicator.dummy(), Player.P1);
     }
 
-    public GameScreen(Game game, Player player, InputStream in, OutputStream out) {
+    public GameScreen(Game game, GraphLoader loader, NetworkCommunicator comm, Player player) {
         super(game);
+        Gdx.app.log("FLOW", "Entered game screen");
+
+        this.player = player;
+
         cam = new OrthographicCamera(GAME_WIDTH, GAME_HEIGHT);
         cam.position.set(cam.viewportWidth / 2, cam.viewportHeight / 2, 0);
         cam.update();
         batch = new SpriteBatch(5460);
         batch.setProjectionMatrix(cam.combined);
 
-        this.player = player;
-        comm = new NetworkCommunicator(in, out);
+
+        this.comm = comm;
+        comm.clearListeners();
         userInput = new InputMultiplexer();
         Gdx.input.setInputProcessor(userInput);
 
-        currentState = new StartingState(this, player == Player.P1);
+        newGame(loader);
+        Gdx.app.log("FLOW", "Game loaded");
+        if (comm.isConnected()) {
+            // In multiplayer, syncing is needed to start at the same time accurately
+            currentState = new SyncState(this, player == Player.P1);
+        } else {
+            currentState = new CountDownState(this, TimeUtils.millis());
+        }
+
         comm.addListener(currentState);
         userInput.addProcessor(currentState);
 
@@ -83,12 +95,11 @@ public class GameScreen extends BaseScreen {
 
     @Override
     public void dispose() {
-        Gdx.app.log("DEBUG", "dispose()");
         comm.dispose();
     }
 
     /**
-     * Transistions to the given GameScreenState.
+     * Transitions to the given GameScreenState.
      * Binds the user and network inputs to this state from the previous one.
      */
     private void setState(GameScreenState next) {
@@ -117,5 +128,16 @@ public class GameScreen extends BaseScreen {
         BasicTouchWrapper inputToGame = new BasicTouchWrapper(gameController.getTouchListener());
         inputToGame.setCamera(cam);
         userInput.addProcessor(inputToGame);
+    }
+
+    /**
+     * Aborts the game, returning to the setup screen (multiplayer or singleplayer logically)
+     */
+    public void backToSetup() {
+        if (comm.isConnected()) {
+            game.setScreen(new MultiPlayerSetup(game, comm, player));
+        } else {
+            game.setScreen(new SinglePlayerSetup(game));
+        }
     }
 }

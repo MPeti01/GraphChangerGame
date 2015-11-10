@@ -8,7 +8,7 @@ import tungus.games.graphchanger.menu.MainMenu;
 
 public class GraphChanger extends Game {
 
-    public static Class<? extends Screen> mpScreen = null;
+    public static Class<? extends Screen> mpConnectScreen = null;
     private final FPSLogger fps = new FPSLogger();
 
 	@Override
@@ -32,6 +32,10 @@ public class GraphChanger extends Game {
             e.printStackTrace();
             throw new GdxRuntimeException("Failed to instantiate screen from Class");
         }
-        super.dispose();
+    }
+
+    @Override
+    public void dispose() {
+        screen.dispose();
     }
 }

@@ -17,8 +17,7 @@ public abstract class GameScreenState extends InputAdapter implements NetworkTok
     /**
      * Called before this state is set as the current one.
      */
-    public void onEnter() {
-    }
+    public void onEnter() { }
 
     /**
      * Update and render the screen.

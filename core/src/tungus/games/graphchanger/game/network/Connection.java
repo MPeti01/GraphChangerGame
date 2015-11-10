@@ -1,6 +1,5 @@
 package tungus.games.graphchanger.game.network;
 
-import com.badlogic.gdx.Gdx;
 import tungus.games.graphchanger.game.graph.editing.moves.Move;
 import tungus.games.graphchanger.game.graph.editing.moves.MoveListener;
 
@@ -46,7 +45,6 @@ public class Connection implements MoveListener, NetworkCommunicator.NetworkToke
                 Move m = received.remove();
                 if (m != Move.NONE) {
                     listener.addMove(m, nextReceivedTickNum);
-                    Gdx.app.log("COMM", "Tick " + nextReceivedTickNum + ": Received Move [" + m.toString() + "]");
                 }
                 nextReceivedTickNum++;
             }
@@ -78,8 +76,6 @@ public class Connection implements MoveListener, NetworkCommunicator.NetworkToke
      */
     public void send() {
         comm.write(toSend);
-        if (toSend != Move.NONE)
-            Gdx.app.log("COMM", "Tick " + nextSentTickNum + ": Sent Move [" + toSend.toString() + "]");
         toSend = Move.NONE;
         nextSentTickNum++;
     }
