@@ -58,7 +58,8 @@ class GameController {
         return delta;
     }
 
-    public void update(float delta) {
+    public void update(SpriteBatch batch, float delta) {
+        delta = correctDelta(delta, batch);
         simulator.timePassed(delta);
         if (connection != null) {
             connection.processReceived(simulator);
@@ -73,7 +74,6 @@ class GameController {
     }
 
     public void render(SpriteBatch batch, float delta) {
-        delta = correctDelta(delta, batch);
         GameState current = simulator.state();
         gameInput.setGameState(current);
         gameInput.updateUI(editUI);

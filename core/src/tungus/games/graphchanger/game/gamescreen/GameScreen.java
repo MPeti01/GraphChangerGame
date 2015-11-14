@@ -53,7 +53,7 @@ public class GameScreen extends BaseScreen {
 
     public GameScreen(Game game, GraphLoader loader, NetworkCommunicator comm, Player player) {
         super(game);
-        Gdx.app.log("FLOW", "Entered game screen");
+        Gdx.app.log("FLOW", "Entered game screen, player " + player.toString());
 
         this.player = player;
 
@@ -63,14 +63,11 @@ public class GameScreen extends BaseScreen {
         batch = new SpriteBatch(5460);
         batch.setProjectionMatrix(cam.combined);
 
-
         this.comm = comm;
         comm.clearListeners();
         userInput = new InputMultiplexer();
         Gdx.input.setInputProcessor(userInput);
 
-        newGame(loader);
-        Gdx.app.log("FLOW", "Game loaded");
         if (comm.isConnected()) {
             // In multiplayer, syncing is needed to start at the same time accurately
             currentState = new SyncState(this, player == Player.P1);
@@ -80,6 +77,10 @@ public class GameScreen extends BaseScreen {
 
         comm.addListener(currentState);
         userInput.addProcessor(currentState);
+        Gdx.app.log("FLOW", "GameScreen comm set up");
+
+        newGame(loader);
+        Gdx.app.log("FLOW", "Game loaded");
 
         currentState.onEnter();
     }

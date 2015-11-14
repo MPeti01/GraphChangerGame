@@ -44,7 +44,7 @@ public class MultiPlayerSetup extends BaseScreen {
     public MultiPlayerSetup(Game game, NetworkCommunicator comm, Player player) {
         super(game);
         comm.setDetailedLogging(true);
-        Gdx.app.log("FLOW", "Entered MP setup screen");
+        Gdx.app.log("FLOW", "Entered MP setup screen, player " + player.toString());
         this.comm = comm;
         comm.clearListeners();
         this.player = player;

@@ -36,7 +36,7 @@ public class PlayingState extends GameScreenState {
         if (!restarting) {
             // Not in the progress of transitioning to a new State.
             batch.begin();
-            screen.gameController.update(delta);
+            screen.gameController.update(batch, delta);
             screen.gameController.render(batch, delta);
             batch.end();
         }

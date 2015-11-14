@@ -42,7 +42,7 @@ public class SyncState extends GameScreenState {
 
     public SyncState(GameScreen screen, boolean initiator) {
         super(screen);
-        Gdx.app.log("FLOW", "Starting MP time sync...");
+        Gdx.app.log("FLOW", "Starting MP time sync, " + (initiator ? "initiating" : "not initiating") + "...");
         isInitiator = initiator;
         gameStartTime = goMessageTime = -1;
         remoteReady = !isInitiator;
