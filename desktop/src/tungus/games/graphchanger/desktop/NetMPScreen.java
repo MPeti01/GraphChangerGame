@@ -9,7 +9,7 @@ import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.net.SocketHints;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import tungus.games.graphchanger.BaseScreen;
-import tungus.games.graphchanger.game.network.NetworkCommunicator;
+import tungus.games.graphchanger.NetworkCommunicator;
 import tungus.games.graphchanger.game.players.Player;
 import tungus.games.graphchanger.menu.MultiPlayerSetup;
 

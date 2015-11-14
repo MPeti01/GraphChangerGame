@@ -2,7 +2,7 @@ package tungus.games.graphchanger.game.graph.editing.moves;
 
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import tungus.games.graphchanger.game.graph.Graph;
-import tungus.games.graphchanger.game.network.NetworkCommunicator;
+import tungus.games.graphchanger.NetworkCommunicator;
 
 import java.io.IOException;
 import java.io.OutputStream;

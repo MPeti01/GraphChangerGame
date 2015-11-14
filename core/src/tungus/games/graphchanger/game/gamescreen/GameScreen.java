@@ -9,8 +9,12 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.TimeUtils;
 import tungus.games.graphchanger.BaseScreen;
+import tungus.games.graphchanger.NetworkCommunicator;
 import tungus.games.graphchanger.game.graph.load.GraphLoader;
-import tungus.games.graphchanger.game.network.NetworkCommunicator;
+import tungus.games.graphchanger.game.opponent.AI;
+import tungus.games.graphchanger.game.opponent.AIConnection;
+import tungus.games.graphchanger.game.opponent.OpponentConnection;
+import tungus.games.graphchanger.game.opponent.RemotePlayerConnection;
 import tungus.games.graphchanger.game.players.Player;
 import tungus.games.graphchanger.input.BasicTouchWrapper;
 import tungus.games.graphchanger.menu.MultiPlayerSetup;
@@ -79,7 +83,11 @@ public class GameScreen extends BaseScreen {
         userInput.addProcessor(currentState);
         Gdx.app.log("FLOW", "GameScreen comm set up");
 
-        newGame(loader);
+        if (comm.isConnected()) {
+            newGame(loader, new RemotePlayerConnection(comm));
+        } else {
+            newGame(loader, new AIConnection(new AI()));
+        }
         Gdx.app.log("FLOW", "Game loaded");
 
         currentState.onEnter();
@@ -118,13 +126,13 @@ public class GameScreen extends BaseScreen {
      * Creates a new GameController that uses the given GraphLoader for its initial setup.
      * Binds the user and network inputs to this instance from the previous one.
      */
-    public void newGame(GraphLoader loader) {
+    public void newGame(GraphLoader loader, OpponentConnection opponent) {
         if (gameController != null) {
             comm.removeListener(1);
             userInput.removeProcessor(1);
         }
 
-        gameController = new GameController(player, loader, comm);
+        gameController = new GameController(player, loader, opponent);
 
         BasicTouchWrapper inputToGame = new BasicTouchWrapper(gameController.getTouchListener());
         inputToGame.setCamera(cam);

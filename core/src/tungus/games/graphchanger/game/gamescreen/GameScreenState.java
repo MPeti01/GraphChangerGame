@@ -2,7 +2,7 @@ package tungus.games.graphchanger.game.gamescreen;
 
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import tungus.games.graphchanger.game.network.NetworkCommunicator.NetworkTokenListener;
+import tungus.games.graphchanger.NetworkCommunicator.NetworkTokenListener;
 
 public abstract class GameScreenState extends InputAdapter implements NetworkTokenListener {
 

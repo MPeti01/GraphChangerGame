@@ -13,8 +13,7 @@ import tungus.games.graphchanger.game.graph.editing.InputInterpreter;
 import tungus.games.graphchanger.game.graph.editing.moves.MoveListener;
 import tungus.games.graphchanger.game.graph.editing.moves.MoveListenerMultiplexer;
 import tungus.games.graphchanger.game.graph.load.GraphLoader;
-import tungus.games.graphchanger.game.network.Connection;
-import tungus.games.graphchanger.game.network.NetworkCommunicator;
+import tungus.games.graphchanger.game.opponent.OpponentConnection;
 import tungus.games.graphchanger.game.players.Player;
 import tungus.games.graphchanger.input.BasicTouchListener;
 
@@ -24,20 +23,16 @@ import tungus.games.graphchanger.input.BasicTouchListener;
 class GameController {
 
     private final GameSimulator simulator;
-    private final Connection connection;
+    private final OpponentConnection opponent;
     private final InputInterpreter gameInput;
     private final GraphEditingUI editUI = new GraphEditingUI();
     private final GraphRenderer graphRenderer = new GraphRenderer();
 
-    public GameController(Player player, GraphLoader loader, NetworkCommunicator comm) {
+    public GameController(Player player, GraphLoader loader, OpponentConnection opponent) {
+        this.opponent = opponent;
         simulator = new GameSimulator(loader);
-        MoveListener moveListener = simulator;
-        if (comm.isConnected()) {
-            connection = new Connection(comm);
-            moveListener = new MoveListenerMultiplexer(connection, moveListener);
-        } else {
-            connection = null;
-        }
+
+        MoveListener moveListener = new MoveListenerMultiplexer(opponent, simulator);
         gameInput = new InputInterpreter(moveListener, player);
     }
 
@@ -61,14 +56,14 @@ class GameController {
     public void update(SpriteBatch batch, float delta) {
         delta = correctDelta(delta, batch);
         simulator.timePassed(delta);
-        if (connection != null) {
-            connection.processReceived(simulator);
-        }
-        if (connection == null || !connection.isActive()) {
+        if (!opponent.isActive()) {
             simulator.update();
-        } else if (connection.shouldSend()) {
-            if (simulator.update()) {
-                connection.send();
+        } else {
+            opponent.processReceived(simulator);
+            if (opponent.shouldSend()) {
+                if (simulator.update()) {
+                    opponent.send();
+                }
             }
         }
     }

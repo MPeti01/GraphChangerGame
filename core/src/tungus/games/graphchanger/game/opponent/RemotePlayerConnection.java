@@ -1,5 +1,6 @@
-package tungus.games.graphchanger.game.network;
+package tungus.games.graphchanger.game.opponent;
 
+import tungus.games.graphchanger.NetworkCommunicator;
 import tungus.games.graphchanger.game.graph.editing.moves.Move;
 import tungus.games.graphchanger.game.graph.editing.moves.MoveListener;
 
@@ -9,7 +10,7 @@ import java.util.Queue;
 /**
  * Handles sending and receiveing Moves to/from the remote player.
  */
-public class Connection implements MoveListener, NetworkCommunicator.NetworkTokenListener {
+public class RemotePlayerConnection implements OpponentConnection, NetworkCommunicator.NetworkTokenListener {
 
     private final NetworkCommunicator comm;
 
@@ -19,7 +20,7 @@ public class Connection implements MoveListener, NetworkCommunicator.NetworkToke
     private Move toSend = Move.NONE;
     private int nextSentTickNum = 1;
 
-    public Connection(NetworkCommunicator comm) {
+    public RemotePlayerConnection(NetworkCommunicator comm) {
         this.comm = comm;
         comm.addListener(this);
     }
@@ -35,17 +36,12 @@ public class Connection implements MoveListener, NetworkCommunicator.NetworkToke
         return true;
     }
 
-    /**
-     * Sends the accumulated {@link Move Moves} received from the InputStream to the given listener.
-     * @param listener The MoveListener to give the Moves to
-     */
+    @Override
     public void processReceived(MoveListener listener) {
         while (!received.isEmpty()) {
             synchronized (received) {
                 Move m = received.remove();
-                if (m != Move.NONE) {
-                    listener.addMove(m, nextReceivedTickNum);
-                }
+                listener.addMove(m, nextReceivedTickNum);
                 nextReceivedTickNum++;
             }
         }
@@ -66,20 +62,19 @@ public class Connection implements MoveListener, NetworkCommunicator.NetworkToke
         toSend = m;
     }
 
+    @Override
     public boolean shouldSend() {
         return nextReceivedTickNum >= nextSentTickNum;
     }
 
-    /**
-     * Sends the {@link Move} received since it was last called. If there was none, sends a confirmation of that. <br>
-     * Should be called exactly once per tick.
-     */
+    @Override
     public void send() {
         comm.write(toSend);
         toSend = Move.NONE;
         nextSentTickNum++;
     }
 
+    @Override
     public boolean isActive() {
         return comm.isConnected();
     }

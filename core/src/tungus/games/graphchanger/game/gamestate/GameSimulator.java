@@ -49,6 +49,8 @@ public class GameSimulator implements MoveListener {
         if (tickNum < currentTickNum) {
             throw new IllegalArgumentException("Already dropped tick " + tickNum + ", can't add move");
         }
+        if (m == Move.NONE)
+            return;
         List<Move> list = movesEachTick.get(tickNum);
         if (list == null) {
             list = new ArrayList<Move>();

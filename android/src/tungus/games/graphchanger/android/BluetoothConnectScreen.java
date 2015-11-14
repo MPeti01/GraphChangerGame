@@ -9,7 +9,7 @@ import tungus.games.graphchanger.BaseScreen;
 import tungus.games.graphchanger.android.BluetoothConnector.Client;
 import tungus.games.graphchanger.android.BluetoothConnector.ClientState;
 import tungus.games.graphchanger.android.BluetoothConnector.Server;
-import tungus.games.graphchanger.game.network.NetworkCommunicator;
+import tungus.games.graphchanger.NetworkCommunicator;
 import tungus.games.graphchanger.game.players.Player;
 import tungus.games.graphchanger.menu.MultiPlayerSetup;
 

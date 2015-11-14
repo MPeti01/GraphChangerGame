@@ -11,8 +11,8 @@ import tungus.games.graphchanger.game.graph.load.EmptyGenerator;
 import tungus.games.graphchanger.game.graph.load.FileLoader;
 import tungus.games.graphchanger.game.graph.load.GraphLoader.Mode;
 import tungus.games.graphchanger.game.graph.load.MixedPositionGenerator;
-import tungus.games.graphchanger.game.network.NetworkCommunicator;
-import tungus.games.graphchanger.game.network.NetworkCommunicator.NetworkTokenListener;
+import tungus.games.graphchanger.NetworkCommunicator;
+import tungus.games.graphchanger.NetworkCommunicator.NetworkTokenListener;
 import tungus.games.graphchanger.game.players.Player;
 
 /**

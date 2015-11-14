@@ -1,4 +1,4 @@
-package tungus.games.graphchanger.game.network;
+package tungus.games.graphchanger;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
