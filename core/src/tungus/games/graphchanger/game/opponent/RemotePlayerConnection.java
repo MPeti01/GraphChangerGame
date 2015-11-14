@@ -8,7 +8,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 /**
- * Handles sending and receiveing Moves to/from the remote player.
+ * Handles sending and receiving Moves to/from the remote player.
  */
 public class RemotePlayerConnection implements OpponentConnection, NetworkCommunicator.NetworkTokenListener {
 

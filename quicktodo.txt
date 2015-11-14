@@ -1,16 +1,6 @@
 Next up
 =======
-- Create place for AI
-    - Connection (some better name would be nice?) as interface
-        - AIConnection to mediate between game and AI core or whatever
-        - Current connection as RemoteConnection or sth
-    - GC needs to receive a notnull connection, not a nullable netcomm
-        - GS has to create that. Could do with some parameters
-        - For now, just "new AIConnection(new AICore())" or sth?
-- Easy menu stuff
-    - Handle back button
-    - Some visible stuff...
-
+- ?
 
 Small things whenever
 =======================

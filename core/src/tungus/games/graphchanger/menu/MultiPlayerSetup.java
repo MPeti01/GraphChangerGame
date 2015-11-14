@@ -2,17 +2,22 @@ package tungus.games.graphchanger.menu;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.TimeUtils;
+import tungus.games.graphchanger.Assets;
 import tungus.games.graphchanger.BaseScreen;
+import tungus.games.graphchanger.NetworkCommunicator;
+import tungus.games.graphchanger.NetworkCommunicator.NetworkTokenListener;
+import tungus.games.graphchanger.drawutils.DrawUtils;
 import tungus.games.graphchanger.game.gamescreen.GameScreen;
 import tungus.games.graphchanger.game.graph.load.EmptyGenerator;
 import tungus.games.graphchanger.game.graph.load.FileLoader;
 import tungus.games.graphchanger.game.graph.load.GraphLoader.Mode;
 import tungus.games.graphchanger.game.graph.load.MixedPositionGenerator;
-import tungus.games.graphchanger.NetworkCommunicator;
-import tungus.games.graphchanger.NetworkCommunicator.NetworkTokenListener;
 import tungus.games.graphchanger.game.players.Player;
 
 /**
@@ -41,6 +46,8 @@ public class MultiPlayerSetup extends BaseScreen {
     private volatile Mode mode = null;
     private volatile short seed = 0;
 
+    private final SpriteBatch batch = DrawUtils.createSimpleBatch(480, 800);
+
     public MultiPlayerSetup(Game game, NetworkCommunicator comm, Player player) {
         super(game);
         comm.setDetailedLogging(true);
@@ -49,22 +56,34 @@ public class MultiPlayerSetup extends BaseScreen {
         comm.clearListeners();
         this.player = player;
         initiate = (player == Player.P1);
+        InputMultiplexer inp = new InputMultiplexer();
+        inp.addProcessor(new InputAdapter() {
+            @Override
+            public boolean keyDown(int keyCode) {
+                if (keyCode == Keys.BACK || keyCode == Keys.ESCAPE) {
+                    Game game = MultiPlayerSetup.this.game;
+                    game.setScreen(new MainMenu(game));
+                    return true;
+                }
+                return false;
+            }
+        });
         if (initiate) {
             Gdx.app.log("FLOW", "Waiting for user input...");
-            Gdx.input.setInputProcessor(new InputAdapter() {
+            inp.addProcessor(new InputAdapter() {
                 @Override
                 public boolean touchDown(int screenX, int screenY, int pointer, int button) {
                     if (screenY > Gdx.graphics.getHeight() / 2) {
                         if (screenX > Gdx.graphics.getWidth() / 2) {
-                            initGame(Mode.RANDOM_MIXED, (short)TimeUtils.millis());
+                            initGame(Mode.RANDOM_MIXED, (short) TimeUtils.millis());
                         } else {
-                            initGame(Mode.RANDOM_EMPTY, (short)TimeUtils.millis());
+                            initGame(Mode.RANDOM_EMPTY, (short) TimeUtils.millis());
                         }
                     } else {
                         if (screenX > Gdx.graphics.getWidth() / 2) {
-                            initGame(Mode.PERF_TEST, (short)TimeUtils.millis());
+                            initGame(Mode.PERF_TEST, (short) TimeUtils.millis());
                         } else {
-                            initGame(Mode.LOAD_FILE, (short)TimeUtils.millis());
+                            initGame(Mode.LOAD_FILE, (short) TimeUtils.millis());
                         }
                     }
                     return true;
@@ -72,7 +91,6 @@ public class MultiPlayerSetup extends BaseScreen {
             });
         } else {
             Gdx.app.log("FLOW", "Waiting for remote input...");
-            Gdx.input.setInputProcessor(null);
             comm.addListener(new NetworkTokenListener() {
                 @Override
                 public boolean receivedMessage(int[] m) {
@@ -86,6 +104,8 @@ public class MultiPlayerSetup extends BaseScreen {
                 }
             });
         }
+        Gdx.input.setInputProcessor(inp);
+        Gdx.input.setCatchBackKey(true);
     }
 
     /**
@@ -128,6 +148,17 @@ public class MultiPlayerSetup extends BaseScreen {
         if (mode != null) { // Fields are set when ready to go
             startGame(mode, seed);
         }
+
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        batch.begin();
+        if (initiate) {
+            Assets.font.draw(batch, "FILE",   50,  600);
+            Assets.font.draw(batch, "STRESS", 300, 600);
+            Assets.font.draw(batch, "EMPTY",  50,  200);
+            Assets.font.draw(batch, "COLORED",300, 200);
+        } else {
+            Assets.font.draw(batch, "WAIT",   210, 400);
+        }
+        batch.end();
     }
 }

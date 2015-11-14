@@ -3,14 +3,17 @@ package tungus.games.graphchanger.android;
 import android.bluetooth.BluetoothDevice;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.GL20;
+import tungus.games.graphchanger.Assets;
 import tungus.games.graphchanger.BaseScreen;
+import tungus.games.graphchanger.NetworkCommunicator;
 import tungus.games.graphchanger.android.BluetoothConnector.Client;
 import tungus.games.graphchanger.android.BluetoothConnector.ClientState;
 import tungus.games.graphchanger.android.BluetoothConnector.Server;
-import tungus.games.graphchanger.NetworkCommunicator;
 import tungus.games.graphchanger.game.players.Player;
+import tungus.games.graphchanger.menu.MainMenu;
 import tungus.games.graphchanger.menu.MultiPlayerSetup;
 
 import java.util.LinkedList;
@@ -37,6 +40,16 @@ public class BluetoothConnectScreen extends BaseScreen {
 			}
 			return false;
 		}
+
+        @Override
+        public boolean keyDown(int keyCode) {
+            if (keyCode == Keys.BACK || keyCode == Keys.ESCAPE) {
+                Game game = BluetoothConnectScreen.this.game;
+                game.setScreen(new MainMenu(game));
+                return true;
+            }
+            return false;
+        }
 	};
 	
 	public BluetoothConnectScreen(Game game) {
@@ -46,6 +59,7 @@ public class BluetoothConnectScreen extends BaseScreen {
 		server = BluetoothConnector.INSTANCE.server;
 		client = BluetoothConnector.INSTANCE.client;
 		Gdx.input.setInputProcessor(listener);
+        Gdx.input.setCatchBackKey(true);
 	}
 	
 	@Override
@@ -113,6 +127,7 @@ public class BluetoothConnectScreen extends BaseScreen {
 		if (client.connectThread != null && client.connectThread.isAlive())
 			client.connectThread.cancel();
 		client.disableDiscovery();
+        Assets.font.setScale(1);
 	}
 	
 }

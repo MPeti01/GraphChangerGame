@@ -21,6 +21,7 @@ public class NetMPScreen extends BaseScreen {
 	public NetMPScreen(Game game) {
 		super(game);
         Gdx.app.log("SCREEN", "Entered internet MP connect screen");
+        Gdx.input.setInputProcessor(null);
 		if(IP.equals("")) {
             Gdx.app.log("SCREEN", "Mode: listen");
             new Thread() {

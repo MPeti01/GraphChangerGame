@@ -2,6 +2,8 @@ package tungus.games.graphchanger.game.gamescreen;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
@@ -17,6 +19,7 @@ import tungus.games.graphchanger.game.opponent.OpponentConnection;
 import tungus.games.graphchanger.game.opponent.RemotePlayerConnection;
 import tungus.games.graphchanger.game.players.Player;
 import tungus.games.graphchanger.input.BasicTouchWrapper;
+import tungus.games.graphchanger.menu.MainMenu;
 import tungus.games.graphchanger.menu.MultiPlayerSetup;
 import tungus.games.graphchanger.menu.SinglePlayerSetup;
 
@@ -89,6 +92,20 @@ public class GameScreen extends BaseScreen {
             newGame(loader, new AIConnection(new AI()));
         }
         Gdx.app.log("FLOW", "Game loaded");
+
+        userInput.addProcessor(new InputAdapter(){
+            @Override
+            public boolean keyDown(int keyCode) {
+                if (keyCode == Keys.BACK || keyCode == Keys.ESCAPE) {
+                    Game game = GameScreen.this.game;
+                    game.setScreen(new MainMenu(game));
+                    dispose();
+                    return true;
+                }
+                return false;
+            }
+        });
+        Gdx.input.setCatchBackKey(true);
 
         currentState.onEnter();
     }
